@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 const store = createStore({
   state: {
@@ -94,6 +95,33 @@ const store = createStore({
     resetStore({ commit }) {
       // Commit the RESET_STORE mutation to reset the store
       commit("RESET_STORE");
+    },
+    async saveStateToFirestore({ state }) {
+      const db = getFirestore();
+      const stateDoc = doc(db, "lyrics", "isE7hppuvNBxN3RHyQDe");
+      try {
+        await setDoc(stateDoc, { state: JSON.stringify(state) });
+        console.log("State saved to Firestore");
+      } catch (error) {
+        console.error("Error saving state to Firestore:", error);
+      }
+    },
+    async loadStateFromFirestore({ commit }) {
+      const db = getFirestore();
+      const stateDoc = doc(db, "lyrics", "isE7hppuvNBxN3RHyQDe");
+      try {
+        const docSnap = await getDoc(stateDoc);
+        if (docSnap.exists()) {
+          const state = JSON.parse(docSnap.data().state);
+          commit("SET_SONGS", state.songs);
+          commit("SET_ACTIVE_SONG", state.activeSong);
+          console.log("State loaded from Firestore");
+        } else {
+          console.log("No state found in Firestore");
+        }
+      } catch (error) {
+        console.error("Error loading state from Firestore:", error);
+      }
     },
   },
   getters: {
