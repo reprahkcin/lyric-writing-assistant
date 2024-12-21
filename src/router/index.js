@@ -1,17 +1,21 @@
-import Vue from "vue";
-import Router from "vue-router";
-import App from "@/App.vue";
+import { createRouter, createWebHashHistory } from "vue-router";
+import store from "@/store";
 
-Vue.use(Router);
+import ActivityView from "@/views/ActivityView";
 
-export default new Router({
+const routes = [
+  {
+    path: store.getters.useLandingPage ? "/activity" : "/",
+    name: "Activity",
+    component: ActivityView,
+  },
+];
+
+const router = createRouter({
   mode: "history",
-  routes: [
-    {
-      path: "/",
-      name: "Home",
-      component: App,
-    },
-    // ...other routes...
-  ],
+  linkExactActiveClass: "fw-bold",
+  history: createWebHashHistory(process.env.BASE_URL),
+  routes,
 });
+
+export default router;

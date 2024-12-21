@@ -1,9 +1,6 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { createStore } from "vuex";
 
-Vue.use(Vuex);
-
-const app = {
+const store = createStore({
   state: {
     songs: [], // Array to store all songs
     activeSong: null, // Currently active song
@@ -109,5 +106,6 @@ const app = {
       return state.activeSong;
     },
   },
-};
-export default app;
+});
+
+export default store;
