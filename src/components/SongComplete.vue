@@ -114,13 +114,13 @@ export default {
   },
   data() {
     return {
-      localSong: { ...this.song },
+      localSong: { ...this.song, sections: this.song.sections || [] }, // Ensure sections is always an array
     };
   },
   computed: {
     orderedSections() {
       // Order sections by their order property
-      return this.localSong.sections
+      return (this.localSong.sections || [])
         .slice()
         .sort((a, b) => a.order[0] - b.order[0]);
     },
@@ -129,7 +129,7 @@ export default {
     song: {
       handler(newSong) {
         // Update localSong when the song prop changes
-        this.localSong = { ...newSong };
+        this.localSong = { ...newSong, sections: newSong.sections || [] }; // Ensure sections is always an array
         console.log("Updated localSong:", this.localSong);
       },
       immediate: true,
