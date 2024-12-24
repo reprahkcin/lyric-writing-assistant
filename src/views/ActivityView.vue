@@ -3,8 +3,8 @@
     <div class="container">
       <div class="row my-3">
         <div class="col">
-          <div class="card bg-dark p-3">
-            <p class="fw-bold my-auto text-white text-start">
+          <div class="card bg-dark ps-3 py-2 text-light shadow">
+            <p class="fw-bold my-auto text-start">
               Welcome, {{ user.displayName }}
             </p>
           </div>

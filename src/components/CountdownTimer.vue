@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center justify-content-between text-light">
+  <div class="d-flex align-items-center justify-content-between">
     <div class="flex-grow-1 text-center">
       <p
         v-if="timerEnded"
@@ -9,23 +9,20 @@
       </p>
       <div v-else class="fw-bold fs-4 me-3 my-0">{{ formattedTime }}</div>
     </div>
-    <div class="btn-group w-100" role="group">
+    <div class="btn-group gap-1 w-100" role="group">
       <button
-        class="btn btn-neutral-dark fw-bold py-0 border border-light text-light"
+        class="btn btn-outline-custom fw-bold py-0"
         @click="decrementTime"
       >
         -
       </button>
       <button
-        class="btn btn-neutral-dark fw-bold py-0 border border-light text-light"
+        class="btn btn-outline-custom fw-bold py-0"
         @click="incrementTime"
       >
         +
       </button>
-      <button
-        class="btn btn-neutral-dark fw-bold py-0 border border-light text-light"
-        @click="resetTime"
-      >
+      <button class="btn btn-outline-custom fw-bold py-0" @click="resetTime">
         Reset
       </button>
     </div>
@@ -41,7 +38,7 @@ export default {
       seconds: 0, // Seconds part of the timer
       timer: null, // Reference to the setInterval timer
       timerEnded: false, // Flag to indicate if the timer has ended
-      audio: new Audio(require("@/assets/alarm.mp3")) // Audio object for the alarm sound
+      audio: new Audio(require("@/assets/alarm.mp3")), // Audio object for the alarm sound
     };
   },
   computed: {
@@ -50,7 +47,7 @@ export default {
       const minutes = this.minutes;
       const seconds = this.seconds < 10 ? "0" + this.seconds : this.seconds;
       return `${minutes}:${seconds}`;
-    }
+    },
   },
   methods: {
     startTimer() {
@@ -96,7 +93,7 @@ export default {
       clearInterval(this.timer); // Clear the interval timer
       this.timer = null;
       this.timerEnded = false; // Reset the timerEnded flag
-    }
-  }
+    },
+  },
 };
 </script>
