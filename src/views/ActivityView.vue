@@ -1,9 +1,13 @@
 <template>
   <div v-if="user">
     <div class="container">
-      <div class="row mb-3">
+      <div class="row my-3">
         <div class="col">
-          <h2>Welcome, {{ user.displayName }}</h2>
+          <div class="card bg-dark">
+            <p class="fw-bold my-auto text-white tex-start py-2">
+              Welcome, {{ user.displayName }}
+            </p>
+          </div>
         </div>
       </div>
       <div class="row mb-3">

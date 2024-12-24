@@ -154,11 +154,11 @@ export default {
       // Return the appropriate color class based on the section type
       switch (type) {
         case "verse":
-          return "bg-stratosphere text-white";
+          return "bg-verse";
         case "chorus":
-          return "bg-candela text-dark";
+          return "bg-chorus";
         case "bridge":
-          return "bg-high-desert text-light";
+          return "bg-bridge";
         default:
           return "bg-secondary text-white";
       }
@@ -218,3 +218,4 @@ export default {
   },
 };
 </script>
+<style scoped></style>
