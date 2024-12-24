@@ -7,26 +7,14 @@
       <div class="fw-bold text-capitalize">{{ section.type }}</div>
       <div>
         <button
-          class="
-            btn btn-danger
-            fw-bold
-            btn-sm
-            py-0
-            border border-light border-2
-            me-2
-          "
+          class="btn btn-danger fw-bold btn-sm py-0 border border-light border-2 me-2"
           @click="confirmRemoveSelf"
         >
           <span class="bi bi-trash-fill"></span>
         </button>
         <div class="btn-group">
           <button
-            class="
-              btn btn-neutral-dark
-              fw-bold
-              py-0
-              border border-light border-2
-            "
+            class="btn btn-neutral-dark fw-bold py-0 border border-light border-2"
             :class="typeColor(section.type)"
             @click="moveSelf('up')"
             :disabled="isFirst"
@@ -34,12 +22,7 @@
             ↑
           </button>
           <button
-            class="
-              btn btn-neutral-dark
-              fw-bold
-              py-0
-              border border-light border-2
-            "
+            class="btn btn-neutral-dark fw-bold py-0 border border-light border-2"
             :class="typeColor(section.type)"
             @click="moveSelf('down')"
             :disabled="isLast"
@@ -119,22 +102,22 @@ export default {
   props: {
     section: {
       type: Object,
-      required: true
+      required: true,
     },
     isFirst: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isLast: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       localLines: [...this.section.lines], // Local copy of section lines
       sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
-      brainstormingText: this.section.brainstormingText || "" // Local copy of brainstorming text
+      brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
     };
   },
   methods: {
@@ -148,13 +131,13 @@ export default {
         // Swap the current line with the previous line if not at the top
         [this.localLines[index - 1], this.localLines[index]] = [
           this.localLines[index],
-          this.localLines[index - 1]
+          this.localLines[index - 1],
         ];
       } else if (direction === "down" && index < this.localLines.length - 1) {
         // Swap the current line with the next line if not at the bottom
         [this.localLines[index + 1], this.localLines[index]] = [
           this.localLines[index],
-          this.localLines[index + 1]
+          this.localLines[index + 1],
         ];
       }
     },
@@ -193,33 +176,45 @@ export default {
     moveSelf(direction) {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
-    }
+    },
+    updateSection() {
+      this.$store.dispatch("updateSection", {
+        songId: this.section.songId,
+        section: {
+          ...this.section,
+          lines: this.localLines,
+          sectionNarrative: this.sectionNarrative,
+          brainstormingText: this.brainstormingText,
+        },
+      });
+      // No need to call saveStateToFirestore here
+    },
   },
   watch: {
     localLines: {
       handler(newLines) {
-        // Emit an event to update the section when lines change
         this.$emit("update-section", {
           ...this.section,
-          lines: newLines
+          lines: newLines,
         });
+        this.updateSection(); // Update section in Vuex and Firestore
       },
-      deep: true
+      deep: true,
     },
     sectionNarrative(newNarrative) {
-      // Emit an event to update the section when the narrative changes
       this.$emit("update-section", {
         ...this.section,
-        sectionNarrative: newNarrative
+        sectionNarrative: newNarrative,
       });
+      this.updateSection(); // Update section in Vuex and Firestore
     },
     brainstormingText(newText) {
-      // Emit an event to update the section when the brainstorming text changes
       this.$emit("update-section", {
         ...this.section,
-        brainstormingText: newText
+        brainstormingText: newText,
       });
-    }
-  }
+      this.updateSection(); // Update section in Vuex and Firestore
+    },
+  },
 };
 </script>

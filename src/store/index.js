@@ -1,12 +1,33 @@
 import { createStore } from "vuex";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDb8nZoo3LwrWHJB-uFCSlVLv3FsPIXMCI",
+  authDomain: "lyric-writing-assistant.firebaseapp.com",
+  projectId: "lyric-writing-assistant",
+  storageBucket: "lyric-writing-assistant.firebasestorage.app",
+  messagingSenderId: "550944326368",
+  appId: "1:550944326368:web:3dd3fcd0009f72fef78685",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 const store = createStore({
   state: {
     songs: [], // Array to store all songs
     activeSong: null, // Currently active song
+    user: null, // Authenticated user
   },
   mutations: {
+    SET_USER(state, user) {
+      state.user = user;
+    },
     SET_SONGS(state, value) {
       // Set the songs state to the provided value
       state.songs = value;
@@ -58,6 +79,9 @@ const store = createStore({
     },
   },
   actions: {
+    setUser({ commit }, user) {
+      commit("SET_USER", user);
+    },
     setSongs({ commit }, value) {
       // Commit the SET_SONGS mutation with the provided value
       commit("SET_SONGS", value);
@@ -70,7 +94,7 @@ const store = createStore({
         mood: "",
         hook: "",
         narrativeOutline: "",
-        sections: [],
+        sections: [], // Ensure sections is always an array
         lastEdit: new Date().toISOString(), // Current timestamp
       };
       // Commit the ADD_SONG mutation with the new song
@@ -97,8 +121,8 @@ const store = createStore({
       commit("RESET_STORE");
     },
     async saveStateToFirestore({ state }) {
-      const db = getFirestore();
-      const stateDoc = doc(db, "lyrics", "isE7hppuvNBxN3RHyQDe");
+      if (!state.user) return; // Ensure user is authenticated
+      const stateDoc = doc(db, "users", state.user.uid);
       try {
         await setDoc(stateDoc, { state: JSON.stringify(state) });
         console.log("State saved to Firestore");
@@ -106,18 +130,28 @@ const store = createStore({
         console.error("Error saving state to Firestore:", error);
       }
     },
-    async loadStateFromFirestore({ commit }) {
-      const db = getFirestore();
-      const stateDoc = doc(db, "lyrics", "isE7hppuvNBxN3RHyQDe");
+    async loadStateFromFirestore({ commit, state }) {
+      if (!state.user) return; // Ensure user is authenticated
+      const stateDoc = doc(db, "users", state.user.uid);
       try {
         const docSnap = await getDoc(stateDoc);
         if (docSnap.exists()) {
-          const state = JSON.parse(docSnap.data().state);
-          commit("SET_SONGS", state.songs);
-          commit("SET_ACTIVE_SONG", state.activeSong);
-          console.log("State loaded from Firestore");
+          const data = docSnap.data().state;
+          if (data) {
+            const state = JSON.parse(data);
+            state.songs = state.songs.map((song) => ({
+              ...song,
+              sections: Array.isArray(song.sections) ? song.sections : [], // Ensure sections is always an array
+            }));
+            console.log("Loaded state from Firestore:", state);
+            commit("SET_SONGS", state.songs);
+            commit("SET_ACTIVE_SONG", state.activeSong);
+            console.log("State loaded from Firestore");
+          } else {
+            console.log("No state data found in Firestore");
+          }
         } else {
-          console.log("No state found in Firestore");
+          console.log("No state document found in Firestore");
         }
       } catch (error) {
         console.error("Error loading state from Firestore:", error);
@@ -133,7 +167,20 @@ const store = createStore({
       // Return the active song state
       return state.activeSong;
     },
+    user(state) {
+      // Return the authenticated user
+      return state.user;
+    },
   },
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    store.dispatch("setUser", user);
+    store.dispatch("loadStateFromFirestore");
+  } else {
+    store.dispatch("setUser", null);
+  }
 });
 
 export default store;

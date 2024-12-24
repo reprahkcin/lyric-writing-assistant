@@ -1,8 +1,8 @@
 <template>
   <div class="row">
     <div class="col">
-      <div class="card bg-neutral-light text-neutral-dark border border-dark">
-        <div class="card-header bg-neutral-dark text-neutral-light">
+      <div class="card bg-light text-dark border border-dark">
+        <div class="card-header bg-dark text-light">
           <p class="my-auto fw-bold text-start">Song Library</p>
         </div>
         <div class="card-body">

@@ -1,6 +1,6 @@
 <template>
-  <div class="card bg-neutral-light text-neutral-dark border border-dark">
-    <div class="card-header bg-neutral-dark text-neutral-light">
+  <div class="card bg-light text-dark border border-dark">
+    <div class="card-header bg-dark text-light">
       <p class="my-auto fw-bold text-start">Plain Text Layout</p>
     </div>
     <div class="card-body text-start">
@@ -38,7 +38,7 @@ export default {
         result += `\n`; // Add a newline after each section
       });
       return result; // Return the formatted song string
-    }
+    },
   },
   methods: {
     copyToClipboard() {
@@ -49,7 +49,7 @@ export default {
       el.select(); // Select the textarea content
       document.execCommand("copy"); // Execute the copy command
       document.body.removeChild(el); // Remove the textarea from the document body
-    }
-  }
+    },
+  },
 };
 </script>

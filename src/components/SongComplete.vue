@@ -1,7 +1,7 @@
 <template>
-  <div class="card bg-neutral-light text-neutral-dark mb-3 border border-dark">
+  <div class="card bg-light text-dark mb-3 border border-dark">
     <div
-      class="card-header bg-neutral-dark d-flex justify-content-between align-items-center"
+      class="card-header bg-dark d-flex justify-content-between align-items-center"
     >
       <p class="my-auto fw-bold text-start text-light">Song</p>
       <CountdownTimer class="ms-auto" />
@@ -130,6 +130,7 @@ export default {
       handler(newSong) {
         // Update localSong when the song prop changes
         this.localSong = { ...newSong };
+        console.log("Updated localSong:", this.localSong);
       },
       immediate: true,
     },
@@ -137,6 +138,7 @@ export default {
       handler(newSong) {
         // Update the song in the store when localSong changes
         this.updateSong(newSong);
+        // No need to call saveStateToFirestore here
       },
       deep: true,
     },
@@ -206,6 +208,9 @@ export default {
       // Emit an event to toggle the plain text view
       this.$emit("toggle-plain-text");
     },
+  },
+  created() {
+    console.log("Song prop:", this.song);
   },
 };
 </script>
