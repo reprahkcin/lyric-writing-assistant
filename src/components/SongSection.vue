@@ -1,43 +1,48 @@
 <template>
-  <div class="card mb-3 shadow">
-    <div
-      class="card-header d-flex justify-content-between align-items-center"
-      :class="typeColor(section.type)"
-    >
-      <div class="fw-bold text-capitalize">{{ section.type }}</div>
-      <div>
-        <button
-          class="btn btn-danger fw-bold btn-sm py-0 border border-light border-2 me-2"
-          @click="confirmRemoveSelf"
-        >
-          <span class="bi bi-trash-fill"></span>
-        </button>
-        <div class="btn-group">
-          <button
-            class="btn btn-neutral-dark fw-bold py-0 border border-light border-2"
-            :class="typeColor(section.type)"
-            @click="moveSelf('up')"
-            :disabled="isFirst"
+  <div class="card mb-3 shadow-sm bg-card">
+    <div class="card-body bg-section-card pt-1 rounded">
+      <div class="row">
+        <div class="col">
+          <div
+            class="d-flex justify-content-between align-items-center text-dark-muted"
           >
-            ↑
-          </button>
-          <button
-            class="btn btn-neutral-dark fw-bold py-0 border border-light border-2"
-            :class="typeColor(section.type)"
-            @click="moveSelf('down')"
-            :disabled="isLast"
-          >
-            ↓
-          </button>
+            <div class="ms-2 fs-5 fw-bold text-capitalize">
+              {{ section.type }}
+            </div>
+            <CountdownTimer class="ms-auto me-2 text-dark-muted" />
+            <div>
+              <button
+                class="btn btn-outline-custom fw-bold btn-sm py-0 me-2"
+                @click="confirmRemoveSelf"
+              >
+                <span class="bi bi-trash-fill"></span>
+              </button>
+              <div class="btn-group gap-1">
+                <button
+                  class="btn btn-outline-custom fw-bold py-0"
+                  @click="moveSelf('up')"
+                  :disabled="isFirst"
+                >
+                  ↑
+                </button>
+                <button
+                  class="btn btn-outline-custom fw-bold py-0"
+                  @click="moveSelf('down')"
+                  :disabled="isLast"
+                >
+                  ↓
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="card-body">
+      <hr class="mt-1 mb-3" />
       <div class="row">
         <div class="col">
           <input
             type="text"
-            class="form-control mb-2"
+            class="form-control mb-2 input-off-white"
             v-model="sectionNarrative"
             placeholder="This section is about..."
           />
@@ -48,20 +53,20 @@
           >
             <input
               type="text"
-              class="form-control"
+              class="form-control input-off-white"
               v-model="localLines[index]"
               :placeholder="`Line ${index + 1}`"
             />
-            <div class="btn-group ms-2">
+            <div class="btn-group ms-2 gap-1">
               <button
-                class="btn btn-sm btn-warning"
+                class="btn btn-outline-custom btn-sm h-100 my-0"
                 @click="moveLine(index, 'up')"
                 :disabled="index === 0"
               >
                 ↑
               </button>
               <button
-                class="btn btn-sm btn-warning"
+                class="btn btn-outline-custom btn-sm h-100 my-0"
                 @click="moveLine(index, 'down')"
                 :disabled="index === localLines.length - 1"
               >
@@ -70,26 +75,55 @@
             </div>
           </div>
           <button
-            class="btn btn-outline-danger btn-sm rounded-circle mx-1"
+            class="btn btn-outline-round mx-1"
             @click="removeLine"
             :disabled="localLines.length <= 1"
           >
             <span class="fw-bold bi bi-dash-lg"></span>
           </button>
-          <button
-            class="btn btn-outline-success btn-sm rounded-circle mx-1"
-            @click="addLine"
-          >
+          <button class="btn btn-outline-round mx-1" @click="addLine">
             <span class="bi bi-plus-lg"></span>
           </button>
         </div>
         <div class="col-4">
           <textarea
-            class="form-control"
+            class="form-control input-off-white"
             rows="10"
             placeholder="Brainstorming area..."
             v-model="brainstormingText"
           ></textarea>
+          <div class="input-group mt-2">
+            <input
+              type="text"
+              class="form-control input-off-white"
+              placeholder="Rhymebrain.com query"
+              v-model="rhymeQuery"
+            />
+            <button class="btn btn-outline-custom" @click="fetchRhymes">
+              <span class="bi bi-search"></span>
+            </button>
+          </div>
+          <div
+            v-if="rhymes.length"
+            class="mt-2 alert alert-info position-relative"
+            style="max-height: 10em; overflow-y: auto"
+          >
+            <button
+              type="button"
+              class="btn-close position-absolute top-0 end-0 m-2"
+              aria-label="Close"
+              @click="rhymes = []"
+            ></button>
+            <ul class="list-unstyled text-start">
+              <li v-for="(rhyme, index) in rhymes" :key="index">
+                {{ rhyme.word }}
+              </li>
+            </ul>
+            <p>
+              Rhyme results are provided by
+              <a href="https://rhymebrain.com">RhymeBrain.com</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -97,6 +131,8 @@
 </template>
 
 <script>
+import CountdownTimer from "@/components/CountdownTimer.vue";
+
 export default {
   emits: ["update-section", "remove-section", "move-section"],
   props: {
@@ -113,11 +149,16 @@ export default {
       required: true,
     },
   },
+  components: {
+    CountdownTimer,
+  },
   data() {
     return {
       localLines: [...this.section.lines], // Local copy of section lines
       sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
       brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
+      rhymeQuery: "",
+      rhymes: [],
     };
   },
   methods: {
@@ -188,6 +229,38 @@ export default {
         },
       });
       // No need to call saveStateToFirestore here
+    },
+    async fetchRhymes() {
+      if (this.rhymeQuery.trim() === "") {
+        this.rhymes = [];
+        return;
+      }
+      try {
+        const response = await fetch(
+          `https://rhymebrain.com/talk?function=getRhymes&word=${this.rhymeQuery}`
+        );
+        const data = await response.json();
+        const oneSyllable = data
+          .filter((word) => word.syllables == 1)
+          .slice(0, 20);
+        const twoSyllable = data
+          .filter((word) => word.syllables == 2)
+          .slice(0, 10);
+        const threePlusSyllable = data
+          .filter((word) => word.syllables >= 3)
+          .slice(0, 5);
+        this.rhymes = [
+          ...oneSyllable,
+          ...twoSyllable,
+          ...threePlusSyllable,
+        ].map((word) => ({
+          word: word.word,
+          syllables: word.syllables,
+        }));
+        console.log("Rhymes fetched:", this.rhymes);
+      } catch (error) {
+        console.error("Error fetching rhymes:", error);
+      }
     },
   },
   watch: {

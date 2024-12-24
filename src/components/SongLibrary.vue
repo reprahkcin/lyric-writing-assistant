@@ -1,12 +1,11 @@
 <template>
   <div class="row">
     <div class="col">
-      <div class="card bg-light text-dark border border-dark">
-        <div class="card-header bg-dark text-light">
-          <p class="my-auto fw-bold text-start">Song Library</p>
-        </div>
+      <div class="card bg-card text-dark-muted shadow-sm pb-3">
         <div class="card-body">
-          <table class="table">
+          <h1 class="fs-4 my-auto fw-bold text-start">Song Library</h1>
+          <hr />
+          <table class="table input-off-white text-dark-muted">
             <thead>
               <tr class="text-start">
                 <th scope="col" style="width: 5%">#</th>
@@ -33,19 +32,21 @@
             </tbody>
           </table>
         </div>
-        <div class="card-footer text-end">
-          <div class="row">
-            <div class="col">
-              <button
-                class="btn btn-danger me-3 btn-lg fw-bold"
-                @click="confirmRemoveSong"
-              >
-                Remove Song
-              </button>
-              <button class="btn btn-success btn-lg fw-bold" @click="newSong">
-                Add Song
-              </button>
-            </div>
+
+        <div class="row">
+          <div class="col">
+            <button
+              class="btn btn-outline-custom me-2 btn-sm fw-bold"
+              @click="confirmRemoveSong"
+            >
+              Remove Song
+            </button>
+            <button
+              class="btn btn-outline-custom btn-sm fw-bold"
+              @click="newSong"
+            >
+              Add Song
+            </button>
           </div>
         </div>
       </div>
@@ -155,6 +156,6 @@ export default {
   cursor: pointer;
 }
 .table-primary {
-  background-color: #cce5ff;
+  background-color: #e8cfa5; /* Light sandy brown */
 }
 </style>
