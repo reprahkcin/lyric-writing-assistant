@@ -1,30 +1,42 @@
 <template>
-  <div class="card bg-light text-dark mb-3 border border-dark">
-    <div
-      class="card-header bg-dark d-flex justify-content-between align-items-center"
-    >
-      <p class="my-auto fw-bold text-start text-light">Song</p>
-      <CountdownTimer class="ms-auto" />
-    </div>
+  <div class="card bg-card text-dark-muted mb-3 shadow-sm">
     <div class="card-body">
+      <h1 class="fs-4 my-auto fw-bold text-start">Song</h1>
+      <hr />
       <div class="text-start">
-        <div class="mb-3">
-          <label for="songTitle" class="form-label fw-bold">Title</label>
-          <input
-            type="text"
-            class="form-control"
-            id="songTitle"
-            v-model="localSong.title"
-          />
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="songTitle" class="form-label fw-bold">Title</label>
+              <input
+                type="text"
+                class="form-control input-off-white"
+                id="songTitle"
+                v-model="localSong.title"
+              />
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="songMood" class="form-label fw-bold">Mood</label>
+              <input
+                type="text"
+                class="form-control input-off-white"
+                id="songMood"
+                v-model="localSong.mood"
+                placeholder="E.g. happy, sad, angry, etc."
+              />
+            </div>
+          </div>
         </div>
         <div class="mb-3">
-          <label for="songMood" class="form-label fw-bold">Mood</label>
+          <label for="songHook" class="form-label fw-bold">Hook</label>
           <input
             type="text"
-            class="form-control"
-            id="songMood"
-            v-model="localSong.mood"
-            placeholder="E.g. happy, sad, angry, etc."
+            class="form-control input-off-white"
+            id="songHook"
+            v-model="localSong.hook"
+            placeholder="Catchy phrase or refrain"
           />
         </div>
         <div class="mb-3">
@@ -32,22 +44,12 @@
             >Narrative Outline</label
           >
           <textarea
-            class="form-control"
+            class="form-control input-off-white"
             id="songNarrative"
             rows="3"
             v-model="localSong.narrativeOutline"
             placeholder="This song is about..."
           ></textarea>
-        </div>
-        <div class="mb-3">
-          <label for="songHook" class="form-label fw-bold">Hook</label>
-          <input
-            type="text"
-            class="form-control"
-            id="songHook"
-            v-model="localSong.hook"
-            placeholder="Catchy phrase or refrain"
-          />
         </div>
       </div>
       <div v-for="(section, index) in orderedSections" :key="section.id">
@@ -61,28 +63,27 @@
           @move-section="(direction) => moveSection(index, direction)"
         />
       </div>
-    </div>
-    <div class="card-footer text-end">
+
       <button
-        class="btn btn-success btn-lg fw-bold mx-2"
+        class="btn btn-outline-custom btn-sm fw-bold mx-1"
         @click="addSection('verse')"
       >
         Add Verse
       </button>
       <button
-        class="btn btn-success btn-lg fw-bold mx-2"
+        class="btn btn-outline-custom btn-sm fw-bold mx-1"
         @click="addSection('chorus')"
       >
         Add Chorus
       </button>
       <button
-        class="btn btn-success btn-lg fw-bold mx-2"
+        class="btn btn-outline-custom btn-sm fw-bold mx-1"
         @click="addSection('bridge')"
       >
         Add Bridge
       </button>
       <button
-        class="btn btn-primary btn-lg text-light fw-bold mx-2"
+        class="btn btn-outline-custom btn-sm fw-bold mx-1"
         @click="activatePlainTextView"
       >
         {{ plainTextActive ? "Hide Plain Text" : "Show Plain Text" }}
@@ -92,15 +93,14 @@
 </template>
 
 <script>
-import CountdownTimer from "@/components/CountdownTimer.vue";
 import SongSection from "@/components/SongSection.vue";
+
 import { mapActions } from "vuex";
 
 export default {
   name: "SongComplete",
   components: {
     SongSection,
-    CountdownTimer,
   },
   props: {
     song: {
@@ -185,18 +185,18 @@ export default {
       console.log("moveSection called");
       console.log(index, direction);
       if (direction === "up" && index > 0) {
-        [this.localSong.sections[index - 1], this.localSong.sections[index]] = [
-          this.localSong.sections[index],
-          this.localSong.sections[index - 1],
-        ];
+        // Swap the current section with the previous section if not at the top
+        const temp = this.localSong.sections[index];
+        this.localSong.sections[index] = this.localSong.sections[index - 1];
+        this.localSong.sections[index - 1] = temp;
       } else if (
         direction === "down" &&
         index < this.localSong.sections.length - 1
       ) {
-        [this.localSong.sections[index + 1], this.localSong.sections[index]] = [
-          this.localSong.sections[index],
-          this.localSong.sections[index + 1],
-        ];
+        // Swap the current section with the next section if not at the bottom
+        const temp = this.localSong.sections[index];
+        this.localSong.sections[index] = this.localSong.sections[index + 1];
+        this.localSong.sections[index + 1] = temp;
       }
       // Update the order property of each section
       this.localSong.sections.forEach((section, idx) => {

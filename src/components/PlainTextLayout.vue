@@ -1,5 +1,5 @@
 <template>
-  <div class="card bg-light text-dark border border-dark">
+  <div class="card bg-light text-dark mb-5">
     <div class="card-header bg-dark text-light">
       <p class="my-auto fw-bold text-start">Plain Text Layout</p>
     </div>
@@ -7,7 +7,7 @@
       <pre>{{ formattedSong }}</pre>
     </div>
     <div class="card-footer text-end">
-      <button class="btn btn-primary btn-lg fw-bold" @click="copyToClipboard">
+      <button class="btn btn-primary btn-sm fw-bold" @click="copyToClipboard">
         Copy to Clipboard
       </button>
     </div>
