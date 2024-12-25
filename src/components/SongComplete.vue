@@ -98,7 +98,7 @@
             </select>
             <button
               class="btn btn-outline-custom btn-sm fw-bold mt-2"
-              @click="applyTemplate"
+              @click="confirmApplyTemplate"
             >
               Apply Template
             </button>
@@ -239,6 +239,31 @@ export default {
           }
         })
         .join(" - ");
+    },
+    confirmApplyTemplate() {
+      if (
+        confirm(
+          "Are you sure you want to apply this template? This will clear all existing sections."
+        )
+      ) {
+        this.applyTemplate();
+      }
+    },
+    applyTemplate() {
+      const template = this.sectionTemplates.find(
+        (t) => t.name === this.selectedTemplate
+      );
+      if (template) {
+        this.localSong.sections = template.arrangement.map((type, index) => ({
+          id: index + 1,
+          order: [index],
+          type: this.sectionLabel(type),
+          lines: ["", "", "", ""],
+          sectionNarrative: "",
+          brainstormingText: "",
+        }));
+        this.updateSong(this.localSong); // Trigger Vuex store update
+      }
     },
     updateLine({ sectionId, index, newLine }) {
       // Update a specific line in a section
