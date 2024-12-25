@@ -241,6 +241,7 @@ import moods from "@/templates/moods"; // Import moods
 import keys from "@/templates/keys"; // Import keys
 import scales from "@/templates/scales"; // Import scales
 import { mapActions } from "vuex";
+import { debounce } from "lodash";
 
 export default {
   name: "SongComplete",
@@ -314,9 +315,7 @@ export default {
     },
     localSong: {
       handler(newSong) {
-        // Update the song in the store when localSong changes
         this.updateSong(newSong);
-        // No need to call saveStateToFirestore here
       },
       deep: true,
     },
@@ -403,15 +402,15 @@ export default {
       };
       this.localSong.sections.push(newSection);
     },
-    updateSection(section) {
-      // Update an existing section
+    updateSection: debounce(function (section) {
       const index = this.localSong.sections.findIndex(
         (sec) => sec.id === section.id
       );
       if (index !== -1) {
         this.localSong.sections.splice(index, 1, section);
       }
-    },
+      this.updateSong(this.localSong);
+    }, 1000), // Debounce updates to 1 second
     removeSection(sectionId) {
       // Remove a section from the song
       this.localSong.sections = this.localSong.sections.filter(

@@ -8,6 +8,13 @@
           >
             <div class="ms-2 fs-5 fw-bold text-capitalize">
               {{ section.type }}
+              <button
+                v-if="section.type === 'chorus'"
+                class="btn btn-outline-custom btn-sm py-0 ms-2"
+                @click="syncChorusSections"
+              >
+                <span class="bi bi-link-45deg"></span>
+              </button>
             </div>
             <CountdownTimer class="ms-auto me-2 text-dark-muted" />
             <div>
@@ -138,9 +145,15 @@
 
 <script>
 import CountdownTimer from "@/components/CountdownTimer.vue";
+import { debounce } from "lodash";
 
 export default {
-  emits: ["update-section", "remove-section", "move-section"],
+  emits: [
+    "update-section",
+    "remove-section",
+    "move-section",
+    "sync-chorus-sections",
+  ],
   props: {
     section: {
       type: Object,
@@ -167,6 +180,19 @@ export default {
       rhymeQuery: "",
       rhymes: [],
     };
+  },
+  computed: {
+    syncedChorus() {
+      if (this.section.type === "chorus") {
+        const chorusSections = this.$store.state.songs
+          .find((song) => song.id === this.section.songId)
+          .sections.filter((sec) => sec.type === "chorus");
+        if (chorusSections.length > 0) {
+          return chorusSections[0];
+        }
+      }
+      return this.section;
+    },
   },
   methods: {
     updateLine(index, newLine) {
@@ -225,7 +251,7 @@ export default {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
     },
-    updateSection() {
+    updateSection: debounce(function () {
       this.$store.dispatch("updateSection", {
         songId: this.section.songId,
         section: {
@@ -236,8 +262,7 @@ export default {
           brainstormingText: this.brainstormingText,
         },
       });
-      // No need to call saveStateToFirestore here
-    },
+    }, 1000), // Debounce updates to 1 second
     async fetchRhymes() {
       if (this.rhymeQuery.trim() === "") {
         this.rhymes = [];
@@ -270,6 +295,24 @@ export default {
         console.error("Error fetching rhymes:", error);
       }
     },
+    syncChorusSections() {
+      console.log("syncChorusSections clicked for section:", this.section.id);
+      const chorusSnapshot = {
+        lines: [...this.localLines],
+        sectionNarrative: this.sectionNarrative,
+        chordProgression: this.chordProgression,
+        brainstormingText: this.brainstormingText,
+      };
+      console.log("Chorus snapshot:", chorusSnapshot);
+      this.$emit("sync-chorus-sections", {
+        sectionId: this.section.id,
+        snapshot: chorusSnapshot,
+      });
+      this.saveState();
+    },
+    saveState() {
+      this.$store.dispatch("saveStateToFirestore");
+    },
   },
   watch: {
     localLines: {
@@ -278,7 +321,7 @@ export default {
           ...this.section,
           lines: newLines,
         });
-        this.updateSection(); // Update section in Vuex and Firestore
+        this.updateSection();
       },
       deep: true,
     },
@@ -287,21 +330,21 @@ export default {
         ...this.section,
         sectionNarrative: newNarrative,
       });
-      this.updateSection(); // Update section in Vuex and Firestore
+      this.updateSection();
     },
     brainstormingText(newText) {
       this.$emit("update-section", {
         ...this.section,
         brainstormingText: newText,
       });
-      this.updateSection(); // Update section in Vuex and Firestore
+      this.updateSection();
     },
     chordProgression(newProgression) {
       this.$emit("update-section", {
         ...this.section,
         chordProgression: newProgression,
       });
-      this.updateSection(); // Update section in Vuex and Firestore
+      this.updateSection();
     },
   },
 };

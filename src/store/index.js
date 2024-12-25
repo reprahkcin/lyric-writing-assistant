@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import debounce from "lodash.debounce";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -86,7 +87,7 @@ const store = createStore({
       // Commit the SET_SONGS mutation with the provided value
       commit("SET_SONGS", value);
     },
-    addSong({ commit }) {
+    addSong({ commit, dispatch }) {
       // Create a new song object with default values
       const song = {
         id: new Date().getTime(), // Unique id based on current timestamp
@@ -100,26 +101,36 @@ const store = createStore({
       };
       // Commit the ADD_SONG mutation with the new song
       commit("ADD_SONG", song);
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
-    deleteSong({ commit }, value) {
+    addSection({ commit, dispatch }, payload) {
+      // Commit the ADD_SECTION mutation with the payload
+      commit("ADD_SECTION", payload);
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+    },
+    deleteSong({ commit, dispatch }, value) {
       // Commit the DELETE_SONG mutation with the song id
       commit("DELETE_SONG", value);
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
-    updateSong({ commit }, value) {
+    updateSong({ commit, dispatch }, value) {
       // Commit the UPDATE_SONG mutation with the updated song
       commit("UPDATE_SONG", value);
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
     setActiveSong({ commit }, value) {
       // Commit the SET_ACTIVE_SONG mutation with the song to set as active
       commit("SET_ACTIVE_SONG", value);
     },
-    updateSection({ commit }, payload) {
+    updateSection({ commit, dispatch }, payload) {
       // Commit the UPDATE_SECTION mutation with the payload
       commit("UPDATE_SECTION", payload);
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
-    resetStore({ commit }) {
+    resetStore({ commit, dispatch }) {
       // Commit the RESET_STORE mutation to reset the store
       commit("RESET_STORE");
+      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
     async saveStateToFirestore({ state }) {
       if (!state.user) return; // Ensure user is authenticated
@@ -131,6 +142,9 @@ const store = createStore({
         console.error("Error saving state to Firestore:", error);
       }
     },
+    scheduleSaveStateToFirestore: debounce(({ dispatch }) => {
+      dispatch("saveStateToFirestore");
+    }, 5000), // Debounce Firestore saves to every 5 seconds
     async loadStateFromFirestore({ commit, state }) {
       if (!state.user) return; // Ensure user is authenticated
       const stateDoc = doc(db, "users", state.user.uid);
