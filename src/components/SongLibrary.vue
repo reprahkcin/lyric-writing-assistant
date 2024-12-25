@@ -20,7 +20,7 @@
                 :key="song.id"
                 @click="selectSong(song)"
                 :class="{
-                  'table-primary': song === selectedSong,
+                  'table-primary': song.id === activeSongId,
                   'cursor-pointer': true,
                 }"
               >
@@ -66,7 +66,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getSongs"]), // Map Vuex getters
+    ...mapGetters(["getSongs", "getActiveSong"]), // Map Vuex getters
+    activeSongId() {
+      return this.getActiveSong ? this.getActiveSong.id : null;
+    },
   },
   methods: {
     ...mapActions([
@@ -146,6 +149,13 @@ export default {
         }
       },
       deep: true,
+    },
+    getActiveSong: {
+      handler(newActiveSong) {
+        // Update the selected song when the active song changes
+        this.selectedSong = newActiveSong;
+      },
+      immediate: true,
     },
   },
 };

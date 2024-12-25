@@ -45,6 +45,80 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
+              <label for="songKey" class="form-label fw-bold">Key</label>
+              <select
+                class="form-select input-off-white"
+                id="songKey"
+                v-model="localSong.key"
+              >
+                <option value="" disabled>Select a key</option>
+                <option v-for="key in keys" :key="key" :value="key">
+                  {{ key }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="songScale" class="form-label fw-bold">Scale</label>
+              <select
+                class="form-select input-off-white"
+                id="songScale"
+                v-model="localSong.scale"
+              >
+                <option value="" disabled>Select a scale</option>
+                <option
+                  v-for="scale in scales"
+                  :key="scale.name"
+                  :value="scale.name"
+                >
+                  {{ scale.name }} - {{ scale.emotionalQuality }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div v-if="selectedKey && selectedScale" class="mb-3">
+          <table class="table table-bordered input-off-white text-dark-muted">
+            <thead>
+              <tr>
+                <th>Diatonic Interval</th>
+                <th
+                  v-for="(numeral, index) in romanNumerals"
+                  :key="index"
+                  class="text-center"
+                >
+                  {{ numeral }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Note</td>
+                <td
+                  v-for="(note, index) in selectedScaleNotes.slice(0, -1)"
+                  :key="index"
+                  class="text-center"
+                >
+                  {{ note }}
+                </td>
+              </tr>
+              <tr>
+                <td>Chord</td>
+                <td
+                  v-for="(chord, index) in selectedScaleChords"
+                  :key="index"
+                  class="text-center"
+                >
+                  {{ chord }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
               <label for="songHook" class="form-label fw-bold">Hook</label>
               <input
                 type="text"
@@ -164,6 +238,8 @@
 import SongSection from "@/components/SongSection.vue";
 import sectionTemplates from "@/templates/sectionTemplates"; // Import section templates
 import moods from "@/templates/moods"; // Import moods
+import keys from "@/templates/keys"; // Import keys
+import scales from "@/templates/scales"; // Import scales
 import { mapActions } from "vuex";
 
 export default {
@@ -187,6 +263,9 @@ export default {
       selectedTemplate: "", // Add selectedTemplate to data
       sectionTemplates, // Add sectionTemplates to data
       moods, // Add moods to data
+      keys, // Add keys to data
+      scales, // Add scales to data
+      romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
     };
   },
   computed: {
@@ -205,6 +284,20 @@ export default {
     selectedMoodImplication() {
       const mood = this.moods.find((m) => m.mood === this.localSong.mood);
       return mood ? mood.implications : "";
+    },
+    selectedKey() {
+      return this.localSong.key;
+    },
+    selectedScale() {
+      return this.scales.find((s) => s.name === this.localSong.scale);
+    },
+    selectedScaleNotes() {
+      return this.selectedScale
+        ? this.selectedScale.notes(this.selectedKey)
+        : [];
+    },
+    selectedScaleChords() {
+      return this.selectedScale ? this.selectedScale.chords : [];
     },
   },
   watch: {

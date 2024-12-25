@@ -26,8 +26,10 @@ export default {
       if (!this.activeSong) return ""; // Return an empty string if no active song
       let result = `Title: ${this.activeSong.title}\n`; // Add the song title
       result += `Mood: ${this.activeSong.mood}\n`; // Add the song mood
-      result += `Narrative Outline: ${this.activeSong.narrativeOutline}\n`; // Add the narrative outline
+      result += `Theme: ${this.activeSong.theme}\n`; // Add the song theme
       result += `Hook: ${this.activeSong.hook}\n\n`; // Add the song hook
+      result += `Key: ${this.activeSong.key}\n`; // Add the song key
+      result += `Scale: ${this.activeSong.scale}\n\n`; // Add the song scale
       this.activeSong.sections.forEach((section) => {
         // Iterate over each section of the song
         result += `${section.type.toUpperCase()} - ${
