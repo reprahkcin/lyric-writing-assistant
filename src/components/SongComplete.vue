@@ -33,7 +33,10 @@
                   {{ mood.mood }}
                 </option>
               </select>
-              <small v-if="selectedMoodImplication" class="text-muted">
+              <small
+                v-if="selectedMoodImplication"
+                class="text-muted ms-2 mb-0"
+              >
                 Musical Implication: {{ selectedMoodImplication }}
               </small>
             </div>
@@ -75,6 +78,8 @@
             rows="3"
             v-model="localSong.narrativeOutline"
             placeholder="This song is about..."
+            @input="autoResize"
+            ref="narrativeTextarea"
           ></textarea>
         </div>
       </div>
@@ -208,6 +213,9 @@ export default {
         // Update localSong when the song prop changes
         this.localSong = { ...newSong, sections: newSong.sections || [] }; // Ensure sections is always an array
         console.log("Updated localSong:", this.localSong);
+        this.$nextTick(() => {
+          this.autoResize({ target: this.$refs.narrativeTextarea });
+        });
       },
       immediate: true,
     },
@@ -369,6 +377,11 @@ export default {
         default:
           return "Unknown";
       }
+    },
+    autoResize(event) {
+      const textarea = event.target;
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
     },
   },
   created() {
