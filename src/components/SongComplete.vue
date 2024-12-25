@@ -19,13 +19,23 @@
           <div class="col">
             <div class="mb-3">
               <label for="songMood" class="form-label fw-bold">Mood</label>
-              <input
-                type="text"
-                class="form-control input-off-white"
+              <select
+                class="form-select input-off-white"
                 id="songMood"
                 v-model="localSong.mood"
-                placeholder="E.g. happy, sad, angry, etc."
-              />
+              >
+                <option value="" disabled>Select a mood</option>
+                <option
+                  v-for="mood in moods"
+                  :key="mood.mood"
+                  :value="mood.mood"
+                >
+                  {{ mood.mood }}
+                </option>
+              </select>
+              <small v-if="selectedMoodImplication" class="text-muted">
+                Musical Implication: {{ selectedMoodImplication }}
+              </small>
             </div>
           </div>
         </div>
@@ -76,7 +86,7 @@
                 >Arrangement Template</label
               >
             </div>
-            <div v-if="selectedTemplate" class="mb-2">
+            <div v-if="selectedTemplate" class="mb-3 text-start">
               <span
                 v-html="arrangementVisualized(selectedTemplateArrangement)"
               ></span>
@@ -148,6 +158,7 @@
 <script>
 import SongSection from "@/components/SongSection.vue";
 import sectionTemplates from "@/templates/sectionTemplates"; // Import section templates
+import moods from "@/templates/moods"; // Import moods
 import { mapActions } from "vuex";
 
 export default {
@@ -170,6 +181,7 @@ export default {
       localSong: { ...this.song, sections: this.song.sections || [] }, // Ensure sections is always an array
       selectedTemplate: "", // Add selectedTemplate to data
       sectionTemplates, // Add sectionTemplates to data
+      moods, // Add moods to data
     };
   },
   computed: {
@@ -184,6 +196,10 @@ export default {
         (t) => t.name === this.selectedTemplate
       );
       return template ? template.arrangement : [];
+    },
+    selectedMoodImplication() {
+      const mood = this.moods.find((m) => m.mood === this.localSong.mood);
+      return mood ? mood.implications : "";
     },
   },
   watch: {
