@@ -30,7 +30,9 @@ export default {
       result += `Hook: ${this.activeSong.hook}\n\n`; // Add the song hook
       this.activeSong.sections.forEach((section) => {
         // Iterate over each section of the song
-        result += `${section.type.toUpperCase()}\n\n`; // Add the section type in uppercase
+        result += `${section.type.toUpperCase()} - ${
+          section.chordProgression
+        }\n\n`; // Add the section type and chord progression
         section.lines.forEach((line) => {
           // Iterate over each line in the section
           result += `${line}\n\n`; // Add the line

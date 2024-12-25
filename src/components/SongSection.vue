@@ -46,6 +46,12 @@
             v-model="sectionNarrative"
             placeholder="This section is about..."
           />
+          <input
+            type="text"
+            class="form-control mb-2 input-off-white"
+            v-model="chordProgression"
+            placeholder="Chord progression (e.g., C G Am F)"
+          />
           <div
             v-for="(line, index) in section.lines"
             :key="index"
@@ -156,6 +162,7 @@ export default {
     return {
       localLines: [...this.section.lines], // Local copy of section lines
       sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
+      chordProgression: this.section.chordProgression || "", // Local copy of chord progression
       brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
       rhymeQuery: "",
       rhymes: [],
@@ -225,6 +232,7 @@ export default {
           ...this.section,
           lines: this.localLines,
           sectionNarrative: this.sectionNarrative,
+          chordProgression: this.chordProgression,
           brainstormingText: this.brainstormingText,
         },
       });
@@ -285,6 +293,13 @@ export default {
       this.$emit("update-section", {
         ...this.section,
         brainstormingText: newText,
+      });
+      this.updateSection(); // Update section in Vuex and Firestore
+    },
+    chordProgression(newProgression) {
+      this.$emit("update-section", {
+        ...this.section,
+        chordProgression: newProgression,
       });
       this.updateSection(); // Update section in Vuex and Firestore
     },
