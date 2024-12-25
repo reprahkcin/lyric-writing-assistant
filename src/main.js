@@ -5,6 +5,7 @@ import router from "@/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "@/css/style.css";
+import "popper.js";
 
 async function initializeApp() {
   await store.dispatch("loadStateFromFirestore");

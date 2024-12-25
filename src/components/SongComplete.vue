@@ -29,15 +29,31 @@
             </div>
           </div>
         </div>
-        <div class="mb-3">
-          <label for="songHook" class="form-label fw-bold">Hook</label>
-          <input
-            type="text"
-            class="form-control input-off-white"
-            id="songHook"
-            v-model="localSong.hook"
-            placeholder="Catchy phrase or refrain"
-          />
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="songHook" class="form-label fw-bold">Hook</label>
+              <input
+                type="text"
+                class="form-control input-off-white"
+                id="songHook"
+                v-model="localSong.hook"
+                placeholder="Catchy phrase or refrain"
+              />
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="songTheme" class="form-label fw-bold">Theme</label>
+              <input
+                type="text"
+                class="form-control input-off-white"
+                id="songTheme"
+                v-model="localSong.theme"
+                placeholder="Briefly, this song is about..."
+              />
+            </div>
+          </div>
         </div>
         <div class="mb-3">
           <label for="songNarrative" class="form-label fw-bold"
@@ -50,6 +66,43 @@
             v-model="localSong.narrativeOutline"
             placeholder="This song is about..."
           ></textarea>
+        </div>
+      </div>
+      <div class="mb-3">
+        <div class="card bg-card shadow-sm">
+          <div class="card-body">
+            <div class="text-start text-dark-muted">
+              <label for="templateDropdown" class="form-label fw-bold"
+                >Arrangement Template</label
+              >
+            </div>
+            <div v-if="selectedTemplate" class="mb-2">
+              <span
+                v-html="arrangementVisualized(selectedTemplateArrangement)"
+              ></span>
+            </div>
+            <select
+              class="form-select"
+              id="templateDropdown"
+              v-model="selectedTemplate"
+            >
+              <option value="" disabled>Select a template</option>
+              <option
+                v-for="template in sectionTemplates"
+                :key="template.name"
+                :value="template.name"
+              >
+                {{ template.name }} -
+                {{ arrangementText(template.arrangement) }}
+              </option>
+            </select>
+            <button
+              class="btn btn-outline-custom btn-sm fw-bold mt-2"
+              @click="applyTemplate"
+            >
+              Apply Template
+            </button>
+          </div>
         </div>
       </div>
       <div v-for="(section, index) in orderedSections" :key="section.id">
@@ -94,7 +147,7 @@
 
 <script>
 import SongSection from "@/components/SongSection.vue";
-
+import sectionTemplates from "@/templates/sectionTemplates"; // Import section templates
 import { mapActions } from "vuex";
 
 export default {
@@ -115,6 +168,8 @@ export default {
   data() {
     return {
       localSong: { ...this.song, sections: this.song.sections || [] }, // Ensure sections is always an array
+      selectedTemplate: "", // Add selectedTemplate to data
+      sectionTemplates, // Add sectionTemplates to data
     };
   },
   computed: {
@@ -123,6 +178,12 @@ export default {
       return (this.localSong.sections || [])
         .slice()
         .sort((a, b) => a.order[0] - b.order[0]);
+    },
+    selectedTemplateArrangement() {
+      const template = this.sectionTemplates.find(
+        (t) => t.name === this.selectedTemplate
+      );
+      return template ? template.arrangement : [];
     },
   },
   watch: {
@@ -145,6 +206,40 @@ export default {
   },
   methods: {
     ...mapActions(["updateSong"]),
+    arrangementVisualized(arrangement) {
+      // Visualize the arrangement of a template with color-coded badges
+      return arrangement
+        .map((section) => {
+          switch (section) {
+            case "v":
+              return '<span class="badge bg-primary me-1">Verse</span>';
+            case "c":
+              return '<span class="badge bg-success me-1">Chorus</span>';
+            case "b":
+              return '<span class="badge bg-danger me-1">Bridge</span>';
+            default:
+              return "";
+          }
+        })
+        .join("");
+    },
+    arrangementText(arrangement) {
+      // Convert the arrangement to a text representation
+      return arrangement
+        .map((section) => {
+          switch (section) {
+            case "v":
+              return "Verse";
+            case "c":
+              return "Chorus";
+            case "b":
+              return "Bridge";
+            default:
+              return "";
+          }
+        })
+        .join(" - ");
+    },
     updateLine({ sectionId, index, newLine }) {
       // Update a specific line in a section
       const section = this.localSong.sections.find(
@@ -207,6 +302,32 @@ export default {
     activatePlainTextView() {
       // Emit an event to toggle the plain text view
       this.$emit("toggle-plain-text");
+    },
+    badgeClass(section) {
+      // Return the appropriate badge class based on the section type
+      switch (section) {
+        case "v":
+          return "bg-primary";
+        case "c":
+          return "bg-success";
+        case "b":
+          return "bg-warning";
+        default:
+          return "bg-secondary";
+      }
+    },
+    sectionLabel(section) {
+      // Return the appropriate label based on the section type
+      switch (section) {
+        case "v":
+          return "Verse";
+        case "c":
+          return "Chorus";
+        case "b":
+          return "Bridge";
+        default:
+          return "Unknown";
+      }
     },
   },
   created() {

@@ -93,6 +93,7 @@ const store = createStore({
         title: "Untitled",
         mood: "",
         hook: "",
+        theme: "", // New theme property
         narrativeOutline: "",
         sections: [], // Ensure sections is always an array
         lastEdit: new Date().toISOString(), // Current timestamp
