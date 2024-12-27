@@ -2,7 +2,7 @@
   <div class="card bg-card mb-3 shadow-sm" :class="{ minimized: isMinimized }">
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
-        <p class="text-start text-dark-muted fw-bold mb-3">Melody Manager</p>
+        <p class="text-start text-dark-muted fw-bold mb-3">Google Song Maker</p>
         <button
           class="btn btn-outline-custom btn-sm fw-bold mb-3"
           @click="toggleMinimize"
@@ -13,77 +13,13 @@
       </div>
 
       <div v-if="!isMinimized">
-        <!-- Musical Staff Placeholder -->
-        <div class="musical-staff mb-3">
-          <!-- Placeholder for the musical staff -->
-          <div class="staff-placeholder">Musical Staff (2 Octaves)</div>
-        </div>
-
-        <div class="control-panel">
-          <div class="row">
-            <div class="col">
-              <!-- Tempo Input -->
-              <div class="mb-3 d-flex align-items-center">
-                <label for="tempoInput" class="form-label me-2">Tempo</label>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="tempoInput"
-                  min="60"
-                  max="200"
-                  v-model="tempo"
-                />
-              </div>
-            </div>
-            <div class="col">
-              <!-- Measure Length Input -->
-              <div class="mb-3 d-flex align-items-center">
-                <label for="measureLengthInput" class="form-label me-2"
-                  >Length</label
-                >
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="measureLengthInput"
-                  min="4"
-                  max="16"
-                  v-model="measureLength"
-                />
-              </div>
-            </div>
-
-            <div class="col-8">
-              <div class="btn-group w-100">
-                <!-- Play and Stop Buttons -->
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-play-fill"></i>Play
-                </button>
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-stop-fill"></i>Stop
-                </button>
-                <!-- Loop and Legato Toggle Buttons -->
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-arrow-repeat"></i>Loop
-                </button>
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-dash-lg"></i>Legato
-                </button>
-                <!-- Save and Delete Buttons -->
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-save"></i>Save
-                </button>
-                <button class="btn btn-outline-custom btn-sm fw-bold">
-                  <i class="bi bi-trash"></i>Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Placeholder for listing saved melodies -->
-        <div class="saved-melodies mt-3">
-          <p class="text-start text-dark-muted fw-bold">Saved Melodies</p>
-          <div class="melodies-placeholder">No saved melodies</div>
+        <!-- Embed MelodyMaker app using an iframe -->
+        <div class="mb-3" style="height: 650px">
+          <iframe
+            src="https://musiclab.chromeexperiments.com/Song-Maker/"
+            class="staff-iframe"
+            frameborder="0"
+          ></iframe>
         </div>
       </div>
     </div>
@@ -130,17 +66,10 @@ export default {
 </script>
 
 <style scoped>
-.musical-staff {
-  height: 150px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6c757d;
-}
-.staff-placeholder {
-  font-size: 1.2rem;
+.staff-iframe {
+  width: 100%;
+  height: 100%; /* Adjust iframe height to fill the container */
+  border: none;
 }
 .saved-melodies {
   background-color: #f8f9fa;
