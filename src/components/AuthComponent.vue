@@ -8,16 +8,6 @@
             <p class="text-center my-auto fw-bold">Hello, Songwriter</p>
           </div>
           <div>
-            <div class="row mt-3">
-              <div class="col">
-                <button
-                  class="btn btn-lg btn-primary fw-bold"
-                  @click="signInWithGitHub"
-                >
-                  Sign In with GitHub <span class="ms-3 bi bi-github"></span>
-                </button>
-              </div>
-            </div>
             <div class="row my-3">
               <div class="col">
                 <button
@@ -37,28 +27,11 @@
 </template>
 
 <script>
-import {
-  getAuth,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { mapActions } from "vuex";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 export default {
   name: "AuthComponent",
   methods: {
-    ...mapActions(["setUseLocalStorage"]),
-    async signInWithGitHub() {
-      const auth = getAuth();
-      const provider = new GithubAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-        console.log("Signed in with GitHub successfully");
-      } catch (error) {
-        console.error("Error signing in with GitHub:", error);
-      }
-    },
     async signInWithGoogle() {
       const auth = getAuth();
       const provider = new GoogleAuthProvider();

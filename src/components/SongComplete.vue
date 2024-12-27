@@ -151,7 +151,7 @@
             id="songNarrative"
             rows="3"
             v-model="localSong.narrativeOutline"
-            placeholder="This song is about..."
+            placeholder="Narrative plot points for each section"
             @input="autoResize"
             ref="narrativeTextarea"
           ></textarea>
