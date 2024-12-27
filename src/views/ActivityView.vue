@@ -92,11 +92,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      "updateSong",
-      "saveStateToFirestore",
-      "saveStateToLocalStorage",
-    ]),
+    ...mapActions(["updateSong", "saveStateToFirestore"]),
     togglePlainText() {
       this.plainTextActive = !this.plainTextActive;
     },
@@ -105,11 +101,7 @@ export default {
       clearTimeout(this.debounceTimeout);
       // Set a new timeout to save state after 1 second of inactivity
       this.debounceTimeout = setTimeout(() => {
-        if (this.$store.state.useLocalStorage) {
-          this.saveStateToLocalStorage();
-        } else {
-          this.saveStateToFirestore();
-        }
+        this.saveStateToFirestore();
         this.activeSongChanged = false; // Reset the flag after saving
       }, 1000); // 1000 ms = 1 second
     },
