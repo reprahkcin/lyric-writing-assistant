@@ -23,6 +23,7 @@ const store = createStore({
     songs: [], // Array to store all songs
     activeSong: null, // Currently active song
     user: null, // Authenticated user
+    useLocalStorage: false, // Flag to determine if local storage should be used
   },
   mutations: {
     SET_USER(state, user) {
@@ -76,6 +77,9 @@ const store = createStore({
       // Reset the store to its initial state
       state.songs = [];
       state.activeSong = null;
+    },
+    SET_USE_LOCAL_STORAGE(state, value) {
+      state.useLocalStorage = value;
     },
   },
   actions: {
@@ -158,6 +162,38 @@ const store = createStore({
         console.error("Error loading state from Firestore:", error);
       }
     },
+    setUseLocalStorage({ commit }, value) {
+      commit("SET_USE_LOCAL_STORAGE", value);
+    },
+    async saveStateToLocalStorage({ state }) {
+      if (!state.useLocalStorage) return;
+      try {
+        localStorage.setItem("appState", JSON.stringify(state));
+        console.log("State saved to local storage");
+      } catch (error) {
+        console.error("Error saving state to local storage:", error);
+      }
+    },
+    async loadStateFromLocalStorage({ commit }) {
+      try {
+        const data = localStorage.getItem("appState");
+        if (data) {
+          const state = JSON.parse(data);
+          state.songs = state.songs.map((song) => ({
+            ...song,
+            sections: Array.isArray(song.sections) ? song.sections : [],
+          }));
+          console.log("Loaded state from local storage:", state);
+          commit("SET_SONGS", state.songs);
+          commit("SET_ACTIVE_SONG", state.activeSong);
+          console.log("State loaded from local storage");
+        } else {
+          console.log("No state data found in local storage");
+        }
+      } catch (error) {
+        console.error("Error loading state from local storage:", error);
+      }
+    },
   },
   getters: {
     getSongs(state) {
@@ -181,6 +217,9 @@ onAuthStateChanged(auth, (user) => {
     store.dispatch("loadStateFromFirestore");
   } else {
     store.dispatch("setUser", null);
+    if (store.state.useLocalStorage) {
+      store.dispatch("loadStateFromLocalStorage");
+    }
   }
 });
 

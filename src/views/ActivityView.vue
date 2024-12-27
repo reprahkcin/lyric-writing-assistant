@@ -3,10 +3,15 @@
     <div class="container">
       <div class="row my-3">
         <div class="col">
-          <div class="card bg-dark ps-3 py-2 text-light shadow">
-            <p class="fw-bold my-auto text-start">
+          <div
+            class="card bg-dark ps-3 py-2 text-light shadow d-flex justify-content-between align-items-center flex-row"
+          >
+            <p class="fw-bold my-auto text-start mb-0">
               Welcome, {{ user.displayName }}
             </p>
+            <button class="btn btn-outline-light btn-sm me-3" @click="signOut">
+              sign out
+            </button>
           </div>
         </div>
       </div>
@@ -43,6 +48,7 @@ import SongComplete from "@/components/SongComplete.vue";
 import SongLibrary from "@/components/SongLibrary.vue";
 import AuthComponent from "@/components/AuthComponent.vue"; // Updated import
 import { mapGetters, mapActions } from "vuex";
+import { getAuth, signOut as firebaseSignOut } from "firebase/auth"; // Import Firebase auth
 
 export default {
   name: "ActivityView",
@@ -86,7 +92,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["updateSong", "saveStateToFirestore"]),
+    ...mapActions([
+      "updateSong",
+      "saveStateToFirestore",
+      "saveStateToLocalStorage",
+    ]),
     togglePlainText() {
       this.plainTextActive = !this.plainTextActive;
     },
@@ -95,9 +105,23 @@ export default {
       clearTimeout(this.debounceTimeout);
       // Set a new timeout to save state after 1 second of inactivity
       this.debounceTimeout = setTimeout(() => {
-        this.saveStateToFirestore();
+        if (this.$store.state.useLocalStorage) {
+          this.saveStateToLocalStorage();
+        } else {
+          this.saveStateToFirestore();
+        }
         this.activeSongChanged = false; // Reset the flag after saving
       }, 1000); // 1000 ms = 1 second
+    },
+    signOut() {
+      const auth = getAuth();
+      firebaseSignOut(auth)
+        .then(() => {
+          console.log("User signed out");
+        })
+        .catch((error) => {
+          console.error("Error signing out: ", error);
+        });
     },
   },
 };

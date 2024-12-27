@@ -7,7 +7,7 @@ import AuthComponent from "@/components/AuthComponent.vue"; // Updated import
 const routes = [
   {
     path: store.getters.useLandingPage ? "/activity" : "/",
-    name: "Activity",
+    name: "ActivityView", // Ensure the name matches
     component: ActivityView,
   },
   {
