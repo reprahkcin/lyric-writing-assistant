@@ -6,11 +6,15 @@
           <div
             class="card bg-dark ps-3 py-2 text-light shadow d-flex justify-content-between align-items-center flex-row"
           >
-            <p class="fw-bold my-auto text-start mb-0">
-              Welcome, {{ user.displayName }}
-            </p>
-            <button class="btn btn-outline-light btn-sm me-3" @click="signOut">
-              sign out
+            <p class="fw-bold my-auto text-start mb-0">Welcome, Songwriter!</p>
+            <button
+              :class="[
+                'btn btn-sm me-3',
+                unsavedChanges ? 'btn-warning' : 'btn-success',
+              ]"
+              @click="manualSave"
+            >
+              Save
             </button>
           </div>
         </div>
@@ -46,9 +50,9 @@
 import PlainTextLayout from "@/components/PlainTextLayout.vue";
 import SongComplete from "@/components/SongComplete.vue";
 import SongLibrary from "@/components/SongLibrary.vue";
-import AuthComponent from "@/components/AuthComponent.vue"; // Updated import
+import AuthComponent from "@/components/AuthComponent.vue";
 import { mapGetters, mapActions } from "vuex";
-import { getAuth, signOut as firebaseSignOut } from "firebase/auth"; // Import Firebase auth
+// import { getAuth, signOut as firebaseSignOut } from "firebase/auth"; // Commented out Firebase auth
 
 export default {
   name: "ActivityView",
@@ -56,20 +60,22 @@ export default {
     SongLibrary,
     SongComplete,
     PlainTextLayout,
-    AuthComponent, // Updated component reference
+    AuthComponent,
   },
   computed: {
     ...mapGetters({
       activeSong: "getActiveSong",
       user: "user",
     }),
+    unsavedChanges() {
+      return this.activeSongChanged;
+    },
   },
   watch: {
     activeSong: {
       handler(newSong) {
         this.localSong = { ...newSong };
-        this.saveStateToFirestore(); // Save state to Firestore immediately
-        this.activeSongChanged = true; // Set the flag
+        this.activeSongChanged = true;
       },
       immediate: true,
     },
@@ -77,7 +83,7 @@ export default {
       handler(newSong) {
         this.updateSong(newSong);
         if (!this.activeSongChanged) {
-          this.debounceSaveState(); // Debounce state save to Firestore
+          this.debounceSaveState();
         }
       },
       deep: true,
@@ -87,33 +93,41 @@ export default {
     return {
       localSong: null,
       plainTextActive: false,
-      debounceTimeout: null, // Timeout ID for debouncing
-      activeSongChanged: false, // Flag to track activeSong change
+      debounceTimeout: null,
+      activeSongChanged: false,
     };
   },
   methods: {
-    ...mapActions(["updateSong", "saveStateToFirestore"]),
+    ...mapActions(["updateSong"]),
     togglePlainText() {
       this.plainTextActive = !this.plainTextActive;
     },
     debounceSaveState() {
-      // Clear the existing timeout
       clearTimeout(this.debounceTimeout);
-      // Set a new timeout to save state after 1 second of inactivity
       this.debounceTimeout = setTimeout(() => {
-        this.saveStateToFirestore();
-        this.activeSongChanged = false; // Reset the flag after saving
-      }, 1000); // 1000 ms = 1 second
+        this.saveStateToLocalStorage();
+        this.activeSongChanged = false;
+      }, 1000);
+    },
+    manualSave() {
+      this.saveStateToLocalStorage();
+      this.activeSongChanged = false;
+    },
+    saveStateToLocalStorage() {
+      const state = this.$store.state;
+      localStorage.setItem("appState", JSON.stringify(state));
+      console.log("State saved to local storage");
     },
     signOut() {
-      const auth = getAuth();
-      firebaseSignOut(auth)
-        .then(() => {
-          console.log("User signed out");
-        })
-        .catch((error) => {
-          console.error("Error signing out: ", error);
-        });
+      // const auth = getAuth();
+      // firebaseSignOut(auth)
+      //   .then(() => {
+      //     console.log("User signed out");
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error signing out: ", error);
+      //   });
+      console.log("Sign out functionality is currently disabled.");
     },
   },
 };
