@@ -151,12 +151,14 @@
             id="songNarrative"
             rows="3"
             v-model="localSong.narrativeOutline"
-            placeholder="This song is about..."
+            placeholder="Narrative plot points for each section"
             @input="autoResize"
             ref="narrativeTextarea"
           ></textarea>
         </div>
       </div>
+      <!-- Add MelodyManager component here -->
+      <MelodyManager :song="localSong" />
       <div class="mb-3">
         <div class="card bg-card shadow-sm">
           <div class="card-body">
@@ -236,6 +238,7 @@
 
 <script>
 import SongSection from "@/components/SongSection.vue";
+import MelodyManager from "@/components/MelodyManager.vue"; // Import MelodyManager
 import sectionTemplates from "@/templates/sectionTemplates"; // Import section templates
 import moods from "@/templates/moods"; // Import moods
 import keys from "@/templates/keys"; // Import keys
@@ -247,6 +250,7 @@ export default {
   name: "SongComplete",
   components: {
     SongSection,
+    MelodyManager, // Register MelodyManager
   },
   props: {
     song: {
