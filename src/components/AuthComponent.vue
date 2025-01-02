@@ -27,21 +27,20 @@
 </template>
 
 <script>
-// import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // Commented out Firebase auth
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 export default {
   name: "AuthComponent",
   methods: {
     async signInWithGoogle() {
-      // const auth = getAuth();
-      // const provider = new GoogleAuthProvider();
-      // try {
-      //   await signInWithPopup(auth, provider);
-      //   console.log("Signed in with Google successfully");
-      // } catch (error) {
-      //   console.error("Error signing in with Google:", error);
-      // }
-      console.log("Google sign-in functionality is currently disabled.");
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        console.log("Signed in with Google successfully");
+      } catch (error) {
+        console.error("Error signing in with Google:", error);
+      }
     },
   },
 };
