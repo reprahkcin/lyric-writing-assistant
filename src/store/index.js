@@ -1,28 +1,10 @@
 import { createStore } from "vuex";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import debounce from "lodash.debounce";
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDb8nZoo3LwrWHJB-uFCSlVLv3FsPIXMCI",
-  authDomain: "lyric-writing-assistant.firebaseapp.com",
-  projectId: "lyric-writing-assistant",
-  storageBucket: "lyric-writing-assistant.firebasestorage.app",
-  messagingSenderId: "550944326368",
-  appId: "1:550944326368:web:3dd3fcd0009f72fef78685",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 const store = createStore({
   state: {
-    songs: [], // Array to store all songs
-    activeSong: null, // Currently active song
+    songs: JSON.parse(localStorage.getItem("songs")) || [], // Load songs from local storage
+    activeSong: JSON.parse(localStorage.getItem("activeSong")) || null, // Load active song from local storage
     user: null, // Authenticated user
   },
   mutations: {
@@ -101,22 +83,22 @@ const store = createStore({
       };
       // Commit the ADD_SONG mutation with the new song
       commit("ADD_SONG", song);
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
     addSection({ commit, dispatch }, payload) {
       // Commit the ADD_SECTION mutation with the payload
       commit("ADD_SECTION", payload);
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
     deleteSong({ commit, dispatch }, value) {
       // Commit the DELETE_SONG mutation with the song id
       commit("DELETE_SONG", value);
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
     updateSong({ commit, dispatch }, value) {
       // Commit the UPDATE_SONG mutation with the updated song
       commit("UPDATE_SONG", value);
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
     setActiveSong({ commit }, value) {
       // Commit the SET_ACTIVE_SONG mutation with the song to set as active
@@ -125,52 +107,27 @@ const store = createStore({
     updateSection({ commit, dispatch }, payload) {
       // Commit the UPDATE_SECTION mutation with the payload
       commit("UPDATE_SECTION", payload);
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
     resetStore({ commit, dispatch }) {
       // Commit the RESET_STORE mutation to reset the store
       commit("RESET_STORE");
-      dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
+      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
     },
-    async saveStateToFirestore({ state }) {
-      if (!state.user) return; // Ensure user is authenticated
-      const stateDoc = doc(db, "users", state.user.uid);
-      try {
-        await setDoc(stateDoc, { state: JSON.stringify(state) });
-        console.log("State saved to Firestore");
-      } catch (error) {
-        console.error("Error saving state to Firestore:", error);
-      }
+    saveStateToLocalStorage({ state }) {
+      localStorage.setItem("songs", JSON.stringify(state.songs));
+      localStorage.setItem("activeSong", JSON.stringify(state.activeSong));
+      console.log("State saved to local storage");
     },
-    scheduleSaveStateToFirestore: debounce(({ dispatch }) => {
-      dispatch("saveStateToFirestore");
-    }, 5000), // Debounce Firestore saves to every 5 seconds
-    async loadStateFromFirestore({ commit, state }) {
-      if (!state.user) return; // Ensure user is authenticated
-      const stateDoc = doc(db, "users", state.user.uid);
-      try {
-        const docSnap = await getDoc(stateDoc);
-        if (docSnap.exists()) {
-          const data = docSnap.data().state;
-          if (data) {
-            const state = JSON.parse(data);
-            state.songs = state.songs.map((song) => ({
-              ...song,
-              sections: Array.isArray(song.sections) ? song.sections : [], // Ensure sections is always an array
-            }));
-            console.log("Loaded state from Firestore:", state);
-            commit("SET_SONGS", state.songs);
-            commit("SET_ACTIVE_SONG", state.activeSong);
-            console.log("State loaded from Firestore");
-          } else {
-            console.log("No state data found in Firestore");
-          }
-        } else {
-          console.log("No state document found in Firestore");
-        }
-      } catch (error) {
-        console.error("Error loading state from Firestore:", error);
-      }
+    scheduleSaveStateToLocalStorage: debounce(({ dispatch }) => {
+      dispatch("saveStateToLocalStorage");
+    }, 5000), // Debounce local storage saves to every 5 seconds
+    loadStateFromLocalStorage({ commit }) {
+      const songs = JSON.parse(localStorage.getItem("songs")) || [];
+      const activeSong = JSON.parse(localStorage.getItem("activeSong")) || null;
+      commit("SET_SONGS", songs);
+      commit("SET_ACTIVE_SONG", activeSong);
+      console.log("State loaded from local storage");
     },
   },
   getters: {
@@ -189,13 +146,7 @@ const store = createStore({
   },
 });
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    store.dispatch("setUser", user);
-    store.dispatch("loadStateFromFirestore");
-  } else {
-    store.dispatch("setUser", null);
-  }
-});
+// Load state from local storage on initialization
+store.dispatch("loadStateFromLocalStorage");
 
 export default store;
