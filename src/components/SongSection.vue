@@ -99,44 +99,13 @@
           </button>
         </div>
         <div class="col-4">
+          <RhymeThesaurusPanel />
           <textarea
             class="form-control input-off-white"
             rows="10"
             placeholder="Brainstorming area..."
             v-model="brainstormingText"
           ></textarea>
-          <div class="input-group mt-2">
-            <input
-              type="text"
-              class="form-control input-off-white"
-              placeholder="Rhymebrain.com query"
-              v-model="rhymeQuery"
-            />
-            <button class="btn btn-outline-custom" @click="fetchRhymes">
-              <span class="bi bi-search"></span>
-            </button>
-          </div>
-          <div
-            v-if="rhymes.length"
-            class="mt-2 alert alert-info position-relative"
-            style="max-height: 10em; overflow-y: auto"
-          >
-            <button
-              type="button"
-              class="btn-close position-absolute top-0 end-0 m-2"
-              aria-label="Close"
-              @click="rhymes = []"
-            ></button>
-            <ul class="list-unstyled text-start">
-              <li v-for="(rhyme, index) in rhymes" :key="index">
-                {{ rhyme.word }}
-              </li>
-            </ul>
-            <p>
-              Rhyme results are provided by
-              <a href="https://rhymebrain.com">RhymeBrain.com</a>
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -145,6 +114,7 @@
 
 <script>
 import CountdownTimer from "@/components/CountdownTimer.vue";
+import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
 import { debounce } from "lodash";
 
 export default {
@@ -170,6 +140,7 @@ export default {
   },
   components: {
     CountdownTimer,
+    RhymeThesaurusPanel,
   },
   data() {
     return {
@@ -177,8 +148,6 @@ export default {
       sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
       chordProgression: this.section.chordProgression || "", // Local copy of chord progression
       brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
-      rhymeQuery: "",
-      rhymes: [],
     };
   },
   computed: {
@@ -263,38 +232,6 @@ export default {
         },
       });
     }, 1000), // Debounce updates to 1 second
-    async fetchRhymes() {
-      if (this.rhymeQuery.trim() === "") {
-        this.rhymes = [];
-        return;
-      }
-      try {
-        const response = await fetch(
-          `https://rhymebrain.com/talk?function=getRhymes&word=${this.rhymeQuery}`
-        );
-        const data = await response.json();
-        const oneSyllable = data
-          .filter((word) => word.syllables == 1)
-          .slice(0, 20);
-        const twoSyllable = data
-          .filter((word) => word.syllables == 2)
-          .slice(0, 10);
-        const threePlusSyllable = data
-          .filter((word) => word.syllables >= 3)
-          .slice(0, 5);
-        this.rhymes = [
-          ...oneSyllable,
-          ...twoSyllable,
-          ...threePlusSyllable,
-        ].map((word) => ({
-          word: word.word,
-          syllables: word.syllables,
-        }));
-        console.log("Rhymes fetched:", this.rhymes);
-      } catch (error) {
-        console.error("Error fetching rhymes:", error);
-      }
-    },
     syncChorusSections() {
       console.log("syncChorusSections clicked for section:", this.section.id);
       const chorusSnapshot = {
@@ -349,4 +286,3 @@ export default {
   },
 };
 </script>
-<style scoped></style>
