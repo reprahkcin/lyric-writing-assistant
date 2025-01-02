@@ -13,7 +13,6 @@
                 class="form-control input-off-white"
                 id="songTitle"
                 v-model="localSong.title"
-                @change="saveStateToLocalStorage"
               />
             </div>
           </div>
@@ -24,14 +23,12 @@
                 class="form-select input-off-white"
                 id="songMood"
                 v-model="localSong.mood"
-                @change="saveStateToLocalStorage"
               >
                 <option value="" disabled>Select a mood</option>
                 <option
                   v-for="mood in moods"
                   :key="mood.mood"
                   :value="mood.mood"
-                  @change="saveStateToLocalStorage"
                 >
                   {{ mood.mood }}
                 </option>
@@ -53,7 +50,6 @@
                 class="form-select input-off-white"
                 id="songKey"
                 v-model="localSong.key"
-                @change="saveStateToLocalStorage"
               >
                 <option value="" disabled>Select a key</option>
                 <option v-for="key in keys" :key="key" :value="key">
@@ -69,7 +65,6 @@
                 class="form-select input-off-white"
                 id="songScale"
                 v-model="localSong.scale"
-                @change="saveStateToLocalStorage"
               >
                 <option value="" disabled>Select a scale</option>
                 <option
@@ -131,7 +126,6 @@
                 id="songHook"
                 v-model="localSong.hook"
                 placeholder="Catchy phrase or refrain"
-                @change="saveStateToLocalStorage"
               />
             </div>
           </div>
@@ -144,7 +138,6 @@
                 id="songTheme"
                 v-model="localSong.theme"
                 placeholder="Briefly, this song is about..."
-                @change="saveStateToLocalStorage"
               />
             </div>
           </div>
@@ -160,7 +153,6 @@
             v-model="localSong.narrativeOutline"
             placeholder="Narrative plot points for each section"
             @input="autoResize"
-            @change="saveStateToLocalStorage"
             ref="narrativeTextarea"
           ></textarea>
         </div>
@@ -184,7 +176,6 @@
               class="form-select"
               id="templateDropdown"
               v-model="selectedTemplate"
-              @change="saveStateToLocalStorage"
             >
               <option value="" disabled>Select a template</option>
               <option
@@ -329,18 +320,12 @@ export default {
     localSong: {
       handler(newSong) {
         this.updateSong(newSong);
-        this.saveStateToLocalStorage();
       },
       deep: true,
     },
   },
   methods: {
     ...mapActions(["updateSong"]),
-    saveStateToLocalStorage() {
-      const state = this.$store.state;
-      localStorage.setItem("appState", JSON.stringify(state));
-      console.log("State saved to local storage");
-    },
     arrangementVisualized(arrangement) {
       // Visualize the arrangement of a template with color-coded badges
       return arrangement

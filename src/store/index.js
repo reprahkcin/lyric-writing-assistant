@@ -1,22 +1,23 @@
 import { createStore } from "vuex";
-// import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore"; // Commented out Firestore
-// import { initializeApp } from "firebase/app";
-// import { getAuth, onAuthStateChanged } from "firebase/auth"; // Commented out Firebase auth
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import debounce from "lodash.debounce";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDb8nZoo3LwrWHJB-uFCSlVLv3FsPIXMCI",
-//   authDomain: "lyric-writing-assistant.firebaseapp.com",
-//   projectId: "lyric-writing-assistant",
-//   storageBucket: "lyric-writing-assistant.firebasestorage.app",
-//   messagingSenderId: "550944326368",
-//   appId: "1:550944326368:web:3dd3fcd0009f72fef78685",
-// };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDb8nZoo3LwrWHJB-uFCSlVLv3FsPIXMCI",
+  authDomain: "lyric-writing-assistant.firebaseapp.com",
+  projectId: "lyric-writing-assistant",
+  storageBucket: "lyric-writing-assistant.firebasestorage.app",
+  messagingSenderId: "550944326368",
+  appId: "1:550944326368:web:3dd3fcd0009f72fef78685",
+};
 
 // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const db = getFirestore(app);
-// const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 const store = createStore({
   state: {
@@ -131,51 +132,45 @@ const store = createStore({
       commit("RESET_STORE");
       dispatch("scheduleSaveStateToFirestore"); // Schedule save state to Firestore
     },
-    async saveStateToFirestore() {
-      // if (!state.user) return; // Ensure user is authenticated
-      // const stateDoc = doc(db, "users", state.user.uid);
-      // try {
-      //   await setDoc(stateDoc, { state: JSON.stringify(state) });
-      //   console.log("State saved to Firestore");
-      // } catch (error) {
-      //   console.error("Error saving state to Firestore:", error);
-      // }
-      // console.log(
-      //   "Save state to Firestore functionality is currently disabled."
-      // );
+    async saveStateToFirestore({ state }) {
+      if (!state.user) return; // Ensure user is authenticated
+      const stateDoc = doc(db, "users", state.user.uid);
+      try {
+        await setDoc(stateDoc, { state: JSON.stringify(state) });
+        console.log("State saved to Firestore");
+      } catch (error) {
+        console.error("Error saving state to Firestore:", error);
+      }
     },
     scheduleSaveStateToFirestore: debounce(({ dispatch }) => {
       dispatch("saveStateToFirestore");
     }, 5000), // Debounce Firestore saves to every 5 seconds
-    async loadStateFromFirestore() {
-      // if (!state.user) return; // Ensure user is authenticated
-      // const stateDoc = doc(db, "users", state.user.uid);
-      // try {
-      //   const docSnap = await getDoc(stateDoc);
-      //   if (docSnap.exists()) {
-      //     const data = docSnap.data().state;
-      //     if (data) {
-      //       const state = JSON.parse(data);
-      //       state.songs = state.songs.map((song) => ({
-      //         ...song,
-      //         sections: Array.isArray(song.sections) ? song.sections : [], // Ensure sections is always an array
-      //       }));
-      //       console.log("Loaded state from Firestore:", state);
-      //       commit("SET_SONGS", state.songs);
-      //       commit("SET_ACTIVE_SONG", state.activeSong);
-      //       console.log("State loaded from Firestore");
-      //     } else {
-      //       console.log("No state data found in Firestore");
-      //     }
-      //   } else {
-      //     console.log("No state document found in Firestore");
-      //   }
-      // } catch (error) {
-      //   console.error("Error loading state from Firestore:", error);
-      // }
-      // console.log(
-      //   "Load state from Firestore functionality is currently disabled."
-      // );
+    async loadStateFromFirestore({ commit, state }) {
+      if (!state.user) return; // Ensure user is authenticated
+      const stateDoc = doc(db, "users", state.user.uid);
+      try {
+        const docSnap = await getDoc(stateDoc);
+        if (docSnap.exists()) {
+          const data = docSnap.data().state;
+          if (data) {
+            const state = JSON.parse(data);
+            state.songs = state.songs.map((song) => ({
+              ...song,
+              sections: Array.isArray(song.sections) ? song.sections : [], // Ensure sections is always an array
+            }));
+            console.log("Loaded state from Firestore:", state);
+            commit("SET_SONGS", state.songs);
+            commit("SET_ACTIVE_SONG", state.activeSong);
+            console.log("State loaded from Firestore");
+          } else {
+            console.log("No state data found in Firestore");
+          }
+        } else {
+          console.log("No state document found in Firestore");
+        }
+      } catch (error) {
+        console.error("Error loading state from Firestore:", error);
+      }
     },
   },
   getters: {
@@ -194,13 +189,13 @@ const store = createStore({
   },
 });
 
-// onAuthStateChanged(auth, (user) => {
-//   if (user) {
-//     store.dispatch("setUser", user);
-//     store.dispatch("loadStateFromFirestore");
-//   } else {
-//     store.dispatch("setUser", null);
-//   }
-// });
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    store.dispatch("setUser", user);
+    store.dispatch("loadStateFromFirestore");
+  } else {
+    store.dispatch("setUser", null);
+  }
+});
 
 export default store;
