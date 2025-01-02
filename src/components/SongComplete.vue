@@ -320,12 +320,13 @@ export default {
     localSong: {
       handler(newSong) {
         this.updateSong(newSong);
+        this.scheduleSaveStateToLocalStorage(); // Schedule save state to local storage
       },
       deep: true,
     },
   },
   methods: {
-    ...mapActions(["updateSong"]),
+    ...mapActions(["updateSong", "scheduleSaveStateToLocalStorage"]),
     arrangementVisualized(arrangement) {
       // Visualize the arrangement of a template with color-coded badges
       return arrangement

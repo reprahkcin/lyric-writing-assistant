@@ -221,15 +221,12 @@ export default {
       console.log("moveSelf emitted");
     },
     updateSection: debounce(function () {
-      this.$store.dispatch("updateSection", {
-        songId: this.section.songId,
-        section: {
-          ...this.section,
-          lines: this.localLines,
-          sectionNarrative: this.sectionNarrative,
-          chordProgression: this.chordProgression,
-          brainstormingText: this.brainstormingText,
-        },
+      this.$emit("update-section", {
+        ...this.section,
+        lines: this.localLines,
+        sectionNarrative: this.sectionNarrative,
+        chordProgression: this.chordProgression,
+        brainstormingText: this.brainstormingText,
       });
     }, 1000), // Debounce updates to 1 second
     syncChorusSections() {
@@ -253,34 +250,18 @@ export default {
   },
   watch: {
     localLines: {
-      handler(newLines) {
-        this.$emit("update-section", {
-          ...this.section,
-          lines: newLines,
-        });
+      handler() {
         this.updateSection();
       },
       deep: true,
     },
-    sectionNarrative(newNarrative) {
-      this.$emit("update-section", {
-        ...this.section,
-        sectionNarrative: newNarrative,
-      });
+    sectionNarrative() {
       this.updateSection();
     },
-    brainstormingText(newText) {
-      this.$emit("update-section", {
-        ...this.section,
-        brainstormingText: newText,
-      });
+    brainstormingText() {
       this.updateSection();
     },
-    chordProgression(newProgression) {
-      this.$emit("update-section", {
-        ...this.section,
-        chordProgression: newProgression,
-      });
+    chordProgression() {
       this.updateSection();
     },
   },
