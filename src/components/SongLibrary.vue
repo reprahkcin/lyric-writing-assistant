@@ -1,9 +1,25 @@
 <template>
   <div class="row">
     <div class="col">
-      <div class="card bg-card text-dark-muted shadow-sm pb-3">
+      <div class="card bg-card shadow-sm pb-3">
         <div class="card-body">
-          <h1 class="fs-4 my-auto fw-bold text-start">Song Library</h1>
+          <div class="d-flex align-items-center">
+            <h1 class="fs-4 my-auto fw-bold text-start text-dark-muted">
+              Song Library
+            </h1>
+            <div
+              class="bi bi-info-circle ms-2"
+              @click="showTooltip = !showTooltip"
+            ></div>
+          </div>
+          <div v-if="showTooltip" class="tooltip-content p-2">
+            <p class="small">
+              This app uses local storage to save your data. Local storage is a
+              browser-specific feature that stores data on your device. This
+              means your data is only accessible on the device and browser you
+              are currently using.
+            </p>
+          </div>
           <hr />
           <table class="table input-off-white text-dark-muted">
             <thead>
@@ -62,6 +78,7 @@ export default {
   data() {
     return {
       selectedSong: null, // Currently selected song
+      showTooltip: false, // Tooltip visibility state
     };
   },
 
@@ -167,5 +184,14 @@ export default {
 }
 .table-primary {
   background-color: #e8cfa5; /* Light sandy brown */
+}
+.tooltip-content {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1000;
+  width: 300px;
+  top: 50px;
+  left: 50px;
 }
 </style>
