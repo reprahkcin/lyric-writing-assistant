@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      isMinimized: false,
+      isMinimized: true,
       tempo: 120,
       measureLength: 4,
     };
