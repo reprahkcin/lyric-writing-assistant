@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from "@/store";
+import store from "@/store/store";
 
 import ActivityView from "@/views/ActivityView.vue";
 
