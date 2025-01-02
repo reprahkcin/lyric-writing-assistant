@@ -7,6 +7,15 @@
             class="card bg-dark ps-3 py-2 text-light shadow d-flex justify-content-between align-items-center flex-row"
           >
             <p class="fw-bold my-auto text-start mb-0">Welcome, Songwriter</p>
+            <button
+              :class="[
+                'btn my-auto me-2 py-0',
+                unsavedChanges ? 'btn-success' : 'btn-warning',
+              ]"
+              @click="manualSaveState"
+            >
+              {{ unsavedChanges ? "Saved" : "Unsaved" }}
+            </button>
           </div>
         </div>
       </div>
@@ -50,7 +59,11 @@ export default {
   computed: {
     ...mapGetters({
       activeSong: "getActiveSong",
+      unsavedChanges: "getUnsavedChanges",
     }),
+    unsavedChanges() {
+      return this.activeSongChanged || this.localSongChanged;
+    },
   },
   watch: {
     activeSong: {
@@ -67,6 +80,7 @@ export default {
         if (!this.activeSongChanged) {
           this.debounceSaveState(); // Debounce state save to local storage
         }
+        this.localSongChanged = true; // Set the flag
       },
       deep: true,
     },
@@ -76,11 +90,14 @@ export default {
       localSong: null,
       plainTextActive: false,
       debounceTimeout: null, // Timeout ID for debouncing
-      activeSongChanged: false, // Flag to track activeSong change
     };
   },
   methods: {
-    ...mapActions(["updateSong", "saveStateToLocalStorage"]),
+    ...mapActions([
+      "updateSong",
+      "saveStateToLocalStorage",
+      "setUnsavedChanges",
+    ]),
     togglePlainText() {
       this.plainTextActive = !this.plainTextActive;
     },
@@ -91,7 +108,12 @@ export default {
       this.debounceTimeout = setTimeout(() => {
         this.saveStateToLocalStorage();
         this.activeSongChanged = false; // Reset the flag after saving
+        this.localSongChanged = false; // Reset the flag after saving
       }, 1000); // 1000 ms = 1 second
+    },
+    manualSaveState() {
+      this.saveStateToLocalStorage();
+      this.setUnsavedChanges(false);
     },
   },
 };

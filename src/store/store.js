@@ -6,8 +6,13 @@ const store = createStore({
     songs: JSON.parse(localStorage.getItem("songs")) || [], // Load songs from local storage
     activeSong: JSON.parse(localStorage.getItem("activeSong")) || null, // Load active song from local storage
     user: null, // Authenticated user
+    unsavedChanges: false, // Track unsaved changes
   },
   mutations: {
+    SET_UNSAVED_CHANGES(state, value) {
+      // Set the unsaved changes state to the provided value
+      state.unsavedChanges = value;
+    },
     SET_USER(state, user) {
       state.user = user;
     },
@@ -62,6 +67,10 @@ const store = createStore({
     },
   },
   actions: {
+    setUnsavedChanges({ commit }, value) {
+      // Commit the SET_UNSAVED_CHANGES mutation with the provided value
+      commit("SET_UNSAVED_CHANGES", value);
+    },
     setUser({ commit }, user) {
       commit("SET_USER", user);
     },
@@ -121,7 +130,7 @@ const store = createStore({
     },
     scheduleSaveStateToLocalStorage: debounce(({ dispatch }) => {
       dispatch("saveStateToLocalStorage");
-    }, 5000), // Debounce local storage saves to every 5 seconds
+    }, 1000), // Debounce local storage saves to every 1 second
     loadStateFromLocalStorage({ commit }) {
       const songs = JSON.parse(localStorage.getItem("songs")) || [];
       const activeSong = JSON.parse(localStorage.getItem("activeSong")) || null;
@@ -131,6 +140,10 @@ const store = createStore({
     },
   },
   getters: {
+    getUnsavedChanges(state) {
+      // Return the unsaved changes state
+      return state.unsavedChanges;
+    },
     getSongs(state) {
       // Return the songs state
       return state.songs;
