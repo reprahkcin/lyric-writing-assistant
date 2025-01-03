@@ -164,7 +164,7 @@
           <div class="card-body">
             <div class="text-start text-dark-muted">
               <label for="templateDropdown" class="form-label fw-bold"
-                >Arrangement Template</label
+                >Lyrical Arrangement Template</label
               >
             </div>
             <div v-if="selectedTemplate" class="mb-3 text-start">
