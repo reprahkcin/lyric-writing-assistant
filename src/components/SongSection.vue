@@ -67,6 +67,7 @@
               @change="applyChordProgression"
             >
               <option value="" disabled>Select a chord progression</option>
+              <option value="custom">Custom Progression</option>
               <option
                 v-for="progression in availableProgressions"
                 :key="progression['Chord Progression']"
@@ -171,6 +172,7 @@ export default {
       majorProgressions, // Load major progressions
       minorProgressions, // Load minor progressions
       selectedProgression: "", // Add selectedProgression to data
+      isCustomProgression: false, // Track if the progression is custom
     };
   },
   computed: {
@@ -186,13 +188,7 @@ export default {
       return this.section;
     },
     availableProgressions() {
-      if (this.$parent.selectedKey && this.$parent.selectedScale) {
-        return this.$parent.selectedScale.name.toLowerCase().includes("minor")
-          ? this.minorProgressions
-          : this.majorProgressions;
-      } else {
-        return [...this.majorProgressions, ...this.minorProgressions];
-      }
+      return [...this.majorProgressions, ...this.minorProgressions];
     },
   },
   methods: {
@@ -280,6 +276,11 @@ export default {
       this.$store.dispatch("saveStateToFirestore");
     },
     applyChordProgression() {
+      if (this.selectedProgression === "custom") {
+        this.isCustomProgression = true;
+        return;
+      }
+      this.isCustomProgression = false;
       if (this.$parent.selectedKey && this.$parent.selectedScale) {
         const key = this.$parent.selectedKey;
         const scale = this.$parent.selectedScale;
@@ -317,6 +318,19 @@ export default {
     },
     chordProgression() {
       this.updateSection();
+    },
+    selectedProgression() {
+      this.applyChordProgression();
+    },
+    "$parent.selectedKey"() {
+      if (!this.isCustomProgression) {
+        this.applyChordProgression();
+      }
+    },
+    "$parent.selectedScale"() {
+      if (!this.isCustomProgression) {
+        this.applyChordProgression();
+      }
     },
   },
 };
