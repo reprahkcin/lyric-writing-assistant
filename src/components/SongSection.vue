@@ -8,13 +8,23 @@
           >
             <div class="ms-2 fs-5 fw-bold text-capitalize">
               {{ section.type }}
-              <button
+              <!-- <button
                 v-if="section.type === 'chorus'"
                 class="btn btn-outline-custom btn-sm py-0 ms-2"
                 @click="syncChorusSections"
               >
                 <span class="bi bi-link-45deg"></span>
-              </button>
+              </button> -->
+              <a
+                href="https://hookpad.hooktheory.com/"
+                target="_blank"
+                class="btn btn-outline-custom btn-sm py-0 ms-2"
+                title="Open Hookpad by Hooktheory in a new tab"
+              >
+                <span class="bi bi-box-arrow-up-right">
+                  <span class="ms-2">Hookpad</span></span
+                >
+              </a>
             </div>
             <CountdownTimer class="ms-auto me-2 text-dark-muted" />
             <div>
