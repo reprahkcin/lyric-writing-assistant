@@ -53,12 +53,30 @@
             v-model="sectionNarrative"
             placeholder="This section is about..."
           />
-          <input
-            type="text"
-            class="form-control mb-2 input-off-white"
-            v-model="chordProgression"
-            placeholder="Chord progression (e.g., C G Am F)"
-          />
+          <div class="input-group mb-2">
+            <input
+              type="text"
+              class="form-control input-off-white"
+              v-model="chordProgression"
+              placeholder="Chord progression (e.g., C G Am F)"
+            />
+            <select
+              class="form-select input-off-white"
+              v-if="availableProgressions.length"
+              v-model="selectedProgression"
+              @change="applyChordProgression"
+            >
+              <option value="" disabled>Select a chord progression</option>
+              <option
+                v-for="progression in availableProgressions"
+                :key="progression['Chord Progression']"
+                :value="progression['Chord Progression']"
+              >
+                {{ progression["Chord Progression"] }} -
+                {{ progression["Emotional Quality"] }}
+              </option>
+            </select>
+          </div>
           <div
             v-for="(line, index) in section.lines"
             :key="index"
@@ -115,6 +133,8 @@
 <script>
 import CountdownTimer from "@/components/CountdownTimer.vue";
 import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
+import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
+import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
 import { debounce } from "lodash";
 
 export default {
@@ -148,6 +168,9 @@ export default {
       sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
       chordProgression: this.section.chordProgression || "", // Local copy of chord progression
       brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
+      majorProgressions, // Load major progressions
+      minorProgressions, // Load minor progressions
+      selectedProgression: "", // Add selectedProgression to data
     };
   },
   computed: {
@@ -161,6 +184,15 @@ export default {
         }
       }
       return this.section;
+    },
+    availableProgressions() {
+      if (this.$parent.selectedKey && this.$parent.selectedScale) {
+        return this.$parent.selectedScale.name.toLowerCase().includes("minor")
+          ? this.minorProgressions
+          : this.majorProgressions;
+      } else {
+        return [...this.majorProgressions, ...this.minorProgressions];
+      }
     },
   },
   methods: {
@@ -246,6 +278,28 @@ export default {
     },
     saveState() {
       this.$store.dispatch("saveStateToFirestore");
+    },
+    applyChordProgression() {
+      if (this.$parent.selectedKey && this.$parent.selectedScale) {
+        const key = this.$parent.selectedKey;
+        const scale = this.$parent.selectedScale;
+        const notes = scale.notes(key);
+        const chordMap = {
+          I: notes[0],
+          ii: notes[1] + "m",
+          iii: notes[2] + "m",
+          IV: notes[3],
+          V: notes[4],
+          vi: notes[5] + "m",
+          "vii°": notes[6] + "°",
+        };
+        this.chordProgression = this.selectedProgression
+          .split(" - ")
+          .map((roman) => chordMap[roman] || roman)
+          .join(" - ");
+      } else {
+        this.chordProgression = this.selectedProgression;
+      }
     },
   },
   watch: {
