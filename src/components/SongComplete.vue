@@ -79,7 +79,9 @@
           </div>
         </div>
         <div v-if="selectedKey && selectedScale" class="mb-3">
-          <table class="table table-bordered input-off-white text-dark-muted">
+          <table
+            class="table table-bordered input-off-white text-dark-muted overflow-auto"
+          >
             <thead>
               <tr>
                 <th>Diatonic Interval</th>
