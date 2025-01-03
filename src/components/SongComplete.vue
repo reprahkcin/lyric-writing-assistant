@@ -239,10 +239,12 @@
 <script>
 import SongSection from "@/components/SongSection.vue";
 import MelodyManager from "@/components/MelodyManager.vue"; // Import MelodyManager
-import sectionTemplates from "@/templates/sectionTemplates"; // Import section templates
-import moods from "@/templates/moods"; // Import moods
-import keys from "@/templates/keys"; // Import keys
-import scales from "@/templates/scales"; // Import scales
+import sectionTemplates from "@/data/sectionTemplates"; // Import section templates
+import moods from "@/data/moods"; // Import moods
+import keys from "@/data/keys"; // Import keys
+import scales from "@/data/scales"; // Import scales
+import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major progressions
+import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor progressions
 import { mapActions } from "vuex";
 import { debounce } from "lodash";
 
@@ -271,7 +273,14 @@ export default {
       keys, // Add keys to data
       scales, // Add scales to data
       romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
+      majorProgressions, // Add major progressions to data
+      minorProgressions, // Add minor progressions to data
+      chordProgressions: [], // Add chordProgressions to data
     };
+  },
+  created() {
+    console.log("Song prop:", this.song);
+    this.updateChordProgressions();
   },
   computed: {
     orderedSections() {
@@ -323,6 +332,12 @@ export default {
         this.scheduleSaveStateToLocalStorage(); // Schedule save state to local storage
       },
       deep: true,
+    },
+    selectedKey() {
+      this.updateChordProgressions();
+    },
+    selectedScale() {
+      this.updateChordProgressions();
     },
   },
   methods: {
@@ -480,9 +495,20 @@ export default {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     },
-  },
-  created() {
-    console.log("Song prop:", this.song);
+    updateChordProgressions() {
+      if (this.selectedKey && this.selectedScale) {
+        this.chordProgressions = this.selectedScale.name
+          .toLowerCase()
+          .includes("minor")
+          ? this.minorProgressions
+          : this.majorProgressions;
+      } else {
+        this.chordProgressions = [
+          ...this.majorProgressions,
+          ...this.minorProgressions,
+        ];
+      }
+    },
   },
 };
 </script>
