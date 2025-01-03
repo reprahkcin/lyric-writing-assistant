@@ -5,7 +5,7 @@
         type="text"
         class="form-control input-off-white"
         placeholder="Word helper..."
-        v-model="rhymeQuery"
+        v-model="sanitizedRhymeQuery"
         @keyup.enter="fetchRhymesAndSynonyms"
       />
       <button class="btn btn-outline-custom" @click="fetchRhymesAndSynonyms">
@@ -125,7 +125,7 @@
 </template>
 
 <script>
-//import { debounce } from "lodash";
+import DOMPurify from "dompurify";
 
 export default {
   data() {
@@ -141,6 +141,14 @@ export default {
     };
   },
   computed: {
+    sanitizedRhymeQuery: {
+      get() {
+        return this.rhymeQuery;
+      },
+      set(value) {
+        this.rhymeQuery = DOMPurify.sanitize(value);
+      },
+    },
     oneSyllableRhymes() {
       return this.rhymes.filter((rhyme) => rhyme.syllables == 1).slice(0, 10);
     },

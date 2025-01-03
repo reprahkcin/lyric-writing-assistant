@@ -12,6 +12,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "core-js": "^3.8.3",
+    "dompurify": "^3.2.3",
     "firebase": "^11.1.0",
     "popper.js": "^1.16.1",
     "tone": "^15.0.4",
