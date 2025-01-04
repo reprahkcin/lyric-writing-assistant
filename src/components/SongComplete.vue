@@ -118,31 +118,43 @@
             </tbody>
           </table>
         </div>
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label for="songHook" class="form-label fw-bold">Hook</label>
-              <input
-                type="text"
-                class="form-control input-off-white"
-                id="songHook"
-                v-model="localSong.hook"
-                placeholder="Catchy phrase or refrain"
-              />
-            </div>
-          </div>
-          <div class="col">
-            <div class="mb-3">
-              <label for="songTheme" class="form-label fw-bold">Theme</label>
-              <input
-                type="text"
-                class="form-control input-off-white"
-                id="songTheme"
-                v-model="localSong.theme"
-                placeholder="Briefly, this song is about..."
-              />
-            </div>
-          </div>
+        <div class="mb-3">
+          <label for="songTheme" class="form-label fw-bold">Theme</label>
+          <select
+            class="form-select input-off-white"
+            id="songTheme"
+            v-model="selectedTheme"
+            @change="handleThemeChange"
+          >
+            <option value="" disabled>Select a theme</option>
+            <option value="custom">Custom</option>
+            <option v-for="prompt in prompts" :key="prompt" :value="prompt">
+              {{ prompt }}
+            </option>
+          </select>
+          <input
+            v-if="selectedTheme === 'custom'"
+            type="text"
+            class="form-control input-off-white mt-2"
+            v-model="localSong.theme"
+            placeholder="Briefly, this song is about..."
+          />
+          <button
+            class="btn btn-outline-custom btn-sm fw-bold mt-2"
+            @click="selectRandomPrompt"
+          >
+            Select Random Prompt
+          </button>
+        </div>
+        <div class="mb-3">
+          <label for="songHook" class="form-label fw-bold">Hook</label>
+          <input
+            type="text"
+            class="form-control input-off-white"
+            id="songHook"
+            v-model="localSong.hook"
+            placeholder="Catchy phrase or refrain"
+          />
         </div>
         <div class="mb-3">
           <label for="songNarrative" class="form-label fw-bold"
@@ -247,6 +259,7 @@ import keys from "@/data/keys"; // Import keys
 import scales from "@/data/scales"; // Import scales
 import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major progressions
 import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor progressions
+import prompts from "@/data/prompts"; // Import prompts
 import { mapActions } from "vuex";
 import { debounce } from "lodash";
 
@@ -274,6 +287,8 @@ export default {
       moods, // Add moods to data
       keys, // Add keys to data
       scales, // Add scales to data
+      prompts, // Add prompts to data
+      selectedTheme: "", // Add selectedTheme to data
       romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
       majorProgressions, // Add major progressions to data
       minorProgressions, // Add minor progressions to data
@@ -510,6 +525,18 @@ export default {
           ...this.minorProgressions,
         ];
       }
+    },
+    handleThemeChange() {
+      if (this.selectedTheme !== "custom") {
+        this.localSong.theme = this.selectedTheme;
+      } else {
+        this.localSong.theme = "";
+      }
+    },
+    selectRandomPrompt() {
+      const randomIndex = Math.floor(Math.random() * this.prompts.length);
+      this.selectedTheme = this.prompts[randomIndex];
+      this.localSong.theme = this.selectedTheme;
     },
   },
 };
