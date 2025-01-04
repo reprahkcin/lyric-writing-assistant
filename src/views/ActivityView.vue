@@ -27,14 +27,16 @@
       <div class="row mb-3">
         <div class="col">
           <SongComplete
-            v-if="activeSong"
+            v-if="activeSong && activeSong.id"
             :song="activeSong"
             :plainTextActive="plainTextActive"
             @toggle-plain-text="togglePlainText"
           />
-          <p v-else>No song selected</p>
+          <p v-else>
+            Please Add and Select a song in the Song Library to begin
+          </p>
           <PlainTextLayout
-            v-if="activeSong && plainTextActive"
+            v-if="activeSong && activeSong.id && plainTextActive"
             :song="activeSong"
           />
         </div>
@@ -61,35 +63,10 @@ export default {
       activeSong: "getActiveSong",
       unsavedChanges: "getUnsavedChanges",
     }),
-    unsavedChanges() {
-      return this.activeSongChanged || this.localSongChanged;
-    },
-  },
-  watch: {
-    activeSong: {
-      handler(newSong) {
-        this.localSong = { ...newSong };
-        this.saveStateToLocalStorage(); // Save state to local storage immediately
-        this.activeSongChanged = true; // Set the flag
-      },
-      immediate: true,
-    },
-    localSong: {
-      handler(newSong) {
-        this.updateSong(newSong);
-        if (!this.activeSongChanged) {
-          this.debounceSaveState(); // Debounce state save to local storage
-        }
-        this.localSongChanged = true; // Set the flag
-      },
-      deep: true,
-    },
   },
   data() {
     return {
-      localSong: null,
       plainTextActive: false,
-      debounceTimeout: null, // Timeout ID for debouncing
     };
   },
   methods: {
@@ -100,16 +77,6 @@ export default {
     ]),
     togglePlainText() {
       this.plainTextActive = !this.plainTextActive;
-    },
-    debounceSaveState() {
-      // Clear the existing timeout
-      clearTimeout(this.debounceTimeout);
-      // Set a new timeout to save state after 1 second of inactivity
-      this.debounceTimeout = setTimeout(() => {
-        this.saveStateToLocalStorage();
-        this.activeSongChanged = false; // Reset the flag after saving
-        this.localSongChanged = false; // Reset the flag after saving
-      }, 1000); // 1000 ms = 1 second
     },
     manualSaveState() {
       this.saveStateToLocalStorage();

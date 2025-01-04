@@ -81,11 +81,13 @@ export default {
       showTooltip: false, // Tooltip visibility state
     };
   },
-
   computed: {
     ...mapGetters(["getSongs", "getActiveSong"]), // Map Vuex getters
     activeSongId() {
       return this.getActiveSong ? this.getActiveSong.id : null;
+    },
+    activeSong() {
+      return this.getActiveSong;
     },
   },
   methods: {

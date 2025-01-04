@@ -60,6 +60,27 @@ const store = createStore({
         }
       }
     },
+    ADD_SECTION(state, { songId, section }) {
+      const song = state.songs.find((song) => song.id === songId);
+      if (song) {
+        song.sections.push(section);
+      }
+    },
+    DELETE_SECTION(state, { songId, sectionId }) {
+      const song = state.songs.find((song) => song.id === songId);
+      if (song) {
+        song.sections = song.sections.filter((section) => section.id !== sectionId);
+      }
+    },
+    UPDATE_LINE(state, { songId, sectionId, lineIndex, newLine }) {
+      const song = state.songs.find((song) => song.id === songId);
+      if (song) {
+        const section = song.sections.find((sec) => sec.id === sectionId);
+        if (section) {
+          section.lines.splice(lineIndex, 1, newLine);
+        }
+      }
+    },
     RESET_STORE(state) {
       // Reset the store to its initial state
       state.songs = [];
@@ -117,6 +138,14 @@ const store = createStore({
       // Commit the UPDATE_SECTION mutation with the payload
       commit("UPDATE_SECTION", payload);
       dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+    },
+    deleteSection({ commit, dispatch }, payload) {
+      commit("DELETE_SECTION", payload);
+      dispatch("scheduleSaveStateToLocalStorage");
+    },
+    updateLine({ commit, dispatch }, payload) {
+      commit("UPDATE_LINE", payload);
+      dispatch("scheduleSaveStateToLocalStorage");
     },
     resetStore({ commit, dispatch }) {
       // Commit the RESET_STORE mutation to reset the store
