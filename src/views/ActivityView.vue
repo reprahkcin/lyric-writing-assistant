@@ -79,6 +79,9 @@ export default {
       this.plainTextActive = !this.plainTextActive;
     },
     manualSaveState() {
+      if (this.activeSong) {
+        this.updateSong(this.activeSong);
+      }
       this.saveStateToLocalStorage();
       this.setUnsavedChanges(false);
     },

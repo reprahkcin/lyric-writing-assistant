@@ -1,5 +1,11 @@
 import { createStore } from "vuex";
-import debounce from "lodash.debounce";
+import sectionTemplates from "@/data/sectionTemplates"; // Import section templates
+import moods from "@/data/moods"; // Import moods
+import keys from "@/data/keys"; // Import keys
+import scales from "@/data/scales"; // Import scales
+import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major progressions
+import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor progressions
+import prompts from "@/data/prompts"; // Import prompts
 
 const store = createStore({
   state: {
@@ -7,6 +13,13 @@ const store = createStore({
     activeSong: JSON.parse(localStorage.getItem("activeSong")) || null, // Load active song from local storage
     user: null, // Authenticated user
     unsavedChanges: false, // Track unsaved changes
+    sectionTemplates, // Add sectionTemplates to state
+    moods, // Add moods to state
+    keys, // Add keys to state
+    scales, // Add scales to state
+    majorProgressions, // Add major progressions to state
+    minorProgressions, // Add minor progressions to state
+    prompts, // Add prompts to state
   },
   mutations: {
     SET_UNSAVED_CHANGES(state, value) {
@@ -42,6 +55,10 @@ const store = createStore({
           ...value, // Update with new properties
           lastEdit: new Date().toISOString(), // Update the last edit timestamp
         };
+      }
+      // Also update the active song if it matches the updated song
+      if (value.id === state.activeSong?.id) {
+        state.activeSong = { ...value };
       }
     },
     SET_ACTIVE_SONG(state, value) {
@@ -113,22 +130,22 @@ const store = createStore({
       };
       // Commit the ADD_SONG mutation with the new song
       commit("ADD_SONG", song);
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     addSection({ commit, dispatch }, payload) {
       // Commit the ADD_SECTION mutation with the payload
       commit("ADD_SECTION", payload);
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     deleteSong({ commit, dispatch }, value) {
       // Commit the DELETE_SONG mutation with the song id
       commit("DELETE_SONG", value);
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     updateSong({ commit, dispatch }, value) {
       // Commit the UPDATE_SONG mutation with the updated song
       commit("UPDATE_SONG", value);
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     setActiveSong({ commit }, value) {
       // Commit the SET_ACTIVE_SONG mutation with the song to set as active
@@ -137,35 +154,51 @@ const store = createStore({
     updateSection({ commit, dispatch }, payload) {
       // Commit the UPDATE_SECTION mutation with the payload
       commit("UPDATE_SECTION", payload);
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     deleteSection({ commit, dispatch }, payload) {
       commit("DELETE_SECTION", payload);
-      dispatch("scheduleSaveStateToLocalStorage");
+      dispatch("saveStateToLocalStorage");
     },
     updateLine({ commit, dispatch }, payload) {
       commit("UPDATE_LINE", payload);
-      dispatch("scheduleSaveStateToLocalStorage");
+      dispatch("saveStateToLocalStorage");
     },
     resetStore({ commit, dispatch }) {
       // Commit the RESET_STORE mutation to reset the store
       commit("RESET_STORE");
-      dispatch("scheduleSaveStateToLocalStorage"); // Schedule save state to local storage
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     saveStateToLocalStorage({ state }) {
       localStorage.setItem("songs", JSON.stringify(state.songs));
       localStorage.setItem("activeSong", JSON.stringify(state.activeSong));
       console.log("State saved to local storage");
     },
-    scheduleSaveStateToLocalStorage: debounce(({ dispatch }) => {
-      dispatch("saveStateToLocalStorage");
-    }, 1000), // Debounce local storage saves to every 1 second
     loadStateFromLocalStorage({ commit }) {
       const songs = JSON.parse(localStorage.getItem("songs")) || [];
       const activeSong = JSON.parse(localStorage.getItem("activeSong")) || null;
       commit("SET_SONGS", songs);
       commit("SET_ACTIVE_SONG", activeSong);
       console.log("State loaded from local storage");
+    },
+    updateChordProgressions({ state, commit }) {
+      const selectedKey = state.activeSong?.key;
+      const selectedScale = state.scales.find(
+        (s) => s.name === state.activeSong?.scale
+      );
+      if (selectedKey && selectedScale) {
+        const chordProgressions = selectedScale.name
+          .toLowerCase()
+          .includes("minor")
+          ? state.minorProgressions
+          : state.majorProgressions;
+        commit("SET_CHORD_PROGRESSIONS", chordProgressions);
+      } else {
+        commit("SET_CHORD_PROGRESSIONS", [
+          ...state.majorProgressions,
+          ...state.minorProgressions,
+        ]);
+      }
     },
   },
   getters: {
@@ -184,6 +217,38 @@ const store = createStore({
     user(state) {
       // Return the authenticated user
       return state.user;
+    },
+    getSectionTemplates(state) {
+      return state.sectionTemplates;
+    },
+    getMoods(state) {
+      return state.moods;
+    },
+    getKeys(state) {
+      return state.keys;
+    },
+    getScales(state) {
+      return state.scales;
+    },
+    getPrompts(state) {
+      return state.prompts;
+    },
+    getChordProgressions(state) {
+      return state.chordProgressions;
+    },
+    getSelectedScaleNotes(state) {
+      const selectedScale = state.scales.find(
+        (s) => s.name === state.activeSong?.scale
+      );
+      return selectedScale
+        ? selectedScale.notes(state.activeSong?.key)
+        : [];
+    },
+    getSelectedScaleChords(state) {
+      const selectedScale = state.scales.find(
+        (s) => s.name === state.activeSong?.scale
+      );
+      return selectedScale ? selectedScale.chords : [];
     },
   },
 });

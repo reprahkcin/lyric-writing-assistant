@@ -3,7 +3,7 @@
     <div class="card-body">
       <h1 class="fs-4 my-auto fw-bold text-start">Song</h1>
       <hr />
-      <div v-if="localSong && localSong.id">
+      <div v-if="activeSong && activeSong.id">
         <div class="text-start">
           <div class="row">
             <div class="col">
@@ -13,7 +13,8 @@
                   type="text"
                   class="form-control input-off-white"
                   id="songTitle"
-                  v-model="localSong.title"
+                  v-model="activeSong.title"
+                  @blur="manualSaveState"
                 />
               </div>
             </div>
@@ -23,11 +24,12 @@
                 <select
                   class="form-select input-off-white"
                   id="songMood"
-                  v-model="localSong.mood"
+                  v-model="activeSong.mood"
+                  @change="manualSaveState"
                 >
                   <option value="" disabled>Select a mood</option>
                   <option
-                    v-for="mood in moods"
+                    v-for="mood in getMoods"
                     :key="mood.mood"
                     :value="mood.mood"
                   >
@@ -50,10 +52,11 @@
                 <select
                   class="form-select input-off-white"
                   id="songKey"
-                  v-model="localSong.key"
+                  v-model="activeSong.key"
+                  @change="manualSaveState"
                 >
                   <option value="" disabled>Select a key</option>
-                  <option v-for="key in keys" :key="key" :value="key">
+                  <option v-for="key in getKeys" :key="key" :value="key">
                     {{ key }}
                   </option>
                 </select>
@@ -65,11 +68,12 @@
                 <select
                   class="form-select input-off-white"
                   id="songScale"
-                  v-model="localSong.scale"
+                  v-model="activeSong.scale"
+                  @change="manualSaveState"
                 >
                   <option value="" disabled>Select a scale</option>
                   <option
-                    v-for="scale in scales"
+                    v-for="scale in getScales"
                     :key="scale.name"
                     :value="scale.name"
                   >
@@ -126,10 +130,15 @@
               id="songTheme"
               v-model="selectedTheme"
               @change="handleThemeChange"
+              @blur="manualSaveState"
             >
               <option value="" disabled>Select a theme</option>
               <option value="custom">Custom</option>
-              <option v-for="prompt in prompts" :key="prompt" :value="prompt">
+              <option
+                v-for="prompt in getPrompts"
+                :key="prompt"
+                :value="prompt"
+              >
                 {{ prompt }}
               </option>
             </select>
@@ -137,8 +146,9 @@
               v-if="selectedTheme === 'custom'"
               type="text"
               class="form-control input-off-white mt-2"
-              v-model="localSong.theme"
+              v-model="activeSong.theme"
               placeholder="Briefly, this song is about..."
+              @blur="manualSaveState"
             />
             <button
               class="btn btn-outline-custom btn-sm fw-bold mt-2"
@@ -153,8 +163,9 @@
               type="text"
               class="form-control input-off-white"
               id="songHook"
-              v-model="localSong.hook"
+              v-model="activeSong.hook"
               placeholder="Catchy phrase or refrain"
+              @blur="manualSaveState"
             />
           </div>
           <div class="mb-3">
@@ -165,15 +176,16 @@
               class="form-control input-off-white"
               id="songNarrative"
               rows="3"
-              v-model="localSong.narrativeOutline"
+              v-model="activeSong.narrativeOutline"
               placeholder="Narrative plot points for each section"
               @input="autoResize"
+              @blur="manualSaveState"
               ref="narrativeTextarea"
             ></textarea>
           </div>
         </div>
         <!-- Add ChromeMusicLab component here -->
-        <ChromeMusicLab :song="localSong" />
+        <ChromeMusicLab :song="activeSong" />
         <div class="mb-3">
           <div class="card bg-card shadow-sm">
             <div class="card-body">
@@ -191,10 +203,11 @@
                 class="form-select"
                 id="templateDropdown"
                 v-model="selectedTemplate"
+                @change="manualSaveState"
               >
                 <option value="" disabled>Select a template</option>
                 <option
-                  v-for="template in sectionTemplates"
+                  v-for="template in getSectionTemplates"
                   :key="template.name"
                   :value="template.name"
                 >
@@ -258,14 +271,7 @@
 <script>
 import SongSection from "@/components/SongSection.vue";
 import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
-import sectionTemplates from "@/data/sectionTemplates"; // Import section templates
-import moods from "@/data/moods"; // Import moods
-import keys from "@/data/keys"; // Import keys
-import scales from "@/data/scales"; // Import scales
-import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major progressions
-import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor progressions
-import prompts from "@/data/prompts"; // Import prompts
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "SongComplete",
@@ -274,10 +280,6 @@ export default {
     ChromeMusicLab, // Register ChromeMusicLab
   },
   props: {
-    song: {
-      type: Object,
-      required: false, // Make song prop optional
-    },
     plainTextActive: {
       type: Boolean,
       required: true,
@@ -285,81 +287,65 @@ export default {
   },
   data() {
     return {
-      localSong:
-        this.song && this.song.id
-          ? { ...this.song, sections: this.song.sections || [] }
-          : null, // Ensure sections is always an array
       selectedTemplate: "", // Add selectedTemplate to data
-      sectionTemplates, // Add sectionTemplates to data
-      moods, // Add moods to data
-      keys, // Add keys to data
-      scales, // Add scales to data
-      prompts, // Add prompts to data
-      selectedTheme: "", // Add selectedTheme to data
       romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
-      majorProgressions, // Add major progressions to data
-      minorProgressions, // Add minor progressions to data
-      chordProgressions: [], // Add chordProgressions to data
+      selectedTheme: "", // Add selectedTheme to data
     };
   },
-  created() {
-    console.log("Song prop:", this.song);
-    this.updateChordProgressions();
-  },
   computed: {
+    ...mapGetters([
+      "getActiveSong",
+      "getSectionTemplates",
+      "getMoods",
+      "getKeys",
+      "getScales",
+      "getPrompts",
+      "getChordProgressions",
+      "getSelectedScaleNotes",
+      "getSelectedScaleChords",
+    ]),
+    activeSong() {
+      return this.getActiveSong;
+    },
     orderedSections() {
       // Order sections by their order property
-      return (this.localSong?.sections || [])
+      return (this.activeSong?.sections || [])
         .slice()
         .sort((a, b) => a.order[0] - b.order[0]);
     },
     selectedTemplateArrangement() {
-      const template = this.sectionTemplates.find(
+      const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
       return template ? template.arrangement : [];
     },
     selectedMoodImplication() {
-      const mood = this.moods.find((m) => m.mood === this.localSong?.mood);
+      const mood = this.getMoods.find((m) => m.mood === this.activeSong?.mood);
       return mood ? mood.implications : "";
     },
     selectedKey() {
-      return this.localSong?.key;
+      return this.activeSong?.key;
     },
     selectedScale() {
-      return this.scales.find((s) => s.name === this.localSong?.scale);
+      return this.getScales.find((s) => s.name === this.activeSong?.scale);
     },
     selectedScaleNotes() {
-      return this.selectedScale
-        ? this.selectedScale.notes(this.selectedKey)
-        : [];
+      return this.getSelectedScaleNotes;
     },
     selectedScaleChords() {
-      return this.selectedScale ? this.selectedScale.chords : [];
+      return this.getSelectedScaleChords;
     },
   },
   watch: {
-    song: {
+    activeSong: {
       handler(newSong) {
-        // Update localSong when the song prop changes
-        this.localSong =
-          newSong && newSong.id
-            ? { ...newSong, sections: newSong.sections || [] }
-            : null; // Ensure sections is always an array
-        console.log("Updated localSong:", this.localSong);
-        if (this.localSong) {
+        if (newSong) {
           this.$nextTick(() => {
             this.autoResize({ target: this.$refs.narrativeTextarea });
           });
         }
       },
       immediate: true,
-    },
-    localSong: {
-      handler(newSong) {
-        this.updateSong(newSong);
-        this.scheduleSaveStateToLocalStorage(); // Schedule save state to local storage
-      },
       deep: true,
     },
     selectedKey() {
@@ -372,12 +358,19 @@ export default {
   methods: {
     ...mapActions([
       "updateSong",
-      "scheduleSaveStateToLocalStorage",
+      "saveStateToLocalStorage",
       "addSection",
       "deleteSection",
       "updateSection",
       "updateLine",
+      "updateChordProgressions",
     ]),
+    manualSaveState() {
+      if (this.activeSong) {
+        this.updateSong(this.activeSong);
+      }
+      this.saveStateToLocalStorage();
+    },
     arrangementVisualized(arrangement) {
       // Visualize the arrangement of a template with color-coded badges
       return arrangement
@@ -422,11 +415,11 @@ export default {
       }
     },
     applyTemplate() {
-      const template = this.sectionTemplates.find(
+      const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
       if (template) {
-        this.localSong.sections = template.arrangement.map((type, index) => ({
+        this.activeSong.sections = template.arrangement.map((type, index) => ({
           id: index + 1,
           order: [index],
           type: this.sectionLabel(type),
@@ -434,12 +427,12 @@ export default {
           sectionNarrative: "",
           brainstormingText: "",
         }));
-        this.updateSong(this.localSong); // Trigger Vuex store update
+        this.updateSong(this.activeSong); // Trigger Vuex store update
       }
     },
     updateLine({ sectionId, index, newLine }) {
       this.updateLine({
-        songId: this.localSong.id,
+        songId: this.activeSong.id,
         sectionId,
         lineIndex: index,
         newLine,
@@ -447,44 +440,44 @@ export default {
     },
     addSection(type) {
       const newSection = {
-        id: this.localSong.sections.length + 1,
-        order: [this.localSong.sections.length],
+        id: this.activeSong.sections.length + 1,
+        order: [this.activeSong.sections.length],
         type,
         lines: ["", "", "", ""],
         sectionNarrative: "",
         brainstormingText: "",
         chordProgression: "",
       };
-      this.addSection({ songId: this.localSong.id, section: newSection });
+      this.addSection({ songId: this.activeSong.id, section: newSection });
     },
     updateSection(section) {
-      this.updateSection({ songId: this.localSong.id, section });
+      this.updateSection({ songId: this.activeSong.id, section });
     },
     removeSection(sectionId) {
-      this.deleteSection({ songId: this.localSong.id, sectionId });
+      this.deleteSection({ songId: this.activeSong.id, sectionId });
     },
     moveSection(index, direction) {
       console.log("moveSection called");
       console.log(index, direction);
       if (direction === "up" && index > 0) {
         // Swap the current section with the previous section if not at the top
-        const temp = this.localSong.sections[index];
-        this.localSong.sections[index] = this.localSong.sections[index - 1];
-        this.localSong.sections[index - 1] = temp;
+        const temp = this.activeSong.sections[index];
+        this.activeSong.sections[index] = this.activeSong.sections[index - 1];
+        this.activeSong.sections[index - 1] = temp;
       } else if (
         direction === "down" &&
-        index < this.localSong.sections.length - 1
+        index < this.activeSong.sections.length - 1
       ) {
         // Swap the current section with the next section if not at the bottom
-        const temp = this.localSong.sections[index];
-        this.localSong.sections[index] = this.localSong.sections[index + 1];
-        this.localSong.sections[index + 1] = temp;
+        const temp = this.activeSong.sections[index];
+        this.activeSong.sections[index] = this.activeSong.sections[index + 1];
+        this.activeSong.sections[index + 1] = temp;
       }
       // Update the order property of each section
-      this.localSong.sections.forEach((section, idx) => {
+      this.activeSong.sections.forEach((section, idx) => {
         section.order = [idx];
       });
-      this.updateSong(this.localSong); // Trigger Vuex store update
+      this.updateSong(this.activeSong); // Trigger Vuex store update
     },
     activatePlainTextView() {
       // Emit an event to toggle the plain text view
@@ -521,31 +514,17 @@ export default {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     },
-    updateChordProgressions() {
-      if (this.selectedKey && this.selectedScale) {
-        this.chordProgressions = this.selectedScale.name
-          .toLowerCase()
-          .includes("minor")
-          ? this.minorProgressions
-          : this.majorProgressions;
-      } else {
-        this.chordProgressions = [
-          ...this.majorProgressions,
-          ...this.minorProgressions,
-        ];
-      }
-    },
     handleThemeChange() {
       if (this.selectedTheme !== "custom") {
-        this.localSong.theme = this.selectedTheme;
+        this.activeSong.theme = this.selectedTheme;
       } else {
-        this.localSong.theme = "";
+        this.activeSong.theme = "";
       }
     },
     selectRandomPrompt() {
-      const randomIndex = Math.floor(Math.random() * this.prompts.length);
-      this.selectedTheme = this.prompts[randomIndex];
-      this.localSong.theme = this.selectedTheme;
+      const randomIndex = Math.floor(Math.random() * this.getPrompts.length);
+      this.selectedTheme = this.getPrompts[randomIndex];
+      this.activeSong.theme = this.selectedTheme;
     },
   },
 };
