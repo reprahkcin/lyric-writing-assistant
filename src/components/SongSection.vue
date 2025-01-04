@@ -56,7 +56,16 @@
       </div>
       <hr class="mt-1 mb-3" />
       <div class="row">
-        <div class="col">
+        <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
+          <RhymeThesaurusPanel />
+          <textarea
+            class="form-control input-off-white"
+            rows="10"
+            placeholder="Brainstorming area..."
+            v-model="brainstormingText"
+          ></textarea>
+        </div>
+        <div class="col-12 col-md-8 order-2 order-md-1">
           <input
             type="text"
             class="form-control mb-2 input-off-white"
@@ -88,6 +97,7 @@
               </option>
             </select>
           </div>
+          <hr />
           <div
             v-for="(line, index) in section.lines"
             :key="index"
@@ -126,15 +136,6 @@
           <button class="btn btn-outline-round mx-1" @click="addLine">
             <span class="bi bi-plus-lg"></span>
           </button>
-        </div>
-        <div class="col-4">
-          <RhymeThesaurusPanel />
-          <textarea
-            class="form-control input-off-white"
-            rows="10"
-            placeholder="Brainstorming area..."
-            v-model="brainstormingText"
-          ></textarea>
         </div>
       </div>
     </div>
