@@ -171,8 +171,8 @@
           ></textarea>
         </div>
       </div>
-      <!-- Add MelodyManager component here -->
-      <MelodyManager :song="localSong" />
+      <!-- Add ChromeMusicLab component here -->
+      <ChromeMusicLab :song="localSong" />
       <div class="mb-3">
         <div class="card bg-card shadow-sm">
           <div class="card-body">
@@ -252,7 +252,7 @@
 
 <script>
 import SongSection from "@/components/SongSection.vue";
-import MelodyManager from "@/components/MelodyManager.vue"; // Import MelodyManager
+import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
 import sectionTemplates from "@/data/sectionTemplates"; // Import section templates
 import moods from "@/data/moods"; // Import moods
 import keys from "@/data/keys"; // Import keys
@@ -267,7 +267,7 @@ export default {
   name: "SongComplete",
   components: {
     SongSection,
-    MelodyManager, // Register MelodyManager
+    ChromeMusicLab, // Register ChromeMusicLab
   },
   props: {
     song: {
