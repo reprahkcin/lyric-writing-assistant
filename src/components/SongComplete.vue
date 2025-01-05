@@ -226,13 +226,9 @@
         </div>
         <div v-for="(section, index) in orderedSections" :key="section.id">
           <SongSection
-            :section="section"
+            :sectionId="section.id"
             :isFirst="index === 0"
             :isLast="index === orderedSections.length - 1"
-            @update-line="updateLine"
-            @update-section="updateSection"
-            @remove-section="removeSection"
-            @move-section="(direction) => moveSection(index, direction)"
           />
         </div>
 
@@ -359,10 +355,10 @@ export default {
     ...mapActions([
       "updateSong",
       "saveStateToLocalStorage",
-      "addSection",
-      "deleteSection",
-      "updateSection",
-      "updateLine",
+      "addActiveSongSection",
+      "deleteActiveSongSection",
+      "updateActiveSongSection",
+      "updateActiveSongLine",
       "updateChordProgressions",
     ]),
     manualSaveState() {
@@ -431,14 +427,6 @@ export default {
         this.updateSong(this.activeSong); // Trigger Vuex store update
       }
     },
-    updateLine({ sectionId, index, newLine }) {
-      this.updateLine({
-        songId: this.activeSong.id,
-        sectionId,
-        lineIndex: index,
-        newLine,
-      });
-    },
     createSection(type) {
       const newSection = {
         id: new Date().getTime(),
@@ -449,13 +437,10 @@ export default {
         brainstormingText: "",
         chordProgression: "",
       };
-      this.addSection({ songId: this.activeSong.id, section: newSection });
-    },
-    updateSection(section) {
-      this.updateSection({ songId: this.activeSong.id, section });
+      this.addActiveSongSection(newSection);
     },
     removeSection(sectionId) {
-      this.deleteSection({ songId: this.activeSong.id, sectionId });
+      this.deleteActiveSongSection(sectionId);
     },
     moveSection(index, direction) {
       console.log("moveSection called");

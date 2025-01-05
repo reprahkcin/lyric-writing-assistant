@@ -27,7 +27,7 @@
       <div class="row mb-3">
         <div class="col">
           <SongComplete
-            v-if="activeSong && activeSong.id"
+            v-if="activeSong && activeSong.id && songs.length > 0"
             :song="activeSong"
             :plainTextActive="plainTextActive"
             @toggle-plain-text="togglePlainText"
@@ -36,7 +36,9 @@
             Please Add and Select a song in the Song Library to begin
           </p>
           <PlainTextLayout
-            v-if="activeSong && activeSong.id && plainTextActive"
+            v-if="
+              activeSong && activeSong.id && plainTextActive && songs.length > 0
+            "
             :song="activeSong"
           />
         </div>
@@ -62,6 +64,7 @@ export default {
     ...mapGetters({
       activeSong: "getActiveSong",
       unsavedChanges: "getUnsavedChanges",
+      songs: "getSongs",
     }),
   },
   data() {

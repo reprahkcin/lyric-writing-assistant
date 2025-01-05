@@ -11,7 +11,7 @@ const store = createStore({
   state: {
     songs: JSON.parse(localStorage.getItem("songs")) || [], // Load songs from local storage
     activeSong: JSON.parse(localStorage.getItem("activeSong")) || null, // Load active song from local storage
-    user: null, // Authenticated user
+    
     unsavedChanges: false, // Track unsaved changes
     sectionTemplates, // Add sectionTemplates to state
     moods, // Add moods to state
@@ -26,9 +26,6 @@ const store = createStore({
     SET_UNSAVED_CHANGES(state, value) {
       // Set the unsaved changes state to the provided value
       state.unsavedChanges = value;
-    },
-    SET_USER(state, user) {
-      state.user = user;
     },
     SET_SONGS(state, value) {
       // Set the songs state to the provided value
@@ -66,55 +63,46 @@ const store = createStore({
       // Set the active song to a copy of the provided value
       state.activeSong = { ...value };
     },
-    UPDATE_SECTION(state, { songId, section }) {
-      // Find the song by its id
-      const song = state.songs.find((song) => song.id === songId);
-      if (song) {
-        // Find the index of the section to update using its id
-        const index = song.sections.findIndex((sec) => sec.id === section.id);
-        // Update the section if it exists
-        if (index !== -1) {
-          song.sections.splice(index, 1, section);
-        }
+
+    // Song Section Mutations
+    UPDATE_ACTIVE_SONG_SECTION(state, section) {
+      const index = state.activeSong.sections.findIndex((sec) => sec.id === section.id);
+      if (index !== -1) {
+        state.activeSong.sections.splice(index, 1, section);
       }
     },
-    ADD_SECTION(state, { songId, section }) {
-      const song = state.songs.find((song) => song.id === songId);
-      if (song) {
-        song.sections.push(section);
+    MOVE_ACTIVE_SONG_SECTION(state, { index, direction }) {
+      if (direction === "up" && index > 0) {
+        [state.activeSong.sections[index - 1], state.activeSong.sections[index]] = [
+          state.activeSong.sections[index],
+          state.activeSong.sections[index - 1],
+        ];
+      } else if (direction === "down" && index < state.activeSong.sections.length - 1) {
+        [state.activeSong.sections[index + 1], state.activeSong.sections[index]] = [
+          state.activeSong.sections[index],
+          state.activeSong.sections[index + 1],
+        ];
       }
     },
-    DELETE_SECTION(state, { songId, sectionId }) {
-      const song = state.songs.find((song) => song.id === songId);
-      if (song) {
-        song.sections = song.sections.filter((section) => section.id !== sectionId);
+    ADD_ACTIVE_SONG_SECTION(state, section) {
+      state.activeSong.sections.push(section);
+    },
+    DELETE_ACTIVE_SONG_SECTION(state, sectionId) {
+      state.activeSong.sections = state.activeSong.sections.filter((section) => section.id !== sectionId);
+    },
+
+    // Song Line Mutations
+    UPDATE_ACTIVE_SONG_LINE(state, { sectionId, lineIndex, newLine }) {
+      const section = state.activeSong.sections.find((sec) => sec.id === sectionId);
+      if (section) {
+        section.lines.splice(lineIndex, 1, newLine);
       }
-    },
-    UPDATE_LINE(state, { songId, sectionId, lineIndex, newLine }) {
-      const song = state.songs.find((song) => song.id === songId);
-      if (song) {
-        const section = song.sections.find((sec) => sec.id === sectionId);
-        if (section) {
-          section.lines.splice(lineIndex, 1, newLine);
-        }
-      }
-    },
-    RESET_STORE(state) {
-      // Reset the store to its initial state
-      state.songs = [];
-      state.activeSong = null;
-    },
-    SET_CHORD_PROGRESSIONS(state, progressions) {
-      state.chordProgressions = progressions;
     },
   },
   actions: {
     setUnsavedChanges({ commit }, value) {
       // Commit the SET_UNSAVED_CHANGES mutation with the provided value
       commit("SET_UNSAVED_CHANGES", value);
-    },
-    setUser({ commit }, user) {
-      commit("SET_USER", user);
     },
     setSongs({ commit }, value) {
       // Commit the SET_SONGS mutation with the provided value
@@ -136,9 +124,9 @@ const store = createStore({
       commit("ADD_SONG", song);
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
-    addSection({ commit, dispatch }, payload) {
-      // Commit the ADD_SECTION mutation with the payload
-      commit("ADD_SECTION", payload);
+    addActiveSongSection({ commit, dispatch }, section) {
+      // Commit the ADD_ACTIVE_SONG_SECTION mutation with the section
+      commit("ADD_ACTIVE_SONG_SECTION", section);
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     deleteSong({ commit, dispatch }, value) {
@@ -155,17 +143,25 @@ const store = createStore({
       // Commit the SET_ACTIVE_SONG mutation with the song to set as active
       commit("SET_ACTIVE_SONG", value);
     },
-    updateSection({ commit, dispatch }, payload) {
-      // Commit the UPDATE_SECTION mutation with the payload
-      commit("UPDATE_SECTION", payload);
+    updateActiveSongSection({ commit, dispatch }, section) {
+      // Commit the UPDATE_ACTIVE_SONG_SECTION mutation with the section
+      commit("UPDATE_ACTIVE_SONG_SECTION", section);
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
-    deleteSection({ commit, dispatch }, payload) {
-      commit("DELETE_SECTION", payload);
-      dispatch("saveStateToLocalStorage");
+    moveActiveSongSection({ commit, dispatch }, payload) {
+      // Commit the MOVE_ACTIVE_SONG_SECTION mutation with the payload
+      commit("MOVE_ACTIVE_SONG_SECTION", payload);
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
-    updateLine({ commit, dispatch }, payload) {
-      commit("UPDATE_LINE", payload);
+    deleteActiveSongSection({ commit, dispatch }, sectionId) {
+      // Commit the DELETE_ACTIVE_SONG_SECTION mutation with the section id
+      commit("DELETE_ACTIVE_SONG_SECTION", sectionId);
+      dispatch("saveStateToLocalStorage"); // Save state to local storage
+    },
+    updateActiveSongLine({ commit, dispatch }, payload) {
+      // Commit the UPDATE_ACTIVE_SONG_LINE mutation with the payload
+      commit("UPDATE_ACTIVE_SONG_LINE", payload);
+      // Save the updated state to local storage
       dispatch("saveStateToLocalStorage");
     },
     resetStore({ commit, dispatch }) {
@@ -203,6 +199,11 @@ const store = createStore({
           ...state.minorProgressions,
         ]);
       }
+    },
+    startAutoSave({ dispatch }) {
+      setInterval(() => {
+        dispatch("saveStateToLocalStorage");
+      }, 5000);
     },
   },
   getters: {
@@ -254,10 +255,15 @@ const store = createStore({
       );
       return selectedScale ? selectedScale.chords : [];
     },
+    getSectionById: (state) => (songId, sectionId) => {
+      const song = state.songs.find((song) => song.id === songId);
+      return song ? song.sections.find((section) => section.id === sectionId) : null;
+    },
   },
 });
 
 // Load state from local storage on initialization
 store.dispatch("loadStateFromLocalStorage");
+store.dispatch("startAutoSave");
 
 export default store;
