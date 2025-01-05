@@ -92,11 +92,11 @@ export default {
   },
   methods: {
     ...mapActions([
-      "addSong", // Action to add a new song
-      "deleteSong", // Action to delete a song
+      "addSong", // Action to add a new song to vuex
+      "deleteSong", // Action to delete a song from vuex
       "setActiveSong", // Action to set the active song
-      "updateSong", // Action to update a song
-      "setSongs", // Action to set the list of songs
+      "updateSong", // Action to update a song in vuex
+      "setSongs", // Action to set the list of songs in vuex
       "resetStore", // Action to reset the Vuex store
     ]),
     selectSong(song) {

@@ -238,19 +238,19 @@
 
         <button
           class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="addSection('verse')"
+          @click="createSection('verse')"
         >
           Add Verse
         </button>
         <button
           class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="addSection('chorus')"
+          @click="createSection('chorus')"
         >
           Add Chorus
         </button>
         <button
           class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="addSection('bridge')"
+          @click="createSection('bridge')"
         >
           Add Bridge
         </button>
@@ -418,11 +418,12 @@ export default {
       const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
+      console.log(template);
       if (template) {
         this.activeSong.sections = template.arrangement.map((type, index) => ({
           id: index + 1,
           order: [index],
-          type: this.sectionLabel(type),
+          type: type === "v" ? "Verse" : type === "c" ? "Chorus" : "Bridge",
           lines: ["", "", "", ""],
           sectionNarrative: "",
           brainstormingText: "",
@@ -438,11 +439,11 @@ export default {
         newLine,
       });
     },
-    addSection(type) {
+    createSection(type) {
       const newSection = {
-        id: this.activeSong.sections.length + 1,
+        id: new Date().getTime(),
         order: [this.activeSong.sections.length],
-        type,
+        type: this.sectionLabel(type),
         lines: ["", "", "", ""],
         sectionNarrative: "",
         brainstormingText: "",
@@ -499,11 +500,11 @@ export default {
     sectionLabel(section) {
       // Return the appropriate label based on the section type
       switch (section) {
-        case "v":
+        case "verse":
           return "Verse";
-        case "c":
+        case "chorus":
           return "Chorus";
-        case "b":
+        case "bridge":
           return "Bridge";
         default:
           return "Unknown";
