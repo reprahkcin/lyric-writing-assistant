@@ -107,9 +107,11 @@ export default {
       this.selectedSong = song;
       this.setActiveSong(song);
     },
-    newSong() {
+    async newSong() {
       // Add a new song and update the datastore
-      this.addSong();
+      await this.addSong();
+      const newSong = this.getSongs[this.getSongs.length - 1];
+      this.selectSong(newSong);
     },
     confirmRemoveSong() {
       // Confirm before removing the selected song
