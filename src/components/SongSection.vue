@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-3 shadow-sm bg-card">
+  <div v-if="section" class="card mb-3 shadow-sm bg-card">
     <div class="card-body bg-section-card pt-1 rounded">
       <div class="row">
         <div class="col">
@@ -100,6 +100,7 @@
               type="text"
               class="form-control input-off-white"
               v-model="localLines[index]"
+              @blur="updateLine(index, localLines[index])"
               :placeholder="`Line ${index + 1}`"
             />
             <div class="btn-group ms-2 gap-1">
@@ -131,8 +132,16 @@
           </button>
         </div>
       </div>
-      <button class="btn btn-warning" @click="updateSectionData">Save</button>
+      <button
+        class="btn btn-warning"
+        @click="saveModifiedSectionToActiveSongInVuex"
+      >
+        Save
+      </button>
     </div>
+  </div>
+  <div v-else>
+    <p class="text-center text-muted">Section not found.</p>
   </div>
 </template>
 
@@ -142,27 +151,21 @@ import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
 import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
 import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
 
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  emits: [
-    "update-section",
-    "remove-section",
-    "move-section",
-    "sync-chorus-sections",
-  ],
   props: {
-    section: {
-      type: Object,
+    sectionId: {
+      type: Number,
       required: true,
     },
     isFirst: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     isLast: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
   components: {
@@ -171,10 +174,10 @@ export default {
   },
   data() {
     return {
-      localLines: [...this.section.lines], // Local copy of section lines
-      sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
-      chordProgression: this.section.chordProgression || "", // Local copy of chord progression
-      brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
+      localLines: [], // Local copy of the lines
+      sectionNarrative: "", // Local copy of section narrative
+      chordProgression: "", // Local copy of chord progression
+      brainstormingText: "", // Local copy of brainstorming text
       majorProgressions, // Load major progressions
       minorProgressions, // Load minor progressions
       selectedProgression: "", // Add selectedProgression to data
@@ -182,16 +185,23 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["getActiveSong"]),
+    section() {
+      return this.getActiveSong?.sections.find(
+        (sec) => sec.id === this.sectionId
+      );
+    },
     availableProgressions() {
       return [...this.majorProgressions, ...this.minorProgressions];
     },
   },
   methods: {
-    ...mapActions(["updateSection"]),
-    updateLine(index, newLine) {
-      // Update a specific line in the section
-      this.$set(this.localLines, index, newLine);
-    },
+    ...mapActions([
+      "updateActiveSongSection",
+      "moveActiveSongSection",
+      "deleteActiveSongSection",
+      "updateActiveSongLine",
+    ]),
     moveLine(index, direction) {
       // Move a line up or down within the section
       if (direction === "up" && index > 0) {
@@ -214,28 +224,17 @@ export default {
       }
     },
     removeSelf() {
-      // Emit an event to remove this section
-      this.$emit("remove-section", this.section.id);
-    },
-    typeColor(type) {
-      // Return the appropriate color class based on the section type
-      switch (type) {
-        case "verse":
-          return "bg-verse";
-        case "chorus":
-          return "bg-chorus";
-        case "bridge":
-          return "bg-bridge";
-        default:
-          return "bg-secondary text-white";
-      }
+      // Delete the section from the active song
+      this.deleteActiveSongSection(this.section.id);
     },
     addLine() {
       // Add a new line to the section
+      console.log("addLine");
       this.localLines.push("");
     },
     removeLine() {
       // Remove the last line from the section if there is more than one line
+      console.log("removeLine");
       if (this.localLines.length > 1) {
         this.localLines.pop();
       }
@@ -244,14 +243,15 @@ export default {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
     },
-    updateSectionData() {
-      this.$emit("update-section", {
+    saveModifiedSectionToActiveSongInVuex() {
+      const updatedSection = {
         ...this.section,
         lines: this.localLines,
         sectionNarrative: this.sectionNarrative,
         chordProgression: this.chordProgression,
         brainstormingText: this.brainstormingText,
-      });
+      };
+      this.updateActiveSongSection(updatedSection);
     },
     applyChordProgression() {
       if (this.selectedProgression === "custom") {
@@ -279,6 +279,27 @@ export default {
       } else {
         this.chordProgression = this.selectedProgression;
       }
+    },
+    updateLine(index, newLine) {
+      this.updateActiveSongLine({
+        sectionId: this.section.id,
+        lineIndex: index,
+        newLine,
+      });
+    },
+  },
+  watch: {
+    section: {
+      handler(newSection) {
+        if (newSection) {
+          this.localLines = [...newSection.lines];
+          this.sectionNarrative = newSection.sectionNarrative || "";
+          this.chordProgression = newSection.chordProgression || "";
+          this.brainstormingText = newSection.brainstormingText || "";
+        }
+      },
+      immediate: true,
+      deep: true,
     },
   },
 };
