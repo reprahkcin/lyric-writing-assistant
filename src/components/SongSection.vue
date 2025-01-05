@@ -8,13 +8,6 @@
           >
             <div class="ms-2 fs-5 fw-bold text-capitalize">
               {{ section.type }}
-              <!-- <button
-                v-if="section.type === 'chorus'"
-                class="btn btn-outline-custom btn-sm py-0 ms-2"
-                @click="syncChorusSections"
-              >
-                <span class="bi bi-link-45deg"></span>
-              </button> -->
               <a
                 href="https://hookpad.hooktheory.com/"
                 target="_blank"
@@ -147,7 +140,6 @@ import CountdownTimer from "@/components/CountdownTimer.vue";
 import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
 import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
 import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
-import { debounce } from "lodash";
 
 export default {
   emits: [
@@ -187,17 +179,6 @@ export default {
     };
   },
   computed: {
-    syncedChorus() {
-      if (this.section.type === "chorus") {
-        const chorusSections = this.$store.state.songs
-          .find((song) => song.id === this.section.songId)
-          .sections.filter((sec) => sec.type === "chorus");
-        if (chorusSections.length > 0) {
-          return chorusSections[0];
-        }
-      }
-      return this.section;
-    },
     availableProgressions() {
       return [...this.majorProgressions, ...this.minorProgressions];
     },
@@ -259,7 +240,7 @@ export default {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
     },
-    updateSection: debounce(function () {
+    updateSection() {
       this.$emit("update-section", {
         ...this.section,
         lines: this.localLines,
@@ -267,7 +248,7 @@ export default {
         chordProgression: this.chordProgression,
         brainstormingText: this.brainstormingText,
       });
-    }, 1000), // Debounce updates to 1 second
+    },
     syncChorusSections() {
       console.log("syncChorusSections clicked for section:", this.section.id);
       const chorusSnapshot = {
@@ -311,36 +292,6 @@ export default {
           .join(" - ");
       } else {
         this.chordProgression = this.selectedProgression;
-      }
-    },
-  },
-  watch: {
-    localLines: {
-      handler() {
-        this.updateSection();
-      },
-      deep: true,
-    },
-    sectionNarrative() {
-      this.updateSection();
-    },
-    brainstormingText() {
-      this.updateSection();
-    },
-    chordProgression() {
-      this.updateSection();
-    },
-    selectedProgression() {
-      this.applyChordProgression();
-    },
-    "$parent.selectedKey"() {
-      if (!this.isCustomProgression) {
-        this.applyChordProgression();
-      }
-    },
-    "$parent.selectedScale"() {
-      if (!this.isCustomProgression) {
-        this.applyChordProgression();
       }
     },
   },
