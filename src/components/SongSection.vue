@@ -86,7 +86,6 @@
               v-if="availableProgressions.length"
               v-model="selectedProgression"
               @change="applyChordProgression"
-              @input="setUnsavedChanges(true)"
             >
               <option value="" disabled>Select a chord progression</option>
               <option value="custom">Custom Progression</option>
