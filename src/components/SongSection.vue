@@ -49,6 +49,7 @@
       </div>
       <hr class="mt-1 mb-3" />
       <div class="row">
+        <!-- Right Column -->
         <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
           <RhymeThesaurusPanel />
           <textarea
@@ -56,14 +57,20 @@
             rows="10"
             placeholder="Brainstorming area..."
             v-model="brainstormingText"
+            @blur="saveModifiedSectionToActiveSongInVuex"
+            @input="setUnsavedChanges(true)"
           ></textarea>
         </div>
+
+        <!-- Left Column - They are switched to stack properly -->
         <div class="col-12 col-md-8 order-2 order-md-1">
           <input
             type="text"
             class="form-control mb-2 input-off-white"
             v-model="sectionNarrative"
             placeholder="This section is about..."
+            @blur="saveModifiedSectionToActiveSongInVuex"
+            @input="setUnsavedChanges(true)"
           />
           <div class="input-group mb-2">
             <input
@@ -71,6 +78,8 @@
               class="form-control input-off-white"
               v-model="chordProgression"
               placeholder="Chord progression (e.g., C G Am F)"
+              @blur="saveModifiedSectionToActiveSongInVuex"
+              @input="setUnsavedChanges(true)"
             />
             <select
               class="form-select input-off-white"
@@ -101,6 +110,7 @@
               class="form-control input-off-white"
               v-model="localLines[index]"
               @blur="updateLine(index, localLines[index])"
+              @input="setUnsavedChanges(true)"
               :placeholder="`Line ${index + 1}`"
             />
             <div class="btn-group ms-2 gap-1">
@@ -133,7 +143,8 @@
         </div>
       </div>
       <button
-        class="btn btn-warning"
+        class="btn"
+        :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
         @click="saveModifiedSectionToActiveSongInVuex"
       >
         Save
@@ -185,7 +196,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ activeSong: "getActiveSong" }),
+    ...mapGetters({
+      activeSong: "getActiveSong",
+      getUnsavedChanges: "getUnsavedChanges",
+    }),
     section() {
       return this.activeSong?.sections.find((sec) => sec.id === this.sectionId);
     },
@@ -199,6 +213,7 @@ export default {
       "moveActiveSongSection",
       "deleteActiveSongSection",
       "updateActiveSongLine",
+      "setUnsavedChanges",
     ]),
     moveLine(index, direction) {
       // Move a line up or down within the section
@@ -250,6 +265,7 @@ export default {
         brainstormingText: this.brainstormingText,
       };
       this.updateActiveSongSection(updatedSection);
+      this.setUnsavedChanges(false);
     },
     applyChordProgression() {
       if (this.selectedProgression === "custom") {
