@@ -335,7 +335,6 @@ export default {
         this.applyChordProgression();
       },
       immediate: true,
-      deep: true,
     },
   },
 };
