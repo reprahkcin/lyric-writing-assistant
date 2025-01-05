@@ -86,6 +86,7 @@
               v-if="availableProgressions.length"
               v-model="selectedProgression"
               @change="applyChordProgression"
+              @input="setUnsavedChanges(true)"
             >
               <option value="" disabled>Select a chord progression</option>
               <option value="custom">Custom Progression</option>
@@ -262,6 +263,7 @@ export default {
         lines: this.localLines,
         sectionNarrative: this.sectionNarrative,
         chordProgression: this.chordProgression,
+        selectedProgression: this.selectedProgression,
         brainstormingText: this.brainstormingText,
       };
       this.updateActiveSongSection(updatedSection);
@@ -310,6 +312,7 @@ export default {
           this.sectionNarrative = newSection.sectionNarrative || "";
           this.chordProgression = newSection.chordProgression || "";
           this.brainstormingText = newSection.brainstormingText || "";
+          this.selectedProgression = newSection.selectedProgression || "";
         }
       },
       immediate: true,
