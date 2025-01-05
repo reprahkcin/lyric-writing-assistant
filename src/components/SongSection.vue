@@ -185,11 +185,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getActiveSong"]),
+    ...mapGetters({ activeSong: "getActiveSong" }),
     section() {
-      return this.getActiveSong?.sections.find(
-        (sec) => sec.id === this.sectionId
-      );
+      return this.activeSong?.sections.find((sec) => sec.id === this.sectionId);
     },
     availableProgressions() {
       return [...this.majorProgressions, ...this.minorProgressions];
@@ -297,6 +295,14 @@ export default {
           this.chordProgression = newSection.chordProgression || "";
           this.brainstormingText = newSection.brainstormingText || "";
         }
+      },
+      immediate: true,
+      deep: true,
+    },
+    // watch for changes in this.activeSong.key and this.activeSong.scale, and update the chord progression with applyChordProgression
+    activeSong: {
+      handler() {
+        this.applyChordProgression();
       },
       immediate: true,
       deep: true,
