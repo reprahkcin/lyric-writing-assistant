@@ -131,6 +131,7 @@
           </button>
         </div>
       </div>
+      <button class="btn btn-warning" @click="updateSectionData">Save</button>
     </div>
   </div>
 </template>
@@ -140,6 +141,8 @@ import CountdownTimer from "@/components/CountdownTimer.vue";
 import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
 import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
 import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
+
+import { mapActions } from "vuex";
 
 export default {
   emits: [
@@ -184,6 +187,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["updateSection"]),
     updateLine(index, newLine) {
       // Update a specific line in the section
       this.$set(this.localLines, index, newLine);
@@ -240,7 +244,7 @@ export default {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
     },
-    updateSection() {
+    updateSectionData() {
       this.$emit("update-section", {
         ...this.section,
         lines: this.localLines,
@@ -248,24 +252,6 @@ export default {
         chordProgression: this.chordProgression,
         brainstormingText: this.brainstormingText,
       });
-    },
-    syncChorusSections() {
-      console.log("syncChorusSections clicked for section:", this.section.id);
-      const chorusSnapshot = {
-        lines: [...this.localLines],
-        sectionNarrative: this.sectionNarrative,
-        chordProgression: this.chordProgression,
-        brainstormingText: this.brainstormingText,
-      };
-      console.log("Chorus snapshot:", chorusSnapshot);
-      this.$emit("sync-chorus-sections", {
-        sectionId: this.section.id,
-        snapshot: chorusSnapshot,
-      });
-      this.saveState();
-    },
-    saveState() {
-      this.$store.dispatch("saveStateToFirestore");
     },
     applyChordProgression() {
       if (this.selectedProgression === "custom") {
