@@ -8,13 +8,6 @@
           >
             <div class="ms-2 fs-5 fw-bold text-capitalize">
               {{ section.type }}
-              <!-- <button
-                v-if="section.type === 'chorus'"
-                class="btn btn-outline-custom btn-sm py-0 ms-2"
-                @click="syncChorusSections"
-              >
-                <span class="bi bi-link-45deg"></span>
-              </button> -->
               <a
                 href="https://hookpad.hooktheory.com/"
                 target="_blank"
@@ -62,21 +55,21 @@
             class="form-control input-off-white"
             rows="10"
             placeholder="Brainstorming area..."
-            v-model="brainstormingText"
+            v-model="localSection.brainstormingText"
           ></textarea>
         </div>
         <div class="col-12 col-md-8 order-2 order-md-1">
           <input
             type="text"
             class="form-control mb-2 input-off-white"
-            v-model="sectionNarrative"
+            v-model="localSection.sectionNarrative"
             placeholder="This section is about..."
           />
           <div class="input-group mb-2">
             <input
               type="text"
               class="form-control input-off-white"
-              v-model="chordProgression"
+              v-model="localSection.chordProgression"
               placeholder="Chord progression (e.g., C G Am F)"
             />
             <select
@@ -106,7 +99,7 @@
             <input
               type="text"
               class="form-control input-off-white"
-              v-model="localLines[index]"
+              v-model="localSection.lines[index]"
               :placeholder="`Line ${index + 1}`"
             />
             <div class="btn-group ms-2 gap-1">
@@ -120,7 +113,7 @@
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
                 @click="moveLine(index, 'down')"
-                :disabled="index === localLines.length - 1"
+                :disabled="index === localSection.lines.length - 1"
               >
                 ↓
               </button>
@@ -129,7 +122,7 @@
           <button
             class="btn btn-outline-round mx-1"
             @click="removeLine"
-            :disabled="localLines.length <= 1"
+            :disabled="localSection.lines.length <= 1"
           >
             <span class="fw-bold bi bi-dash-lg"></span>
           </button>
@@ -147,7 +140,7 @@ import CountdownTimer from "@/components/CountdownTimer.vue";
 import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
 import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
 import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
-import { debounce } from "lodash";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   emits: [
@@ -176,17 +169,33 @@ export default {
   },
   data() {
     return {
-      localLines: [...this.section.lines], // Local copy of section lines
-      sectionNarrative: this.section.sectionNarrative || "", // Local copy of section narrative
-      chordProgression: this.section.chordProgression || "", // Local copy of chord progression
-      brainstormingText: this.section.brainstormingText || "", // Local copy of brainstorming text
-      majorProgressions, // Load major progressions
-      minorProgressions, // Load minor progressions
-      selectedProgression: "", // Add selectedProgression to data
-      isCustomProgression: false, // Track if the progression is custom
+      localSection: {
+        lines: [...this.section.lines],
+        sectionNarrative: this.section.sectionNarrative || "",
+        chordProgression: this.section.chordProgression || "",
+        brainstormingText: this.section.brainstormingText || "",
+      },
+      majorProgressions,
+      minorProgressions,
+      selectedProgression: "",
+      isCustomProgression: false,
     };
   },
   computed: {
+    ...mapGetters([
+      "getUnsavedChanges",
+      "getSongs",
+      "getActiveSong",
+      "user",
+      "getSectionTemplates",
+      "getMoods",
+      "getKeys",
+      "getScales",
+      "getPrompts",
+      "getChordProgressions",
+      "getSelectedScaleNotes",
+      "getSelectedScaleChords",
+    ]),
     syncedChorus() {
       if (this.section.type === "chorus") {
         const chorusSections = this.$store.state.songs
@@ -203,23 +212,39 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      "setUnsavedChanges",
+      "setUser",
+      "setSongs",
+      "addSong",
+      "addSection",
+      "deleteSong",
+      "updateSong",
+      "setActiveSong",
+      "updateSection",
+      "deleteSection",
+      "updateLine",
+      "resetStore",
+      "saveStateToLocalStorage",
+      "loadStateFromLocalStorage",
+      "updateChordProgressions",
+    ]),
     updateLine(index, newLine) {
-      // Update a specific line in the section
-      this.$set(this.localLines, index, newLine);
+      this.$set(this.localSection.lines, index, newLine);
     },
     moveLine(index, direction) {
-      // Move a line up or down within the section
       if (direction === "up" && index > 0) {
-        // Swap the current line with the previous line if not at the top
-        [this.localLines[index - 1], this.localLines[index]] = [
-          this.localLines[index],
-          this.localLines[index - 1],
+        [this.localSection.lines[index - 1], this.localSection.lines[index]] = [
+          this.localSection.lines[index],
+          this.localSection.lines[index - 1],
         ];
-      } else if (direction === "down" && index < this.localLines.length - 1) {
-        // Swap the current line with the next line if not at the bottom
-        [this.localLines[index + 1], this.localLines[index]] = [
-          this.localLines[index],
-          this.localLines[index + 1],
+      } else if (
+        direction === "down" &&
+        index < this.localSection.lines.length - 1
+      ) {
+        [this.localSection.lines[index + 1], this.localSection.lines[index]] = [
+          this.localSection.lines[index],
+          this.localSection.lines[index + 1],
         ];
       }
     },
@@ -229,11 +254,9 @@ export default {
       }
     },
     removeSelf() {
-      // Emit an event to remove this section
       this.$emit("remove-section", this.section.id);
     },
     typeColor(type) {
-      // Return the appropriate color class based on the section type
       switch (type) {
         case "verse":
           return "bg-verse";
@@ -246,45 +269,16 @@ export default {
       }
     },
     addLine() {
-      // Add a new line to the section
-      this.localLines.push("");
+      this.localSection.lines.push("");
     },
     removeLine() {
-      // Remove the last line from the section if there is more than one line
-      if (this.localLines.length > 1) {
-        this.localLines.pop();
+      if (this.localSection.lines.length > 1) {
+        this.localSection.lines.pop();
       }
     },
     moveSelf(direction) {
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
-    },
-    updateSection: debounce(function () {
-      this.$emit("update-section", {
-        ...this.section,
-        lines: this.localLines,
-        sectionNarrative: this.sectionNarrative,
-        chordProgression: this.chordProgression,
-        brainstormingText: this.brainstormingText,
-      });
-    }, 1000), // Debounce updates to 1 second
-    syncChorusSections() {
-      console.log("syncChorusSections clicked for section:", this.section.id);
-      const chorusSnapshot = {
-        lines: [...this.localLines],
-        sectionNarrative: this.sectionNarrative,
-        chordProgression: this.chordProgression,
-        brainstormingText: this.brainstormingText,
-      };
-      console.log("Chorus snapshot:", chorusSnapshot);
-      this.$emit("sync-chorus-sections", {
-        sectionId: this.section.id,
-        snapshot: chorusSnapshot,
-      });
-      this.saveState();
-    },
-    saveState() {
-      this.$store.dispatch("saveStateToFirestore");
     },
     applyChordProgression() {
       if (this.selectedProgression === "custom") {
@@ -305,33 +299,30 @@ export default {
           vi: notes[5] + "m",
           "vii°": notes[6] + "°",
         };
-        this.chordProgression = this.selectedProgression
+        this.localSection.chordProgression = this.selectedProgression
           .split(" - ")
           .map((roman) => chordMap[roman] || roman)
           .join(" - ");
       } else {
-        this.chordProgression = this.selectedProgression;
+        this.localSection.chordProgression = this.selectedProgression;
       }
+    },
+    syncLocalData() {
+      this.updateSection({
+        songId: this.section.songId,
+        section: {
+          ...this.localSection,
+          id: this.section.id,
+        },
+      });
     },
   },
   watch: {
-    localLines: {
+    localSection: {
       handler() {
-        this.updateSection();
+        this.syncLocalData();
       },
       deep: true,
-    },
-    sectionNarrative() {
-      this.updateSection();
-    },
-    brainstormingText() {
-      this.updateSection();
-    },
-    chordProgression() {
-      this.updateSection();
-    },
-    selectedProgression() {
-      this.applyChordProgression();
     },
     "$parent.selectedKey"() {
       if (!this.isCustomProgression) {
@@ -343,6 +334,9 @@ export default {
         this.applyChordProgression();
       }
     },
+  },
+  mounted() {
+    setInterval(this.syncLocalData, 5000);
   },
 };
 </script>

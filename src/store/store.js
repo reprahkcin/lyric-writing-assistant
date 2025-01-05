@@ -20,6 +20,7 @@ const store = createStore({
     majorProgressions, // Add major progressions to state
     minorProgressions, // Add minor progressions to state
     prompts, // Add prompts to state
+    chordProgressions: [], // Add chordProgressions to state
   },
   mutations: {
     SET_UNSAVED_CHANGES(state, value) {
@@ -102,6 +103,9 @@ const store = createStore({
       // Reset the store to its initial state
       state.songs = [];
       state.activeSong = null;
+    },
+    SET_CHORD_PROGRESSIONS(state, progressions) {
+      state.chordProgressions = progressions;
     },
   },
   actions: {
