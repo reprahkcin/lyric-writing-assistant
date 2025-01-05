@@ -98,6 +98,18 @@ const store = createStore({
         section.lines.splice(lineIndex, 1, newLine);
       }
     },
+    ADD_ACTIVE_SONG_LINE(state, { sectionId, newLine }) {
+      const section = state.activeSong.sections.find((sec) => sec.id === sectionId);
+      if (section) {
+        section.lines.push(newLine);
+      }
+    },
+    DELETE_ACTIVE_SONG_LINE(state, { sectionId, lineIndex }) {
+      const section = state.activeSong.sections.find((sec) => sec.id === sectionId);
+      if (section) {
+        section.lines.splice(lineIndex, 1);
+      }
+    },
     SET_CHORD_PROGRESSIONS(state, progressions) {
       state.chordProgressions = progressions;
     },
@@ -171,6 +183,14 @@ const store = createStore({
       // Commit the UPDATE_ACTIVE_SONG_LINE mutation with the payload
       commit("UPDATE_ACTIVE_SONG_LINE", payload);
       // Save the updated state to local storage
+      dispatch("saveStateToLocalStorage");
+    },
+    addActiveSongLine({ commit, dispatch }, payload) {
+      commit("ADD_ACTIVE_SONG_LINE", payload);
+      dispatch("saveStateToLocalStorage");
+    },
+    deleteActiveSongLine({ commit, dispatch }, payload) {
+      commit("DELETE_ACTIVE_SONG_LINE", payload);
       dispatch("saveStateToLocalStorage");
     },
     resetStore({ commit, dispatch }) {

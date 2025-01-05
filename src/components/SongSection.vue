@@ -116,14 +116,20 @@
             <div class="btn-group ms-2 gap-1">
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
-                @click="moveLine(index, 'up')"
+                @click="
+                  moveLine(index, 'up');
+                  setUnsavedChanges(true);
+                "
                 :disabled="index === 0"
               >
                 ↑
               </button>
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
-                @click="moveLine(index, 'down')"
+                @click="
+                  moveLine(index, 'down');
+                  setUnsavedChanges(true);
+                "
                 :disabled="index === localLines.length - 1"
               >
                 ↓
@@ -214,6 +220,8 @@ export default {
       "deleteActiveSongSection",
       "updateActiveSongLine",
       "setUnsavedChanges",
+      "addActiveSongLine",
+      "deleteActiveSongLine",
     ]),
     moveLine(index, direction) {
       // Move a line up or down within the section
@@ -242,14 +250,18 @@ export default {
     },
     addLine() {
       // Add a new line to the section
-      console.log("addLine");
-      this.localLines.push("");
+      this.addActiveSongLine({
+        sectionId: this.section.id,
+        newLine: "",
+      });
     },
     removeLine() {
       // Remove the last line from the section if there is more than one line
-      console.log("removeLine");
       if (this.localLines.length > 1) {
-        this.localLines.pop();
+        this.deleteActiveSongLine({
+          sectionId: this.section.id,
+          lineIndex: this.localLines.length - 1,
+        });
       }
     },
     moveSelf(direction) {
