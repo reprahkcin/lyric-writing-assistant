@@ -417,14 +417,24 @@ export default {
       );
       console.log(template);
       if (template) {
-        this.activeSong.sections = template.arrangement.map((type, index) => ({
-          id: index + 1,
-          order: [index],
-          type: type === "v" ? "Verse" : type === "c" ? "Chorus" : "Bridge",
-          lines: ["", "", "", ""],
-          sectionNarrative: "",
-          brainstormingText: "",
-        }));
+        this.activeSong.sections = template.arrangement.map((type, index) => {
+          let sectionType;
+          if (type === "v") {
+            sectionType = "Verse";
+          } else if (type === "c") {
+            sectionType = "Chorus";
+          } else {
+            sectionType = "Bridge";
+          }
+          return {
+            id: index + 1,
+            order: [index],
+            type: sectionType,
+            lines: ["", "", "", ""],
+            sectionNarrative: "",
+            brainstormingText: "",
+          };
+        });
         this.updateSong(this.activeSong); // Trigger Vuex store update
       }
     },
