@@ -98,6 +98,9 @@ const store = createStore({
         section.lines.splice(lineIndex, 1, newLine);
       }
     },
+    SET_CHORD_PROGRESSIONS(state, progressions) {
+      state.chordProgressions = progressions;
+    },
   },
   actions: {
     setUnsavedChanges({ commit }, value) {
