@@ -101,6 +101,12 @@ const store = createStore({
     SET_CHORD_PROGRESSIONS(state, progressions) {
       state.chordProgressions = progressions;
     },
+    SAVE_ACTIVE_SONG(state) {
+      const index = state.songs.findIndex(song => song.id === state.activeSong.id);
+      if (index !== -1) {
+        state.songs[index] = { ...state.activeSong };
+      }
+    },
   },
   actions: {
     setUnsavedChanges({ commit }, value) {
@@ -207,6 +213,9 @@ const store = createStore({
       setInterval(() => {
         dispatch("saveStateToLocalStorage");
       }, 5000);
+    },
+    saveActiveSong({ commit }) {
+      commit("SAVE_ACTIVE_SONG");
     },
   },
   getters: {

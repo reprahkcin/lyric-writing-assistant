@@ -256,6 +256,14 @@
         >
           {{ plainTextActive ? "Hide Plain Text" : "Show Plain Text" }}
         </button>
+
+        <button
+          class="btn btn-sm fw-bold mx-1"
+          :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
+          @click="saveActiveSongToStore"
+        >
+          Save All
+        </button>
       </div>
       <div v-else>
         <p class="text-center text-muted">No song selected.</p>
@@ -299,6 +307,7 @@ export default {
       "getChordProgressions",
       "getSelectedScaleNotes",
       "getSelectedScaleChords",
+      "getUnsavedChanges",
     ]),
     activeSong() {
       return this.getActiveSong;
@@ -361,6 +370,8 @@ export default {
       "updateActiveSongSection",
       "updateActiveSongLine",
       "updateChordProgressions",
+      "saveActiveSong",
+      "setUnsavedChanges",
     ]),
     manualSaveState() {
       if (this.activeSong) {
@@ -524,6 +535,11 @@ export default {
       this.selectedTheme = this.getPrompts[randomIndex];
       this.activeSong.theme = this.selectedTheme;
       this.manualSaveState();
+    },
+    saveActiveSongToStore() {
+      this.saveActiveSong();
+      this.saveStateToLocalStorage();
+      this.setUnsavedChanges(false);
     },
   },
 };
