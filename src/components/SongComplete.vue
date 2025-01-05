@@ -129,8 +129,8 @@
               class="form-select input-off-white"
               id="songTheme"
               v-model="selectedTheme"
-              @change="handleThemeChange"
               @blur="manualSaveState"
+              @change="handleThemeChange"
             >
               <option value="" disabled>Select a theme</option>
               <option value="custom">Custom</option>
@@ -336,6 +336,7 @@ export default {
     activeSong: {
       handler(newSong) {
         if (newSong) {
+          this.selectedTheme = newSong.theme || "";
           this.$nextTick(() => {
             this.autoResize({ target: this.$refs.narrativeTextarea });
           });
@@ -506,11 +507,13 @@ export default {
       } else {
         this.activeSong.theme = "";
       }
+      this.manualSaveState();
     },
     selectRandomPrompt() {
       const randomIndex = Math.floor(Math.random() * this.getPrompts.length);
       this.selectedTheme = this.getPrompts[randomIndex];
       this.activeSong.theme = this.selectedTheme;
+      this.manualSaveState();
     },
   },
 };
