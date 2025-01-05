@@ -196,17 +196,6 @@ export default {
       "getSelectedScaleNotes",
       "getSelectedScaleChords",
     ]),
-    syncedChorus() {
-      if (this.section.type === "chorus") {
-        const chorusSections = this.$store.state.songs
-          .find((song) => song.id === this.section.songId)
-          .sections.filter((sec) => sec.type === "chorus");
-        if (chorusSections.length > 0) {
-          return chorusSections[0];
-        }
-      }
-      return this.section;
-    },
     availableProgressions() {
       return [...this.majorProgressions, ...this.minorProgressions];
     },
