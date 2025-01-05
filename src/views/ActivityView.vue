@@ -3,19 +3,8 @@
     <div class="container">
       <div class="row my-3">
         <div class="col">
-          <div
-            class="card bg-dark ps-3 py-2 text-light shadow d-flex justify-content-between align-items-center flex-row"
-          >
+          <div class="card bg-dark ps-3 py-2 text-light shadow text-start">
             <p class="fw-bold my-auto text-start mb-0">Welcome, Songwriter</p>
-            <button
-              :class="[
-                'btn my-auto me-2 py-0',
-                unsavedChanges ? 'btn-success' : 'btn-warning',
-              ]"
-              @click="manualSaveState"
-            >
-              {{ unsavedChanges ? "Saved" : "Unsaved" }}
-            </button>
           </div>
         </div>
       </div>
