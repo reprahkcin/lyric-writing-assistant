@@ -8,7 +8,6 @@ import "@/css/style.css";
 import "popper.js";
 
 async function initializeApp() {
-  //await store.dispatch("loadStateFromFirestore");
   createApp(App).use(store).use(router).mount("#app");
 }
 
