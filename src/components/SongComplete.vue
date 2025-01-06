@@ -7,6 +7,7 @@
         <div class="text-start">
           <div class="row">
             <div class="col">
+              <!-- Title Field -->
               <div class="mb-3">
                 <label for="songTitle" class="form-label fw-bold">Title</label>
                 <input
@@ -19,6 +20,7 @@
               </div>
             </div>
             <div class="col">
+              <!-- Mood Field -->
               <div class="mb-3">
                 <label for="songMood" class="form-label fw-bold">Mood</label>
                 <select
@@ -36,6 +38,7 @@
                     {{ mood.mood }}
                   </option>
                 </select>
+                <!-- The little caption -->
                 <small
                   v-if="selectedMoodImplication"
                   class="text-muted ms-2 mb-0"
@@ -48,6 +51,7 @@
           <div class="row">
             <div class="col">
               <div class="mb-3">
+                <!-- Key Field -->
                 <label for="songKey" class="form-label fw-bold">Key</label>
                 <select
                   class="form-select input-off-white"
@@ -64,6 +68,7 @@
             </div>
             <div class="col">
               <div class="mb-3">
+                <!-- Scale Field -->
                 <label for="songScale" class="form-label fw-bold">Scale</label>
                 <select
                   class="form-select input-off-white"
@@ -83,6 +88,7 @@
               </div>
             </div>
           </div>
+          <!-- Pop up Interval Chart -->
           <div v-if="selectedKey && selectedScale" class="mb-3">
             <table
               class="table table-bordered input-off-white text-dark-muted overflow-auto"
@@ -124,6 +130,7 @@
             </table>
           </div>
           <div class="mb-3">
+            <!-- Theme Field -->
             <label for="songTheme" class="form-label fw-bold">Theme</label>
             <select
               class="form-select input-off-white"
@@ -158,6 +165,7 @@
             </button>
           </div>
           <div class="mb-3">
+            <!-- Hook Field -->
             <label for="songHook" class="form-label fw-bold">Hook</label>
             <input
               type="text"
@@ -169,6 +177,7 @@
             />
           </div>
           <div class="mb-3">
+            <!-- Narrative Outline Field -->
             <label for="songNarrative" class="form-label fw-bold"
               >Narrative Outline</label
             >
@@ -187,6 +196,7 @@
         <!-- Add ChromeMusicLab component here -->
         <ChromeMusicLab :song="activeSong" />
         <div class="mb-3">
+          <!-- Lyrical Arrangement Panel -->
           <div class="card bg-card shadow-sm">
             <div class="card-body">
               <div class="text-start text-dark-muted">
@@ -224,6 +234,7 @@
             </div>
           </div>
         </div>
+        <!-- Song Section Section :) -->
         <div v-for="(section, index) in orderedSections" :key="section.id">
           <SongSection
             :sectionId="section.id"
@@ -231,7 +242,7 @@
             :isLast="index === orderedSections.length - 1"
           />
         </div>
-
+        <!-- Bottom Button Group -->
         <button
           class="btn btn-outline-custom btn-sm fw-bold mx-1"
           @click="createSection('verse')"
@@ -281,7 +292,7 @@ export default {
   name: "SongComplete",
   components: {
     SongSection,
-    ChromeMusicLab, // Register ChromeMusicLab
+    ChromeMusicLab,
   },
   props: {
     plainTextActive: {
@@ -298,51 +309,60 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getActiveSong",
-      "getSectionTemplates",
-      "getMoods",
-      "getKeys",
-      "getScales",
-      "getPrompts",
-      "getChordProgressions",
-      "getSelectedScaleNotes",
-      "getSelectedScaleChords",
-      "getUnsavedChanges",
+      "getActiveSong", // Current active song - not to be confused with the song object in the songs array.
+      "getSectionTemplates", // Data file containing section templates
+      "getMoods", // Data file containing moods
+      "getKeys", // Data file containing keys
+      "getScales", // Data file containing scales
+      "getPrompts", // Data file containing prompts
+      "getChordProgressions", // Data file containing chord progressions
+      "getSelectedScaleNotes", // Getter for selected scale notes
+      "getSelectedScaleChords", // Getter for selected scale chords
+      "getUnsavedChanges", // Getter for unsaved changes - used to toggle the Save All button
     ]),
     activeSong() {
       return this.getActiveSong;
     },
+
     orderedSections() {
+      // This is something leftover from a failed function. I don't know if it's needed, but it works with it there.
       // Order sections by their order property
       return (this.activeSong?.sections || [])
         .slice()
         .sort((a, b) => a.order[0] - b.order[0]);
     },
     selectedTemplateArrangement() {
+      // Finds the selected template and returns the arrangement
       const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
       return template ? template.arrangement : [];
     },
     selectedMoodImplication() {
+      // Finds the selected mood and returns the implications
       const mood = this.getMoods.find((m) => m.mood === this.activeSong?.mood);
       return mood ? mood.implications : "";
     },
     selectedKey() {
+      // Returns the selected key - used to update chord progressions
       return this.activeSong?.key;
     },
     selectedScale() {
+      // Returns the selected scale - used to update chord progressions
       return this.getScales.find((s) => s.name === this.activeSong?.scale);
     },
     selectedScaleNotes() {
+      // Returns the selected scale notes - used to display the interval chart
       return this.getSelectedScaleNotes;
     },
     selectedScaleChords() {
+      // Returns the selected scale chords - used to display the interval chart
       return this.getSelectedScaleChords;
     },
   },
   watch: {
     activeSong: {
+      // Watch for changes in the active song
       handler(newSong) {
         if (newSong) {
           this.selectedTheme = newSong.theme || "";
@@ -355,9 +375,11 @@ export default {
       deep: true,
     },
     selectedKey() {
+      // Watch for changes in the selected key and update chord progressions
       this.updateChordProgressions();
     },
     selectedScale() {
+      // Watch for changes in the selected scale and update chord progressions
       this.updateChordProgressions();
     },
   },
@@ -367,7 +389,6 @@ export default {
       "saveStateToLocalStorage",
       "addActiveSongSection",
       "deleteActiveSongSection",
-      "updateActiveSongSection",
       "updateActiveSongLine",
       "updateChordProgressions",
       "saveActiveSong",
@@ -380,6 +401,7 @@ export default {
       this.saveStateToLocalStorage();
     },
     arrangementVisualized(arrangement) {
+      // These are the little colored badges that show up in the template dropdown
       // Visualize the arrangement of a template with color-coded badges
       return arrangement
         .map((section) => {
@@ -397,6 +419,7 @@ export default {
         .join("");
     },
     arrangementText(arrangement) {
+      // This is the text that shows up in the template dropdown
       // Convert the arrangement to a text representation
       return arrangement
         .map((section) => {
@@ -414,6 +437,7 @@ export default {
         .join(" - ");
     },
     confirmApplyTemplate() {
+      // Since applying a template can be destructive, we want to confirm the user's intent
       if (
         confirm(
           "Are you sure you want to apply this template? This will clear all existing sections."
@@ -423,6 +447,7 @@ export default {
       }
     },
     applyTemplate() {
+      // This converts the the template, which is just an array of characters (c,v,b), into actual sections
       const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
@@ -443,6 +468,8 @@ export default {
             type: sectionType,
             lines: ["", "", "", ""],
             sectionNarrative: "",
+            chordProgression: "",
+            selectedChordProgression: "",
             brainstormingText: "",
           };
         });
@@ -450,6 +477,7 @@ export default {
       }
     },
     createSection(type) {
+      // This is the Section Constructor
       const newSection = {
         id: new Date().getTime(),
         order: [this.activeSong.sections.length],
@@ -458,13 +486,16 @@ export default {
         sectionNarrative: "",
         brainstormingText: "",
         chordProgression: "",
+        selectedChordProgression: "",
       };
       this.addActiveSongSection(newSection);
     },
     removeSection(sectionId) {
+      // This is the Section Destructor
       this.deleteActiveSongSection(sectionId);
     },
     moveSection(index, direction) {
+      // This is the Section Mover, allowing the user reorder sections within the song.
       console.log("moveSection called");
       console.log(index, direction);
       if (direction === "up" && index > 0) {
@@ -488,10 +519,12 @@ export default {
       this.updateSong(this.activeSong); // Trigger Vuex store update
     },
     activatePlainTextView() {
+      // This toggles the plain text view, or printable tab.
       // Emit an event to toggle the plain text view
       this.$emit("toggle-plain-text");
     },
     badgeClass(section) {
+      // This function returns the appropriate badge class based on the section type
       // Return the appropriate badge class based on the section type
       switch (section) {
         case "v":
@@ -505,6 +538,7 @@ export default {
       }
     },
     sectionLabel(section) {
+      // This function returns the appropriate label based on the section type
       // Return the appropriate label based on the section type
       switch (section) {
         case "verse":
@@ -518,11 +552,13 @@ export default {
       }
     },
     autoResize(event) {
+      // This function automatically resizes the textarea based on the content in the Narrative Outline field
       const textarea = event.target;
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     },
     handleThemeChange() {
+      // This function handles the theme change so the user can hit the random selection button indefinitely.
       if (this.selectedTheme !== "custom") {
         this.activeSong.theme = this.selectedTheme;
       } else {
@@ -531,12 +567,14 @@ export default {
       this.manualSaveState();
     },
     selectRandomPrompt() {
+      // Shuffle the prompts and select a random one
       const randomIndex = Math.floor(Math.random() * this.getPrompts.length);
       this.selectedTheme = this.getPrompts[randomIndex];
       this.activeSong.theme = this.selectedTheme;
       this.manualSaveState();
     },
     saveActiveSongToStore() {
+      // This function saves the active song to the store for the conditional button at the bottom
       this.saveActiveSong();
       this.saveStateToLocalStorage();
       this.setUnsavedChanges(false);
