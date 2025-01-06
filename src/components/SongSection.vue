@@ -302,12 +302,20 @@ export default {
         const chordMap = {
           I: notes[0],
           ii: notes[1] + "m",
+          "ii°": notes[1] + "°",
           iii: notes[2] + "m",
           IV: notes[3],
           V: notes[4],
           vi: notes[5] + "m",
           "vii°": notes[6] + "°",
+          i: notes[0] + "m",
+          III: notes[2],
+          iv: notes[3] + "m",
+          v: notes[4] + "m",
+          VI: notes[5],
+          VII: notes[6],
         };
+
         this.chordProgression = this.selectedProgression
           .split(" - ")
           .map((roman) => chordMap[roman] || roman)
