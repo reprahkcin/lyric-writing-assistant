@@ -1,8 +1,9 @@
 <template>
-  <div v-if="section" class="card mb-3 shadow-sm bg-card">
+  <div class="card mb-3 shadow-sm bg-card">
     <div class="card-body bg-section-card pt-1 rounded">
       <div class="row">
         <div class="col">
+          <!-- Header/Link/Timer/Control Bar at the top of each section -->
           <div
             class="d-flex justify-content-between align-items-center text-dark-muted"
           >
@@ -64,6 +65,7 @@
 
         <!-- Left Column - They are switched to stack properly -->
         <div class="col-12 col-md-8 order-2 order-md-1">
+          <!-- Section Narrative Field -->
           <input
             type="text"
             class="form-control mb-2 input-off-white"
@@ -72,6 +74,7 @@
             @blur="saveModifiedSectionToActiveSongInVuex"
             @input="setUnsavedChanges(true)"
           />
+          <!-- Chord Progression section -->
           <div class="input-group mb-2">
             <input
               type="text"
@@ -100,6 +103,7 @@
             </select>
           </div>
           <hr />
+          <!-- All the lines -->
           <div
             v-for="(line, index) in section.lines"
             :key="index"
@@ -113,6 +117,7 @@
               @input="setUnsavedChanges(true)"
               :placeholder="`Line ${index + 1}`"
             />
+            <!-- Line Movement Controls -->
             <div class="btn-group ms-2 gap-1">
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
@@ -136,6 +141,7 @@
               </button>
             </div>
           </div>
+          <!-- Add/Remove Line Buttons -->
           <button
             class="btn btn-outline-round mx-1"
             @click="removeLine"
@@ -148,6 +154,7 @@
           </button>
         </div>
       </div>
+      <!-- Manual Save Button -->
       <button
         class="btn"
         :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
@@ -157,16 +164,13 @@
       </button>
     </div>
   </div>
-  <div v-else>
-    <p class="text-center text-muted">Section not found.</p>
-  </div>
 </template>
 
 <script>
-import CountdownTimer from "@/components/CountdownTimer.vue";
-import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue";
-import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json";
-import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json";
+import CountdownTimer from "@/components/CountdownTimer.vue"; // Import CountdownTimer component for the headers of each section
+import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue"; // Import RhymeThesaurusPanel component for the right column of each section. API calls are made to the RhymeBrain API to get rhymes and synonyms for the brainstorming text.
+import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major scale progressions from a JSON file
+import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor scale progressions from a JSON file
 
 import { mapActions, mapGetters } from "vuex";
 
@@ -215,12 +219,12 @@ export default {
   },
   methods: {
     ...mapActions([
-      "updateActiveSongSection",
-      "moveActiveSongSection",
-      "deleteActiveSongSection",
-      "updateActiveSongLine",
-      "setUnsavedChanges",
-      "addActiveSongLine",
+      "updateActiveSongSection", // Updates a section in the activeSong
+      "moveActiveSongSection", // Moves a section up or down within the activeSong
+      "deleteActiveSongSection", // Deletes a section from the activeSong
+      "updateActiveSongLine", // Updates a line in the activeSong
+      "setUnsavedChanges", // Lets the app know there are unsaved changes
+      "addActiveSongLine", // Adds a new line to the activeSong
       "deleteActiveSongLine",
     ]),
     moveLine(index, direction) {
@@ -240,11 +244,13 @@ export default {
       }
     },
     confirmRemoveSelf() {
+      // Destrcutive action, confirm before removing
       if (confirm("Are you sure you want to remove this section?")) {
         this.removeSelf();
       }
     },
     removeSelf() {
+      // Remove the section from the activeSong
       // Delete the section from the active song
       this.deleteActiveSongSection(this.section.id);
     },
@@ -265,10 +271,12 @@ export default {
       }
     },
     moveSelf(direction) {
+      // Move the section up or down within the activeSong
       this.$emit("move-section", direction);
       console.log("moveSelf emitted");
     },
     saveModifiedSectionToActiveSongInVuex() {
+      // Save the modified section to the activeSong in Vuex
       const updatedSection = {
         ...this.section,
         lines: this.localLines,
@@ -281,6 +289,7 @@ export default {
       this.setUnsavedChanges(false);
     },
     applyChordProgression() {
+      // Apply the selected chord progression to the section - Converts interval Roman numerals to chords
       if (this.selectedProgression === "custom") {
         this.isCustomProgression = true;
         return;
@@ -308,6 +317,7 @@ export default {
       }
     },
     updateLine(index, newLine) {
+      // Update a line in the section
       this.updateActiveSongLine({
         sectionId: this.section.id,
         lineIndex: index,
