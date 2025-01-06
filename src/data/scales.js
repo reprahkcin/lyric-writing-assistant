@@ -101,7 +101,15 @@ function generateScale(key, intervals) {
   scale.push(notes[startIndex]);
 
   intervals.forEach((interval) => {
-    startIndex += interval === "W" ? 2 : interval === "H" ? 1 : 3;
+    let step;
+    if (interval === "W") {
+      step = 2;
+    } else if (interval === "H") {
+      step = 1;
+    } else {
+      step = 3;
+    }
+    startIndex += step;
     scale.push(notes[startIndex % 12]);
   });
 
