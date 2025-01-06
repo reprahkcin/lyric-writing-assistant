@@ -18,10 +18,20 @@ Lyric Writing Assistant is a tool designed to help songwriters create and organi
 - **Plain Text Layout**: View and copy your song in a plain text (tab) format for easy sharing and printing.
 - **Countdown Timer**: Use a countdown timer to challenge yourself to write within a set time limit.
 
+### Attributions and Credits
+
+- **RhymeBrain API**: Rhyme results are provided by [RhymeBrain.com](https://rhymebrain.com).
+- **Merriam-Webster Thesaurus API**: Synonym results are provided by [Merriam-Webster Thesaurus](https://dictionaryapi.com).
+- **Merriam-Webster Dictionary API**: Dictionary results are provided by [Merriam-Webster Dictionary](https://dictionaryapi.com).
+- **Hookpad**: Link to [Hookpad by Hooktheory](https://hookpad.hooktheory.com/).
+- **Chrome Music Lab**: Integration with [Chrome Music Lab](https://musiclab.chromeexperiments.com/).
+- **GitHub Copilot**: This project was developed with the assistance of [GitHub Copilot](https://github.com/features/copilot).
+
 ## Table of Contents
 
 - [Description](#description)
 - [Features](#features)
+- [Attributions and Credits](#attributions-and-credits)
 - [Project Setup](#project-setup)
 - [Usage](#usage)
 - [Contributing](#contributing)
