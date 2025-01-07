@@ -97,7 +97,7 @@
                 <tr>
                   <th>Diatonic Interval</th>
                   <th
-                    v-for="(numeral, index) in romanNumerals"
+                    v-for="(numeral, index) in selectedScale.romanNumerals"
                     :key="index"
                     class="text-center"
                   >
