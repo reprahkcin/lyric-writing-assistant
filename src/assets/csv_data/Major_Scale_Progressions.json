@@ -5,7 +5,7 @@
   },
   {
     "Chord Progression": "I - V - vi - IV",
-    "Emotional Quality": "Emotional, nostalgic"
+    "Emotional Quality": "Pat Finnerty, sassy"
   },
   {
     "Chord Progression": "ii - V - I",
@@ -55,7 +55,10 @@
     "Chord Progression": "I - ii - V",
     "Emotional Quality": "Hopeful, anticipatory"
   },
-  { "Chord Progression": "I - iii - IV", "Emotional Quality": "Warm, lyrical" },
+  { 
+    "Chord Progression": "I - iii - IV", 
+  "Emotional Quality": "Warm, lyrical" 
+},
   {
     "Chord Progression": "I - V - ii - IV",
     "Emotional Quality": "Resolute, dynamic"
