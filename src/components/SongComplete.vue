@@ -132,37 +132,38 @@
           <div class="mb-3">
             <!-- Theme Field -->
             <label for="songTheme" class="form-label fw-bold">Theme</label>
-            <select
-              class="form-select input-off-white"
-              id="songTheme"
-              v-model="selectedTheme"
-              @blur="manualSaveState"
-              @change="handleThemeChange"
-            >
-              <option value="" disabled>Select a theme</option>
-              <option value="custom">Custom</option>
-              <option
-                v-for="prompt in getPrompts"
-                :key="prompt"
-                :value="prompt"
-              >
-                {{ prompt }}
-              </option>
-            </select>
             <input
-              v-if="selectedTheme === 'custom'"
               type="text"
-              class="form-control input-off-white mt-2"
+              class="form-control input-off-white mb-2"
               v-model="activeSong.theme"
-              placeholder="Briefly, this song is about..."
               @blur="manualSaveState"
             />
-            <button
-              class="btn btn-outline-custom btn-sm fw-bold mt-2"
-              @click="selectRandomPrompt"
-            >
-              Select Random Prompt
-            </button>
+            <div class="d-flex align-items-center">
+              <select
+                class="form-select input-off-white me-2"
+                id="songTheme"
+                v-model="selectedTheme"
+                @blur="manualSaveState"
+                @change="handleThemeChange"
+              >
+                <option value="" disabled>
+                  Write Your Own or Select a Prompt
+                </option>
+                <option
+                  v-for="prompt in getPrompts"
+                  :key="prompt"
+                  :value="prompt"
+                >
+                  {{ prompt }}
+                </option>
+              </select>
+              <button
+                class="btn btn-outline-custom btn-sm fw-bold w-50"
+                @click="selectRandomPrompt"
+              >
+                Select Random Prompt
+              </button>
+            </div>
           </div>
           <div class="mb-3">
             <!-- Hook Field -->
@@ -305,6 +306,7 @@ export default {
       selectedTemplate: "", // Add selectedTemplate to data
       romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
       selectedTheme: "", // Add selectedTheme to data
+      customString: "Write your own custom theme", // Custom string for theme
     };
   },
   computed: {
@@ -559,7 +561,7 @@ export default {
     },
     handleThemeChange() {
       // This function handles the theme change so the user can hit the random selection button indefinitely.
-      if (this.selectedTheme !== "custom") {
+      if (this.selectedTheme !== this.customString) {
         this.activeSong.theme = this.selectedTheme;
       } else {
         this.activeSong.theme = "";
