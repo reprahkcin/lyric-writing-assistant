@@ -193,8 +193,6 @@
 <script>
 import CountdownTimer from "@/components/CountdownTimer.vue"; // Import CountdownTimer component for the headers of each section
 import RhymeThesaurusPanel from "@/components/RhymeThesaurusPanel.vue"; // Import RhymeThesaurusPanel component for the right column of each section. API calls are made to the RhymeBrain API to get rhymes and synonyms for the brainstorming text.
-import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major scale progressions from a JSON file
-import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor scale progressions from a JSON file
 
 import { mapActions, mapGetters } from "vuex";
 
@@ -223,8 +221,6 @@ export default {
       sectionNarrative: "", // Local copy of section narrative
       chordProgression: "", // Local copy of chord progression
       brainstormingText: "", // Local copy of brainstorming text
-      majorProgressions, // Load major progressions
-      minorProgressions, // Load minor progressions
       selectedProgression: "", // Add selectedProgression to data
       isCustomProgression: false, // Track if the progression is custom
       isMinimized: true, // Track if the section is minimized
@@ -234,12 +230,10 @@ export default {
     ...mapGetters({
       activeSong: "getActiveSong",
       getUnsavedChanges: "getUnsavedChanges",
+      availableProgressions: "getAvailableProgressions",
     }),
     section() {
       return this.activeSong?.sections.find((sec) => sec.id === this.sectionId);
-    },
-    availableProgressions() {
-      return [...this.majorProgressions, ...this.minorProgressions];
     },
   },
   methods: {
@@ -327,6 +321,7 @@ export default {
         const notes = scale.notes(key);
         const chordMap = {
           I: notes[0],
+          "i°": notes[0] + "°",
           ii: notes[1] + "m",
           "ii°": notes[1] + "°",
           iii: notes[2] + "m",
