@@ -1,7 +1,16 @@
 <template>
   <div class="card bg-card text-dark-muted mb-3 shadow-sm">
     <div class="card-body">
-      <h1 class="fs-4 my-auto fw-bold text-start">Song</h1>
+      <div class="d-flex justify-content-between">
+        <h1 class="fs-4 my-auto fw-bold text-start">Song</h1>
+        <button
+          class="btn btn-sm fw-bold mx-1"
+          :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
+          @click="saveActiveSongToStore"
+        >
+          Save All
+        </button>
+      </div>
       <hr />
       <div v-if="activeSong && activeSong.id">
         <div class="text-start">
@@ -395,6 +404,7 @@ export default {
       "updateChordProgressions",
       "saveActiveSong",
       "setUnsavedChanges",
+      "setActiveSong", // Add setActiveSong to mapActions
     ]),
     manualSaveState() {
       if (this.activeSong) {
@@ -449,34 +459,39 @@ export default {
       }
     },
     applyTemplate() {
-      // This converts the the template, which is just an array of characters (c,v,b), into actual sections
       const template = this.getSectionTemplates.find(
         (t) => t.name === this.selectedTemplate
       );
-      console.log(template);
-      if (template) {
-        this.activeSong.sections = template.arrangement.map((type, index) => {
-          let sectionType;
-          if (type === "v") {
-            sectionType = "Verse";
-          } else if (type === "c") {
-            sectionType = "Chorus";
-          } else {
-            sectionType = "Bridge";
-          }
-          return {
-            id: index + 1,
-            order: [index],
-            type: sectionType,
-            lines: ["", "", "", ""],
-            sectionNarrative: "",
-            chordProgression: "",
-            selectedChordProgression: "",
-            brainstormingText: "",
-          };
-        });
-        this.updateSong(this.activeSong); // Trigger Vuex store update
+      if (!template) {
+        console.error("Template not found");
+        return;
       }
+      const sections = template.arrangement.map((type, index) => {
+        let sectionType;
+        if (type === "v") {
+          sectionType = "Verse";
+        } else if (type === "c") {
+          sectionType = "Chorus";
+        } else {
+          sectionType = "Bridge";
+        }
+        return {
+          id: new Date().getTime() + index,
+          order: [index],
+          type: sectionType,
+          lines: ["", "", "", ""],
+          sectionNarrative: "",
+          chordProgression: "",
+          selectedChordProgression: "",
+          brainstormingText: "",
+          isMinimized: true, // Ensure new sections start minimized
+        };
+      });
+      this.setActiveSong({
+        ...this.activeSong,
+        sections,
+      });
+      this.saveStateToLocalStorage();
     },
     createSection(type) {
       // This is the Section Constructor

@@ -85,7 +85,11 @@ const store = createStore({
       }
     },
     ADD_ACTIVE_SONG_SECTION(state, section) {
-      state.activeSong.sections.push(section);
+      const newSection = {
+        ...section,
+        isMinimized: true, // Ensure new sections start minimized
+      };
+      state.activeSong.sections.push(newSection);
     },
     DELETE_ACTIVE_SONG_SECTION(state, sectionId) {
       state.activeSong.sections = state.activeSong.sections.filter((section) => section.id !== sectionId);
@@ -146,8 +150,13 @@ const store = createStore({
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     addActiveSongSection({ commit, dispatch }, section) {
-      // Commit the ADD_ACTIVE_SONG_SECTION mutation with the section
-      commit("ADD_ACTIVE_SONG_SECTION", section);
+      // Set the isMinimized property to true for new sections
+      const newSection = {
+        ...section,
+        isMinimized: true,
+      };
+      // Commit the ADD_ACTIVE_SONG_SECTION mutation with the new section
+      commit("ADD_ACTIVE_SONG_SECTION", newSection);
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     deleteSong({ commit, dispatch }, value) {

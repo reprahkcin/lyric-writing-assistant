@@ -1,6 +1,9 @@
 <template>
   <div class="card mb-3 shadow-sm bg-card">
-    <div class="card-body bg-section-card pt-1 rounded">
+    <div
+      class="card-body bg-section-card rounded"
+      :class="{ 'pt-1': !isMinimized }"
+    >
       <div class="row">
         <div class="col">
           <!-- Header/Link/Timer/Control Bar at the top of each section -->
@@ -8,19 +11,27 @@
             class="d-flex justify-content-between align-items-center text-dark-muted"
           >
             <div class="ms-2 fs-5 fw-bold text-capitalize">
-              {{ section.type }}
-              <a
-                href="https://hookpad.hooktheory.com/"
-                target="_blank"
-                class="btn btn-outline-custom btn-sm py-0 ms-2"
-                title="Open Hookpad by Hooktheory in a new tab"
+              <button
+                class="btn btn-outline-custom btn-sm py-0 me-2"
+                @click="isMinimized = !isMinimized"
+                :title="isMinimized ? 'Maximize' : 'Minimize'"
               >
-                <span class="bi bi-box-arrow-up-right">
-                  <span class="ms-2">Hookpad</span></span
-                >
-              </a>
+                <span
+                  :class="
+                    isMinimized
+                      ? 'bi bi-arrows-angle-expand'
+                      : 'bi bi-arrows-angle-contract'
+                  "
+                ></span>
+              </button>
+              {{ section.type }}
             </div>
-            <CountdownTimer class="ms-auto me-2 text-dark-muted" />
+
+            <CountdownTimer
+              class="ms-auto me-2 text-dark-muted"
+              v-if="!isMinimized"
+            />
+
             <div>
               <button
                 class="btn btn-outline-custom fw-bold btn-sm py-0 me-2"
@@ -48,8 +59,8 @@
           </div>
         </div>
       </div>
-      <hr class="mt-1 mb-3" />
-      <div class="row">
+      <hr class="mt-1 mb-3" v-if="!isMinimized" />
+      <div class="row" v-if="!isMinimized">
         <!-- Right Column -->
         <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
           <RhymeThesaurusPanel />
@@ -154,14 +165,27 @@
           </button>
         </div>
       </div>
-      <!-- Manual Save Button -->
-      <button
-        class="btn"
-        :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
-        @click="saveModifiedSectionToActiveSongInVuex"
-      >
-        Save
-      </button>
+      <div v-if="!isMinimized">
+        <a
+          class="btn btn-outline-custom btn-sm py-0 me-2"
+          href="https://hookpad.hooktheory.com/"
+          target="_blank"
+          title="Open
+          Hookpad by Hooktheory in a new tab"
+        >
+          <span class="bi bi-box-arrow-up-right">
+            <span class="ms-2">Hookpad</span></span
+          >
+        </a>
+        <!-- Manual Save Button -->
+        <button
+          class="btn btn-sm py-0 me-2"
+          :class="getUnsavedChanges ? 'btn-danger' : 'btn-outline-custom'"
+          @click="saveModifiedSectionToActiveSongInVuex"
+        >
+          Save
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -203,6 +227,7 @@ export default {
       minorProgressions, // Load minor progressions
       selectedProgression: "", // Add selectedProgression to data
       isCustomProgression: false, // Track if the progression is custom
+      isMinimized: true, // Track if the section is minimized
     };
   },
   computed: {
@@ -284,6 +309,7 @@ export default {
         chordProgression: this.chordProgression,
         selectedProgression: this.selectedProgression,
         brainstormingText: this.brainstormingText,
+        isMinimized: this.isMinimized, // Include isMinimized
       };
       this.updateActiveSongSection(updatedSection);
       this.setUnsavedChanges(false);
@@ -334,6 +360,9 @@ export default {
     },
   },
   watch: {
+    isMinimized() {
+      this.saveModifiedSectionToActiveSongInVuex();
+    },
     section: {
       handler(newSection) {
         if (newSection) {
@@ -342,6 +371,7 @@ export default {
           this.chordProgression = newSection.chordProgression || "";
           this.brainstormingText = newSection.brainstormingText || "";
           this.selectedProgression = newSection.selectedProgression || "";
+          this.isMinimized = newSection.isMinimized || false; // Load isMinimized
         }
       },
       immediate: true,
