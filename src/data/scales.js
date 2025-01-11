@@ -44,7 +44,7 @@ const scales = [
     emotionalQuality: "Bluesy",
     intervals: ["W", "W", "H", "W", "W", "H", "W"],
     notes: (key) => generateScale(key, ["W", "W", "H", "W", "W", "H", "W"]),
-    chords: ["Maj", "min", "dim", "Maj", "min", "Maj", "min"],
+    chords: ["Maj", "min", "dim", "Maj", "min", "min", "Maj"],
     romanNumerals: ["I", "ii", "iii°", "IV", "v", "vi", "VII"],
   },
   {
@@ -52,24 +52,32 @@ const scales = [
     emotionalQuality: "Dissonant",
     intervals: ["H", "W", "W", "H", "W", "W", "W"],
     notes: (key) => generateScale(key, ["H", "W", "W", "H", "W", "W", "W"]),
-    chords: ["dim", "Maj", "Maj", "min", "min", "Maj", "min"],
-    romanNumerals: ["i°", "II", "iii", "iv", "V", "VI", "vii"],
+    chords: ["dim", "min", "min", "Maj", "min", "Maj", "Maj"],
+    romanNumerals: ["i°", "ii", "iii", "IV", "v", "VI", "VII"],
   },
   {
     name: "Pentatonic",
     emotionalQuality: "Versatile",
     intervals: ["W", "W", "WH", "W", "WH"],
     notes: (key) => generateScale(key, ["W", "W", "WH", "W", "WH"]),
-    chords: ["Maj", "min"],
+    chords: ["Maj", "min", "min", "Maj", "min"],
     romanNumerals: ["I", "ii", "iii", "V", "vi"],
   },
   {
-    name: "Blues",
+    name: "Blues - Major",
     emotionalQuality: "Soulful",
-    intervals: ["W", "H", "H", "WH", "H", "WH"],
-    notes: (key) => generateScale(key, ["W", "H", "H", "WH", "H", "WH"]),
-    chords: ["min", "min", "dim"],
-    romanNumerals: ["i", "ii", "iii°", "iv", "v", "vi", "vii"],
+    intervals: ["W", "W", "H", "W", "W", "H", "W"],
+    notes: (key) => generateScale(key, ["W", "W", "H", "W", "W", "H", "W"]),
+    chords: ["Maj", "min", "min", "Maj", "Maj", "min", "dim"],
+    romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"],
+  },
+  {
+    name: "Blues - Minor",
+    emotionalQuality: "Soulful",
+    intervals: ["W", "H", "W", "W", "H", "W", "W"],
+    notes: (key) => generateScale(key, ["W", "H", "W", "W", "H", "W", "W"]),
+    chords: ["min", "dim", "Maj", "min", "min", "Maj", "Maj"],
+    romanNumerals: ["i", "ii°", "III", "iv", "v", "VI", "VII"],
   },
   {
     name: "Harmonic Minor",
@@ -86,7 +94,7 @@ const scales = [
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "W", "W", "H"]),
     chords: ["min", "min", "Aug", "Maj", "Maj", "dim", "dim"],
     romanNumerals: ["i", "ii", "III+", "IV", "V", "vi°", "vii°"],
-  },
+  }
 ];
 
 function generateScale(key, intervals) {
