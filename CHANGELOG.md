@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 01-9-2025
+
+### Fixed
+
+- Ensured sections start minimized when created individually or from a template in `SongComplete.vue`.
+- Corrected the `applyTemplate` method in `SongComplete.vue` to handle template application properly.
+- Updated `SongSection.vue` to persist the minimized state of sections.
+- Updated `store.js` to ensure new sections start minimized and persist their state.
+
 ## [1.0.3] - 01-8-2025
 
 ### Fixed
