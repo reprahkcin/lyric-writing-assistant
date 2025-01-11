@@ -1,3 +1,16 @@
-const keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const keys = [    
+    "C",
+    "G",
+    "D",
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F"
+];
 
 export default keys;
