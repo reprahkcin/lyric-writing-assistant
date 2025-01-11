@@ -3,8 +3,19 @@ import sectionTemplates from "@/data/sectionTemplates"; // Import section templa
 import moods from "@/data/moods"; // Import moods
 import keys from "@/data/keys"; // Import keys
 import scales from "@/data/scales"; // Import scales
-import majorProgressions from "@/assets/csv_data/Major_Scale_Progressions.json"; // Import major progressions
-import minorProgressions from "@/assets/csv_data/Minor_Scale_Progressions.json"; // Import minor progressions
+import majorProgressions from "@/data/Major_Progressions.json"; // Import major progressions
+import minorProgressions from "@/data/Minor_Progressions.json"; // Import minor progressions
+import dorianProgressions from "@/data/Dorian_Progressions.json"; // Import dorian progressions
+import phrygianProgressions from "@/data/Phrygian_Progressions.json"; // Import phrygian progressions
+import lydianProgressions from "@/data/Lydian_Progressions.json"; // Import lydian progressions
+import mixolydianProgressions from "@/data/Mixolydian_Progressions.json"; // Import mixolydian progressions
+import locrianProgressions from "@/data/Locrian_Progressions.json"; // Import locrian progressions
+import minorPentatonicProgressions from "@/data/Minor_Pentatonic_Progressions.json"; // Import pentatonic progressions
+import minorBluesProgressions from "@/data/Minor_Blues_Progressions.json"; // Import blues progressions
+import majorPentatonicProgressions from "@/data/Major_Pentatonic_Progressions.json"; // Import major pentatonic progressions
+import majorBluesProgressions from "@/data/Major_Blues_Progressions.json"; // Import major blues progressions
+import harmonicProgressions from "@/data/Harmonic_Progressions.json"; // Import minor harmonic progressions
+import melodicMinorProgressions from "@/data/Melodic_Minor_Progressions.json"; // Import melodic minor progressions
 import prompts from "@/data/prompts"; // Import prompts
 
 const store = createStore({
@@ -12,6 +23,7 @@ const store = createStore({
     songs: JSON.parse(localStorage.getItem("songs")) || [], // Load songs from local storage
     activeSong: JSON.parse(localStorage.getItem("activeSong")) || null, // Load active song from local storage
     
+
     unsavedChanges: false, // Track unsaved changes
     sectionTemplates, // Add sectionTemplates to state
     moods, // Add moods to state
@@ -19,6 +31,17 @@ const store = createStore({
     scales, // Add scales to state
     majorProgressions, // Add major progressions to state
     minorProgressions, // Add minor progressions to state
+    dorianProgressions, // Add dorian progressions to state
+    phrygianProgressions, // Add phrygian progressions to state
+    lydianProgressions, // Add lydian progressions to state
+    mixolydianProgressions, // Add mixolydian progressions to state
+    locrianProgressions, // Add locrian progressions to state
+    minorPentatonicProgressions, // Add minor pentatonic progressions to state
+    minorBluesProgressions, // Add minor blues progressions to state
+    majorPentatonicProgressions, // Add major pentatonic progressions to state
+    majorBluesProgressions, // Add major blues progressions to state
+    harmonicProgressions, // Add minor harmonic progressions to state
+    melodicMinorProgressions, // Add melodic minor progressions to state
     prompts, // Add prompts to state
     chordProgressions: [], // Add chordProgressions to state
   },
@@ -169,9 +192,11 @@ const store = createStore({
       commit("UPDATE_SONG", value);
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
-    setActiveSong({ commit }, value) {
+    setActiveSong({ commit, dispatch }, value) {
       // Commit the SET_ACTIVE_SONG mutation with the song to set as active
       commit("SET_ACTIVE_SONG", value);
+      // Update chord progressions based on the active song's scale and key
+      dispatch("updateChordProgressions");
     },
     updateActiveSongSection({ commit, dispatch }, section) {
       // Commit the UPDATE_ACTIVE_SONG_SECTION mutation with the section
@@ -225,11 +250,50 @@ const store = createStore({
         (s) => s.name === state.activeSong?.scale
       );
       if (selectedKey && selectedScale) {
-        const chordProgressions = selectedScale.name
-          .toLowerCase()
-          .includes("minor")
-          ? state.minorProgressions
-          : state.majorProgressions;
+        let chordProgressions;
+        switch (selectedScale.name.toLowerCase()) {
+          case "major":
+            chordProgressions = state.majorProgressions;
+            break;
+          case "minor":
+            chordProgressions = state.minorProgressions;
+            break;
+          case "dorian":
+            chordProgressions = state.dorianProgressions;
+            break;
+          case "phrygian":
+            chordProgressions = state.phrygianProgressions;
+            break;
+          case "lydian":
+            chordProgressions = state.lydianProgressions;
+            break;
+          case "mixolydian":
+            chordProgressions = state.mixolydianProgressions;
+            break;
+          case "locrian":
+            chordProgressions = state.locrianProgressions;
+            break;
+          case "minor pentatonic":
+            chordProgressions = state.minorPentatonicProgressions;
+            break;
+          case "minor blues":
+            chordProgressions = state.minorBluesProgressions;
+            break;
+          case "major pentatonic":
+            chordProgressions = state.majorPentatonicProgressions;
+            break;
+          case "major blues":
+            chordProgressions = state.majorBluesProgressions;
+            break;
+          case "harmonic minor":
+            chordProgressions = state.harmonicProgressions;
+            break;
+          case "melodic minor":
+            chordProgressions = state.melodicMinorProgressions;
+            break;
+          default:
+            chordProgressions = [];
+        }
         commit("SET_CHORD_PROGRESSIONS", chordProgressions);
       } else {
         commit("SET_CHORD_PROGRESSIONS", [
@@ -248,6 +312,9 @@ const store = createStore({
     },
   },
   getters: {
+    getAvailableProgressions(state) {
+      return state.chordProgressions;
+    },
     getUnsavedChanges(state) {
       // Return the unsaved changes state
       return state.unsavedChanges;
