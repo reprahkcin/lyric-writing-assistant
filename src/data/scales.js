@@ -108,17 +108,17 @@ const scales = [
 function generateScale(key, intervals) {
   const notes = [
     "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
     "G",
-    "G#",
+    "D",
     "A",
-    "A#",
+    "E",
     "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F",
   ];
   let scale = [];
   let startIndex = notes.indexOf(key);
