@@ -1,0 +1,651 @@
+{
+  "chords": [
+    {
+      "name": "A major",
+      "fingers": [
+        [6, "x"],
+        [5, 0],
+        [4, 2],
+        [3, 2],
+        [2, 2],
+        [1, 0]
+      ],
+      "barres": []
+    },
+    {
+      "name": "A minor",
+      "fingers": [
+        [6, "x"],
+        [5, 0],
+        [4, 2],
+        [3, 2],
+        [2, 1],
+        [1, 0]
+      ],
+      "barres": []
+    },
+    {
+      "name": "A diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 7],
+        [3, 5],
+        [2, 4],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "A augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 7],
+        [3, 6],
+        [2, 6],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "A# major",
+      "fingers": [
+        [6, "x"],
+        [4, 3],
+        [3, 3],
+        [2, 3]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 1
+        }
+      ]
+    },
+    {
+      "name": "A# minor",
+      "fingers": [
+        [6, "x"],
+        [4, 3],
+        [3, 3],
+        [2, 2]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 1
+        }
+      ]
+    },
+    {
+      "name": "A# diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 8],
+        [3, 6],
+        [2, 5],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "A# augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 8],
+        [3, 7],
+        [2, 7],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "B major",
+      "fingers": [
+        [6, "x"],
+        [4, 4],
+        [3, 4],
+        [2, 4]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 2
+        }
+      ]
+    },
+    {
+      "name": "B minor",
+      "fingers": [
+        [6, "x"],
+        [4, 4],
+        [3, 4],
+        [2, 3]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 2
+        }
+      ]
+    },
+    {
+      "name": "B diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 9],
+        [3, 7],
+        [2, 6],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "B augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 9],
+        [3, 8],
+        [2, 8],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "C major",
+      "fingers": [
+        [6, "x"],
+        [5, 3],
+        [4, 2],
+        [3, 0],
+        [2, 1],
+        [1, 0]
+      ],
+      "barres": []
+    },
+    {
+      "name": "C minor",
+      "fingers": [
+        [6, "x"],
+        [4, 5],
+        [3, 5],
+        [2, 4]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 3
+        }
+      ]
+    },
+    {
+      "name": "C diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 10],
+        [3, 8],
+        [2, 7],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "C augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 10],
+        [3, 9],
+        [2, 9],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "C# major",
+      "fingers": [
+        [6, "x"],
+        [4, 6],
+        [3, 6],
+        [2, 6]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 4
+        }
+      ]
+    },
+    {
+      "name": "C# minor",
+      "fingers": [
+        [6, "x"],
+        [4, 6],
+        [3, 6],
+        [2, 5]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 4
+        }
+      ]
+    },
+    {
+      "name": "C# diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 11],
+        [3, 9],
+        [2, 8],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "C# augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 11],
+        [3, 10],
+        [2, 10],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "D major",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 0],
+        [3, 2],
+        [2, 3],
+        [1, 2]
+      ],
+      "barres": []
+    },
+    {
+      "name": "D minor",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 0],
+        [3, 2],
+        [2, 3],
+        [1, 1]
+      ],
+      "barres": []
+    },
+    {
+      "name": "D diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 12],
+        [3, 10],
+        [2, 9],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "D augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 12],
+        [3, 11],
+        [2, 11],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "D# major",
+      "fingers": [
+        [6, "x"],
+        [4, 8],
+        [3, 8],
+        [2, 8]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 6
+        }
+      ]
+    },
+    {
+      "name": "D# minor",
+      "fingers": [
+        [6, "x"],
+        [4, 8],
+        [3, 8],
+        [2, 7]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 6
+        }
+      ]
+    },
+    {
+      "name": "D# diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 13],
+        [3, 11],
+        [2, 10],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "D# augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 13],
+        [3, 12],
+        [2, 12],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "E major",
+      "fingers": [
+        [6, 0],
+        [5, 2],
+        [4, 2],
+        [3, 1],
+        [2, 0],
+        [1, 0]
+      ],
+      "barres": []
+    },
+    {
+      "name": "E minor",
+      "fingers": [
+        [6, 0],
+        [5, 2],
+        [4, 2],
+        [3, 0],
+        [2, 0],
+        [1, 0]
+      ],
+      "barres": []
+    },
+    {
+      "name": "E diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 14],
+        [3, 12],
+        [2, 11],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "E augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 14],
+        [3, 13],
+        [2, 13],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "F major",
+      "fingers": [
+        [5, 3],
+        [4, 3],
+        [3, 2]
+      ],
+      "barres": [
+        {
+          "fromString": 6,
+          "toString": 1,
+          "fret": 1
+        }
+      ]
+    },
+    {
+      "name": "F minor",
+      "fingers": [
+        [5, 3],
+        [4, 3]
+      ],
+      "barres": [
+        {
+          "fromString": 6,
+          "toString": 1,
+          "fret": 1
+        }
+      ]
+    },
+    {
+      "name": "F diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 15],
+        [3, 13],
+        [2, 12],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "F augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 15],
+        [3, 14],
+        [2, 14],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "F# major",
+      "fingers": [
+        [6, "x"],
+        [4, 11],
+        [3, 11],
+        [2, 11]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 9
+        }
+      ]
+    },
+    {
+      "name": "F# minor",
+      "fingers": [
+        [6, "x"],
+        [4, 11],
+        [3, 11],
+        [2, 10]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 9
+        }
+      ]
+    },
+    {
+      "name": "F# diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 16],
+        [3, 14],
+        [2, 13],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "F# augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 16],
+        [3, 15],
+        [2, 15],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "G major",
+      "fingers": [
+        [6, 3],
+        [5, 2],
+        [4, 0],
+        [3, 0],
+        [2, 0],
+        [1, 3]
+      ],
+      "barres": []
+    },
+    {
+      "name": "G minor",
+      "fingers": [
+        [6, 3],
+        [5, 5],
+        [4, 5]
+      ],
+      "barres": [
+        {
+          "fromString": 6,
+          "toString": 1,
+          "fret": 3
+        }
+      ]
+    },
+    {
+      "name": "G diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 17],
+        [3, 15],
+        [2, 14],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "G augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 17],
+        [3, 16],
+        [2, 16],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+
+    {
+      "name": "G# major",
+      "fingers": [
+        [6, "x"],
+        [4, 13],
+        [3, 13],
+        [2, 13]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 11
+        }
+      ]
+    },
+    {
+      "name": "G# minor",
+      "fingers": [
+        [6, "x"],
+        [4, 13],
+        [3, 13],
+        [2, 12]
+      ],
+      "barres": [
+        {
+          "fromString": 5,
+          "toString": 1,
+          "fret": 11
+        }
+      ]
+    },
+    {
+      "name": "G# diminished",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 18],
+        [3, 16],
+        [2, 15],
+        [1, "x"]
+      ],
+      "barres": []
+    },
+    {
+      "name": "G# augmented",
+      "fingers": [
+        [6, "x"],
+        [5, "x"],
+        [4, 18],
+        [3, 17],
+        [2, 17],
+        [1, "x"]
+      ],
+      "barres": []
+    }
+  ]
+}
