@@ -78,14 +78,16 @@
             <div class="col">
               <div class="mb-3">
                 <!-- Scale Field -->
-                <label for="songScale" class="form-label fw-bold">Scale</label>
+                <label for="songScale" class="form-label fw-bold"
+                  >Scale/Mode</label
+                >
                 <select
                   class="form-select input-off-white"
                   id="songScale"
                   v-model="activeSong.scale"
                   @change="manualSaveState"
                 >
-                  <option value="" disabled>Select a scale</option>
+                  <option value="" disabled>Select a scale or mode</option>
                   <option
                     v-for="scale in getScales"
                     :key="scale.name"
@@ -98,46 +100,7 @@
             </div>
           </div>
           <!-- Pop up Interval Chart -->
-          <div v-if="selectedKey && selectedScale" class="mb-3">
-            <table
-              class="table table-bordered input-off-white text-dark-muted overflow-auto"
-            >
-              <thead>
-                <tr>
-                  <th>Diatonic Interval</th>
-                  <th
-                    v-for="(numeral, index) in selectedScale.romanNumerals"
-                    :key="index"
-                    class="text-center"
-                  >
-                    {{ numeral }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Note</td>
-                  <td
-                    v-for="(note, index) in selectedScaleNotes.slice(0, -1)"
-                    :key="index"
-                    class="text-center"
-                  >
-                    {{ note }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Chord</td>
-                  <td
-                    v-for="(chord, index) in selectedScaleChords"
-                    :key="index"
-                    class="text-center"
-                  >
-                    {{ chord }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <ChordTable />
           <div class="mb-3">
             <!-- Theme Field -->
             <label for="songTheme" class="form-label fw-bold">Theme</label>
@@ -296,6 +259,7 @@
 <script>
 import SongSection from "@/components/SongSection.vue";
 import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
+import ChordTable from "@/components/ChordTable.vue"; // Import ChordTable
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -303,6 +267,7 @@ export default {
   components: {
     SongSection,
     ChromeMusicLab,
+    ChordTable,
   },
   props: {
     plainTextActive: {
