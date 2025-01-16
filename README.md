@@ -24,6 +24,7 @@ Lyric Writing Assistant is a tool designed to help songwriters create and organi
 - **Merriam-Webster Thesaurus API**: Synonym results are provided by [Merriam-Webster Thesaurus](https://dictionaryapi.com).
 - **Merriam-Webster Dictionary API**: Dictionary results are provided by [Merriam-Webster Dictionary](https://dictionaryapi.com).
 - **Hookpad**: Link to [Hookpad by Hooktheory](https://hookpad.hooktheory.com/).
+- **SVGuitar**: Library used for rendering chord diagrams - [GitHub Repo](https://github.com/omnibrain/svguitar/)
 - **Chrome Music Lab**: Integration with [Chrome Music Lab](https://musiclab.chromeexperiments.com/).
 - **GitHub Copilot**: This project was developed with the assistance of [GitHub Copilot](https://github.com/features/copilot).
 
