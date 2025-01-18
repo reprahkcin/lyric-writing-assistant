@@ -57,10 +57,14 @@
           <td
             v-for="(chord, index) in fullScaleChords"
             :key="index"
-            class="text-center"
+            class="text-center align-bottom"
             style="width: 14.28%"
           >
-            <div ref="chordContainer" :id="'chord-' + index"></div>
+            <div
+              ref="chordContainer"
+              :id="'chord-' + index"
+              class="d-flex align-items-end justify-content-center"
+            ></div>
           </td>
         </tr>
       </tbody>
@@ -142,6 +146,9 @@ export default {
     selectedScaleChords() {
       this.renderGuitarChords();
     },
+    selectedKey() {
+      this.renderGuitarChords();
+    },
   },
   methods: {
     colorCoding(chord) {
@@ -200,6 +207,10 @@ export default {
                 fingers: chordData.fingers,
                 barres: chordData.barres || [],
               })
+              .configure({
+                frets: 5,
+                position: chordData.position || 1,
+              })
               .draw();
           }
         }
@@ -251,5 +262,13 @@ export default {
 .bg-base-color {
   color: white;
   background-color: #3498db; /* Same as the Major chord */
+}
+
+.chord-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  min-height: 100px; /* Adjust this value as needed */
 }
 </style>
