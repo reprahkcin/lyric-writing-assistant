@@ -179,17 +179,18 @@
       "name": "C minor",
       "fingers": [
         [6, "x"],
-        [4, 5],
-        [3, 5],
-        [2, 4]
+        [4, 3],
+        [3, 3],
+        [2, 2]
       ],
       "barres": [
         {
           "fromString": 5,
           "toString": 1,
-          "fret": 3
+          "fret": 1
         }
-      ]
+      ],
+      "position": 3
     },
     {
       "name": "C diminished",
@@ -236,17 +237,18 @@
       "name": "C# minor",
       "fingers": [
         [6, "x"],
-        [4, 6],
-        [3, 6],
-        [2, 5]
+        [4, 3],
+        [3, 3],
+        [2, 2]
       ],
       "barres": [
         {
           "fromString": 5,
           "toString": 1,
-          "fret": 4
+          "fret": 1
         }
-      ]
+      ],
+      "position": 4
     },
     {
       "name": "C# diminished",
@@ -485,32 +487,31 @@
     {
       "name": "F# major",
       "fingers": [
-        [6, "x"],
-        [4, 11],
-        [3, 11],
-        [2, 11]
+        [6, 2],
+        [5, 4],
+        [4, 4],
+        [3, 3]
       ],
       "barres": [
         {
-          "fromString": 5,
+          "fromString": 6,
           "toString": 1,
-          "fret": 9
+          "fret": 2
         }
       ]
     },
     {
       "name": "F# minor",
       "fingers": [
-        [6, "x"],
-        [4, 11],
-        [3, 11],
-        [2, 10]
+        [6, 2],
+        [4, 4],
+        [3, 4]
       ],
       "barres": [
         {
-          "fromString": 5,
+          "fromString": 6,
           "toString": 1,
-          "fret": 9
+          "fret": 2
         }
       ]
     },
@@ -594,18 +595,21 @@
     {
       "name": "G# major",
       "fingers": [
-        [6, "x"],
-        [4, 13],
-        [3, 13],
-        [2, 13]
+        [6, 1],
+        [5, 3],
+        [4, 3],
+        [3, 2],
+        [2, 1],
+        [1, 1]
       ],
       "barres": [
         {
-          "fromString": 5,
+          "fromString": 6,
           "toString": 1,
-          "fret": 11
+          "fret": 1
         }
-      ]
+      ],
+      "position": 4
     },
     {
       "name": "G# minor",
