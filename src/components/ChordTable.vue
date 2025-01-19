@@ -202,6 +202,7 @@ export default {
           const chordData = this.getChordData(chordName);
           console.log(`Chord data for ${chordName}:`, chordData);
           if (chordData && chordData.fingers) {
+            console.log(`Rendering chord ${chordName}...`);
             new SVGuitarChord(`#chord-${index}`)
               .chord({
                 fingers: chordData.fingers,
@@ -217,11 +218,11 @@ export default {
       });
     },
     getChordName(chord, note) {
-      if (chord && chord.includes("°")) {
+      if (chord && chord.includes("dim")) {
         return `${note} diminished`;
-      } else if (chord && chord.includes("+")) {
+      } else if (chord && chord.includes("Aug")) {
         return `${note} augmented`;
-      } else if (chord && chord.includes("m")) {
+      } else if (chord && chord.includes("m") && !chord.includes("Maj")) {
         return `${note} minor`;
       } else {
         return `${note} major`;
