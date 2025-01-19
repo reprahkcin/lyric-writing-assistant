@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import scaleNotes from "@/data/scaleNotes.js";
+import majorScales from "@/data/completeScales/majorScales.js";
 import { SVGuitarChord } from "svguitar";
 
 export default {
@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      scaleNotes,
+      majorScales,
     };
   },
   methods: {
@@ -29,7 +29,7 @@ export default {
       console.log("Selected scale:", this.selectedScale);
 
       const selectedScaleNotes =
-        this.scaleNotes[this.selectedScale.name.toLowerCase()];
+        this.majorScales[this.selectedScale.name.toLowerCase()];
       if (!selectedScaleNotes) {
         console.error(
           "No notes found for selected scale:",
