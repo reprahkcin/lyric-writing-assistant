@@ -192,12 +192,12 @@ export default {
       });
 
       // Render new chords
-      this.adjustedScaleChords.forEach((chord, index) => {
+      this.adjustedScaleNotes.forEach((note, index) => {
         const container = this.$refs.chordContainer[index];
         if (container) {
           const chordName = this.getChordName(
-            chord,
-            this.adjustedScaleNotes[index]
+            this.adjustedScaleChords[index],
+            note
           );
           const chordData = this.getChordData(chordName);
           console.log(`Chord data for ${chordName}:`, chordData);
