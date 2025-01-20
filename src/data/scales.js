@@ -102,23 +102,23 @@ const scales = [
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "W", "W", "H"]),
     chords: ["min", "min", "Aug", "Maj", "Maj", "dim", "dim"],
     romanNumerals: ["i", "ii", "III+", "IV", "V", "vi°", "vii°"],
-  }
+  },
 ];
 
 function generateScale(key, intervals) {
   const notes = [
     "C",
-    "G",
-    "D",
-    "A",
-    "E",
-    "B",
-    "F#",
     "C#",
-    "G#",
+    "D",
     "D#",
-    "A#",
+    "E",
     "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
   ];
   let scale = [];
   let startIndex = notes.indexOf(key);
