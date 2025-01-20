@@ -7,7 +7,7 @@
         <tr>
           <th>Diatonic Interval</th>
           <th
-            v-for="(numeral, index) in adjustedRomanNumerals"
+            v-for="(numeral, index) in fullRomanNumerals"
             :key="index"
             class="text-center"
             style="width: 14.28%"
@@ -20,22 +20,22 @@
         <tr>
           <td>Note/Chord</td>
           <td
-            v-for="(note, index) in adjustedScaleNotes"
+            v-for="(note, index) in fullScaleNotes"
             :key="index"
             class="text-center"
             style="width: 14.28%"
           >
-            {{ note }}{{ displayNotation(adjustedScaleChords[index]) }}
+            {{ note }}{{ displayNotation(fullScaleChords[index]) }}
           </td>
         </tr>
         <tr>
           <td>Degree</td>
           <td
-            v-for="(degree, index) in adjustedScaleChords"
+            v-for="(degree, index) in fullScaleChords"
             :key="index"
             class="text-center"
             style="width: 14.28%"
-            :class="colorCoding(adjustedScaleChords[index])"
+            :class="colorCoding(fullScaleChords[index])"
           >
             {{ degree }}
           </td>
@@ -55,12 +55,16 @@
             </small>
           </td>
           <td
-            v-for="(chord, index) in adjustedScaleChords"
+            v-for="(chord, index) in fullScaleChords"
             :key="index"
-            class="text-center"
+            class="text-center align-bottom"
             style="width: 14.28%"
           >
-            <div ref="chordContainer" :id="'chord-' + index"></div>
+            <div
+              ref="chordContainer"
+              :id="'chord-' + index"
+              class="d-flex align-items-end justify-content-center"
+            ></div>
           </td>
         </tr>
       </tbody>
@@ -116,12 +120,33 @@ export default {
     isPentatonicScale() {
       return this.selectedScale?.name.toLowerCase().includes("pentatonic");
     },
+    fullScaleNotes() {
+      return [
+        ...this.adjustedScaleNotes,
+        ...Array(7 - this.adjustedScaleNotes.length).fill(""),
+      ];
+    },
+    fullScaleChords() {
+      return [
+        ...this.adjustedScaleChords,
+        ...Array(7 - this.adjustedScaleChords.length).fill(""),
+      ];
+    },
+    fullRomanNumerals() {
+      return [
+        ...this.adjustedRomanNumerals,
+        ...Array(7 - this.adjustedRomanNumerals.length).fill(""),
+      ];
+    },
   },
   mounted() {
     this.renderGuitarChords();
   },
   watch: {
     selectedScaleChords() {
+      this.renderGuitarChords();
+    },
+    selectedKey() {
       this.renderGuitarChords();
     },
   },
@@ -135,8 +160,10 @@ export default {
         return "bg-minor";
       } else if (chord && chord.includes("sus")) {
         return "bg-suspended";
-      } else {
+      } else if (chord && chord.includes("Maj")) {
         return "bg-major";
+      } else {
+        return "bg-secondary";
       }
     },
     displayNotation(chord) {
@@ -157,7 +184,7 @@ export default {
       console.log("Adjusted scale chords:", this.adjustedScaleChords);
 
       // Clear existing chords
-      this.adjustedScaleChords.forEach((_, index) => {
+      this.fullScaleChords.forEach((_, index) => {
         const container = this.$refs.chordContainer[index];
         if (container) {
           container.innerHTML = "";
@@ -165,20 +192,25 @@ export default {
       });
 
       // Render new chords
-      this.adjustedScaleChords.forEach((chord, index) => {
+      this.adjustedScaleNotes.forEach((note, index) => {
         const container = this.$refs.chordContainer[index];
         if (container) {
           const chordName = this.getChordName(
-            chord,
-            this.adjustedScaleNotes[index]
+            this.adjustedScaleChords[index],
+            note
           );
           const chordData = this.getChordData(chordName);
           console.log(`Chord data for ${chordName}:`, chordData);
           if (chordData && chordData.fingers) {
+            console.log(`Rendering chord ${chordName}...`);
             new SVGuitarChord(`#chord-${index}`)
               .chord({
                 fingers: chordData.fingers,
                 barres: chordData.barres || [],
+              })
+              .configure({
+                frets: 5,
+                position: chordData.position || 1,
               })
               .draw();
           }
@@ -186,11 +218,11 @@ export default {
       });
     },
     getChordName(chord, note) {
-      if (chord && chord.includes("°")) {
+      if (chord && chord.includes("dim")) {
         return `${note} diminished`;
-      } else if (chord && chord.includes("+")) {
+      } else if (chord && chord.includes("Aug")) {
         return `${note} augmented`;
-      } else if (chord && chord.includes("m")) {
+      } else if (chord && chord.includes("m") && !chord.includes("Maj")) {
         return `${note} minor`;
       } else {
         return `${note} major`;
@@ -231,5 +263,13 @@ export default {
 .bg-base-color {
   color: white;
   background-color: #3498db; /* Same as the Major chord */
+}
+
+.chord-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  min-height: 100px; /* Adjust this value as needed */
 }
 </style>
