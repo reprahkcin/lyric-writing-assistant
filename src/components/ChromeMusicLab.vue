@@ -28,12 +28,7 @@
 <script>
 export default {
   name: "MelodyManager",
-  props: {
-    song: {
-      type: Object,
-      required: true,
-    },
-  },
+
   data() {
     return {
       isMinimized: true,
