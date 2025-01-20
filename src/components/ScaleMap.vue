@@ -1,45 +1,51 @@
 <template>
   <div class="text-center">
-    <h3 v-if="selectedScale" class="mb-3">{{ selectedScale.name }} Scale</h3>
-    <div class="d-flex flex-column" ref="scaleMap"></div>
+    <h3 class="mb-3">{{ song.key }} {{ song.scale }}</h3>
+    <div class="d-flex flex-column pt-0 mt-0" ref="scaleMap"></div>
   </div>
 </template>
-
 <script>
-import majorScales from "@/data/completeScales/majorScales.js";
+import MajorScales from "@/data/completeScales/majorScales";
 import { SVGuitarChord } from "svguitar";
-
 export default {
   name: "ScaleComplete",
   props: {
-    selectedScale: Object,
+    song: Object,
   },
   data() {
     return {
-      majorScales,
+      AMajor: MajorScales.aMajor,
+      BMajor: MajorScales.bMajor,
+      CMajor: MajorScales.cMajor,
+      DMajor: MajorScales.dMajor,
+      EMajor: MajorScales.eMajor,
+      FMajor: MajorScales.fMajor,
+      GMajor: MajorScales.gMajor,
     };
   },
   methods: {
+    selectProperScale() {
+      switch (this.song.key) {
+        case "A":
+          return this.AMajor;
+        case "B":
+          return this.BMajor;
+        case "C":
+          return this.CMajor;
+        case "D":
+          return this.DMajor;
+        case "E":
+          return this.EMajor;
+        case "F":
+          return this.FMajor;
+        case "G":
+          return this.GMajor;
+        default:
+          return this.GMajor;
+      }
+    },
     renderScale() {
-      if (!this.selectedScale) {
-        console.error("No selected scale");
-        return;
-      }
-
-      console.log("Selected scale:", this.selectedScale);
-
-      const selectedScaleNotes =
-        this.majorScales[this.selectedScale.name.toLowerCase()];
-      if (!selectedScaleNotes) {
-        console.error(
-          "No notes found for selected scale:",
-          this.selectedScale.name
-        );
-        return;
-      }
-
-      console.log("Selected scale notes:", selectedScaleNotes);
-
+      const scale = this.selectProperScale();
       try {
         new SVGuitarChord(this.$refs.scaleMap)
           .configure({
@@ -47,24 +53,28 @@ export default {
             orientation: "horizontal",
             fretMarkers: [2, 4, 6, 8, { fret: 11, double: true }],
           })
-          .chord(selectedScaleNotes)
+          .chord(scale)
           .draw();
       } catch (error) {
         console.error("Error drawing chord chart:", error);
       }
     },
-  },
-  watch: {
-    selectedScale() {
-      this.renderScale();
+    clearScale() {
+      this.$refs.scaleMap.innerHTML = "";
     },
   },
+  watch: {
+    song: {
+      handler() {
+        this.clearScale();
+        this.renderScale();
+      },
+      deep: true,
+    },
+  },
+
   mounted() {
     this.renderScale();
   },
 };
 </script>
-
-<style scoped>
-/* No custom CSS needed */
-</style>
