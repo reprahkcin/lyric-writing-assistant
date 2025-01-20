@@ -1,12 +1,14 @@
 <template>
   <div class="text-center">
     <h3 class="mb-3">{{ song.key }} {{ song.scale }}</h3>
-    <div class="d-flex flex-column pt-0 mt-0" ref="scaleMap"></div>
+    <div class="d-flex flex-column" ref="scaleMap"></div>
   </div>
 </template>
 <script>
 import { generateMajorScaleMap } from "@/data/completeScales/major";
 import { generateMinorScaleMap } from "@/data/completeScales/minor";
+import { generateDorianScaleMap } from "@/data/completeScales/dorian";
+import { generatePhrygianScaleMap } from "@/data/completeScales/phrygian";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -24,6 +26,10 @@ export default {
         return this.selectMajorScale();
       } else if (this.song.scale === "Minor") {
         return this.selectMinorScale();
+      } else if (this.song.scale === "Dorian") {
+        return this.selectDorianScale();
+      } else if (this.song.scale === "Phrygian") {
+        return this.selectPhrygianScale();
       } else {
         return ChromaticScaleMap;
       }
@@ -58,7 +64,6 @@ export default {
           return generateMajorScaleMap("C");
       }
     },
-
     selectMinorScale() {
       switch (this.song.key) {
         case "A":
@@ -89,7 +94,66 @@ export default {
           return generateMajorScaleMap("C");
       }
     },
-
+    selectDorianScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateDorianScaleMap("A");
+        case "A#":
+          return generateDorianScaleMap("A#");
+        case "B":
+          return generateDorianScaleMap("B");
+        case "C":
+          return generateDorianScaleMap("C");
+        case "C#":
+          return generateDorianScaleMap("C#");
+        case "D":
+          return generateDorianScaleMap("D");
+        case "D#":
+          return generateDorianScaleMap("D#");
+        case "E":
+          return generateDorianScaleMap("E");
+        case "F":
+          return generateDorianScaleMap("F");
+        case "F#":
+          return generateDorianScaleMap("F#");
+        case "G":
+          return generateDorianScaleMap("G");
+        case "G#":
+          return generateDorianScaleMap("G#");
+        default:
+          return generateDorianScaleMap("C");
+      }
+    },
+    selectPhrygianScale() {
+      switch (this.song.key) {
+        case "A":
+          return generatePhrygianScaleMap("A");
+        case "A#":
+          return generatePhrygianScaleMap("A#");
+        case "B":
+          return generatePhrygianScaleMap("B");
+        case "C":
+          return generatePhrygianScaleMap("C");
+        case "C#":
+          return generatePhrygianScaleMap("C#");
+        case "D":
+          return generatePhrygianScaleMap("D");
+        case "D#":
+          return generatePhrygianScaleMap("D#");
+        case "E":
+          return generatePhrygianScaleMap("E");
+        case "F":
+          return generatePhrygianScaleMap("F");
+        case "F#":
+          return generatePhrygianScaleMap("F#");
+        case "G":
+          return generatePhrygianScaleMap("G");
+        case "G#":
+          return generatePhrygianScaleMap("G#");
+        default:
+          return generatePhrygianScaleMap("C");
+      }
+    },
     renderScale() {
       const scale = this.selectProperScale();
       try {
@@ -115,6 +179,7 @@ export default {
       this.$refs.scaleMap.innerHTML = "";
     },
   },
+
   watch: {
     song: {
       handler() {
@@ -124,7 +189,6 @@ export default {
       deep: true,
     },
   },
-
   mounted() {
     this.renderScale();
   },
