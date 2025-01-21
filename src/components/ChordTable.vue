@@ -4,9 +4,21 @@
       <label for="scale-mode-chord-table" class="form-label fw-bold"
         >Scale/Mode Information</label
       >
-      <div class="card px-5 mb-3" id="scale-mode-chord-table">
-        <ScaleMap :song="getActiveSong" />
-        <div v-if="selectedKey && selectedScale" class="mb-3">
+      <div
+        :class="['card', 'px-5', 'mb-3', { 'minimized-card': isMinimized }]"
+        id="scale-mode-chord-table"
+      >
+        <div class="text-end">
+          <button
+            class="btn btn-outline-custom btn-sm fw-bold"
+            @click="toggleMinimize"
+            :class="isMinimized ? 'bi bi-chevron-down ' : 'bi bi-chevron-up'"
+          >
+            {{ isMinimized ? "Expand" : "Minimize" }}
+          </button>
+        </div>
+        <ScaleMap :song="getActiveSong" v-if="!isMinimized" />
+        <div v-if="selectedKey && selectedScale && !isMinimized" class="mb-3">
           <table
             class="table table-bordered input-off-white text-dark-muted overflow-auto"
           >
@@ -93,6 +105,11 @@ export default {
   name: "ChordTable",
   components: {
     ScaleMap,
+  },
+  data() {
+    return {
+      isMinimized: false,
+    };
   },
   computed: {
     ...mapGetters([
@@ -244,6 +261,9 @@ export default {
     getChordData(chordName) {
       return chordData.chords.find((chord) => chord.name === chordName) || {};
     },
+    toggleMinimize() {
+      this.isMinimized = !this.isMinimized;
+    },
   },
 };
 </script>
@@ -284,5 +304,10 @@ export default {
   justify-content: center;
   height: 100%;
   min-height: 100px; /* Adjust this value as needed */
+}
+
+.minimized-card {
+  height: 40px; /* Adjust this value as needed */
+  overflow: hidden;
 }
 </style>
