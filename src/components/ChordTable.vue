@@ -1,92 +1,105 @@
 <template>
-  <div v-if="selectedKey && selectedScale" class="mb-3">
-    <table
-      class="table table-bordered input-off-white text-dark-muted overflow-auto"
-    >
-      <thead>
-        <tr>
-          <th>Diatonic Interval</th>
-          <th
-            v-for="(numeral, index) in fullRomanNumerals"
-            :key="index"
-            class="text-center"
-            style="width: 14.28%"
+  <div class="row">
+    <div class="col">
+      <label for="scale-mode-chord-table" class="form-label fw-bold"
+        >Scale/Mode Information</label
+      >
+      <div class="card px-5 mb-3" id="scale-mode-chord-table">
+        <ScaleMap :song="getActiveSong" />
+        <div v-if="selectedKey && selectedScale" class="mb-3">
+          <table
+            class="table table-bordered input-off-white text-dark-muted overflow-auto"
           >
-            {{ numeral }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Note/Chord</td>
-          <td
-            v-for="(note, index) in fullScaleNotes"
-            :key="index"
-            class="text-center"
-            style="width: 14.28%"
-          >
-            {{ note }}{{ displayNotation(fullScaleChords[index]) }}
-          </td>
-        </tr>
-        <tr>
-          <td>Degree</td>
-          <td
-            v-for="(degree, index) in fullScaleChords"
-            :key="index"
-            class="text-center"
-            style="width: 14.28%"
-            :class="colorCoding(fullScaleChords[index])"
-          >
-            {{ degree }}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Guitar Chords
-            <br />
-            <small>
-              <a
-                href="https://github.com/omnibrain/svguitar"
-                class="btn btn-link btn-sm p-0"
-                target="_blank"
-              >
-                <i class="bi bi-info-circle"></i>
-              </a>
-            </small>
-          </td>
-          <td
-            v-for="(chord, index) in fullScaleChords"
-            :key="index"
-            class="text-center align-bottom"
-            style="width: 14.28%"
-          >
-            <div
-              ref="chordContainer"
-              :id="'chord-' + index"
-              class="d-flex align-items-end justify-content-center"
-            ></div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <thead>
+              <tr>
+                <th>Diatonic Interval</th>
+                <th
+                  v-for="(numeral, index) in fullRomanNumerals"
+                  :key="index"
+                  class="text-center"
+                  style="width: 14.28%"
+                >
+                  {{ numeral }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Note/Chord</td>
+                <td
+                  v-for="(note, index) in fullScaleNotes"
+                  :key="index"
+                  class="text-center"
+                  style="width: 14.28%"
+                >
+                  {{ note }}{{ displayNotation(fullScaleChords[index]) }}
+                </td>
+              </tr>
+              <tr>
+                <td>Degree</td>
+                <td
+                  v-for="(degree, index) in fullScaleChords"
+                  :key="index"
+                  class="text-center"
+                  style="width: 14.28%"
+                  :class="colorCoding(fullScaleChords[index])"
+                >
+                  {{ degree }}
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  Guitar Chords
+                  <br />
+                  <small>
+                    <a
+                      href="https://github.com/omnibrain/svguitar"
+                      class="btn btn-link btn-sm p-0"
+                      target="_blank"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </a>
+                  </small>
+                </td>
+                <td
+                  v-for="(chord, index) in fullScaleChords"
+                  :key="index"
+                  class="text-center align-bottom"
+                  style="width: 14.28%"
+                >
+                  <div
+                    ref="chordContainer"
+                    :id="'chord-' + index"
+                    class="d-flex align-items-end justify-content-center"
+                  ></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import ScaleMap from "@/components/ScaleMap.vue";
 import { mapGetters } from "vuex";
 import { SVGuitarChord } from "svguitar";
 import chordData from "@/data/chords.json";
 
 export default {
   name: "ChordTable",
-  data() {
-    return {};
+  components: {
+    ScaleMap,
   },
   computed: {
     ...mapGetters([
       "getSelectedScaleNotes",
       "getSelectedScaleChords",
       "getScales",
+      "getActiveSong",
     ]),
     selectedKey() {
       return this.$store.getters.getActiveSong?.key;
