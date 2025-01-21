@@ -3,13 +3,13 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <p class="text-start text-dark-muted fw-bold mb-3">Chrome Music Lab</p>
-        <button
-          class="btn btn-outline-custom btn-sm fw-bold mb-3"
-          @click="toggleMinimize"
-          :class="isMinimized ? 'bi bi-chevron-down ' : 'bi bi-chevron-up'"
+        <a
+          href="#"
+          @click.prevent="toggleMinimize"
+          class="text-decoration-none fw-bold"
         >
           {{ isMinimized ? "Expand" : "Minimize" }}
-        </button>
+        </a>
       </div>
       <div v-if="!isMinimized">
         <!-- Remove the iframe -->

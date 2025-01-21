@@ -1,26 +1,26 @@
 <template>
   <div class="row">
     <div class="col">
-      <label for="scale-mode-chord-table" class="form-label fw-bold"
-        >Scale/Mode Information</label
-      >
+      <div class="d-flex justify-content-between align-items-center">
+        <label for="scale-mode-chord-table" class="form-label fw-bold"
+          >Scale/Mode Information</label
+        >
+        <a
+          href="#"
+          @click.prevent="toggleMinimize"
+          class="text-decoration-none fw-bold"
+        >
+          {{ isMinimized ? "Expand" : "Minimize" }}
+        </a>
+      </div>
       <div
         :class="['card', 'px-5', 'mb-3', { 'minimized-card': isMinimized }]"
         id="scale-mode-chord-table"
       >
-        <div class="text-end">
-          <button
-            class="btn btn-outline-custom btn-sm fw-bold"
-            @click="toggleMinimize"
-            :class="isMinimized ? 'bi bi-chevron-down ' : 'bi bi-chevron-up'"
-          >
-            {{ isMinimized ? "Expand" : "Minimize" }}
-          </button>
-        </div>
         <ScaleMap :song="getActiveSong" v-if="!isMinimized" />
         <div v-if="selectedKey && selectedScale && !isMinimized" class="mb-3">
           <table
-            class="table table-bordered input-off-white text-dark-muted overflow-auto"
+            class="table table-bordered table-light text-muted overflow-auto"
           >
             <thead>
               <tr>
@@ -291,19 +291,6 @@ export default {
 .bg-suspended {
   color: white;
   background-color: #2874a6; /* Slightly more saturated than minor */
-}
-
-.bg-base-color {
-  color: white;
-  background-color: #3498db; /* Same as the Major chord */
-}
-
-.chord-container {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: 100%;
-  min-height: 100px; /* Adjust this value as needed */
 }
 
 .minimized-card {
