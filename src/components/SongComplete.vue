@@ -101,7 +101,7 @@
           </div>
           <!-- Pop up Interval Chart -->
           <ChordTable />
-          <ScaleMap :song="activeSong" />
+
           <div class="mb-3">
             <!-- Theme Field -->
             <label for="songTheme" class="form-label fw-bold">Theme</label>
@@ -261,7 +261,7 @@
 import SongSection from "@/components/SongSection.vue";
 import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
 import ChordTable from "@/components/ChordTable.vue"; // Import ChordTable
-import ScaleMap from "@/components/ScaleMap.vue"; // Import ScaleMap
+
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -270,7 +270,6 @@ export default {
     SongSection,
     ChromeMusicLab,
     ChordTable,
-    ScaleMap,
   },
   props: {
     plainTextActive: {

@@ -1,7 +1,8 @@
 <template>
-  <div class="text-center">
-    <h3 class="mb-3">{{ song.key }} {{ song.scale }}</h3>
-    <div class="d-flex flex-column" ref="scaleMap"></div>
+  <div class="row">
+    <div class="col">
+      <div ref="scaleMap"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -10,6 +11,8 @@ import { generateMinorScaleMap } from "@/data/completeScales/minor";
 import { generateDorianScaleMap } from "@/data/completeScales/dorian";
 import { generatePhrygianScaleMap } from "@/data/completeScales/phrygian";
 import { generateLydianScaleMap } from "@/data/completeScales/lydian";
+import { generateMixolydianScaleMap } from "@/data/completeScales/mixolydian";
+import { generateLocrianScaleMap } from "@/data/completeScales/locrian";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -33,6 +36,10 @@ export default {
         return this.selectPhrygianScale();
       } else if (this.song.scale === "Lydian") {
         return this.selectLydianScale();
+      } else if (this.song.scale === "Mixolydian") {
+        return this.selectMixolydianScale();
+      } else if (this.song.scale === "Locrian") {
+        return this.selectLocrianScale();
       } else {
         return ChromaticScaleMap;
       }
@@ -185,6 +192,67 @@ export default {
           return generateLydianScaleMap("G#");
         default:
           return generateLydianScaleMap("C");
+      }
+    },
+    selectMixolydianScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateMixolydianScaleMap("A");
+        case "A#":
+          return generateMixolydianScaleMap("A#");
+        case "B":
+          return generateMixolydianScaleMap("B");
+        case "C":
+          return generateMixolydianScaleMap("C");
+        case "C#":
+          return generateMixolydianScaleMap("C#");
+        case "D":
+          return generateMixolydianScaleMap("D");
+        case "D#":
+          return generateMixolydianScaleMap("D#");
+        case "E":
+          return generateMixolydianScaleMap("E");
+        case "F":
+          return generateMixolydianScaleMap("F");
+        case "F#":
+          return generateMixolydianScaleMap("F#");
+        case "G":
+          return generateMixolydianScaleMap("G");
+        case "G#":
+          return generateMixolydianScaleMap("G#");
+        default:
+          return generateMixolydianScaleMap("C");
+      }
+    },
+
+    selectLocrianScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateLocrianScaleMap("A");
+        case "A#":
+          return generateLocrianScaleMap("A#");
+        case "B":
+          return generateLocrianScaleMap("B");
+        case "C":
+          return generateLocrianScaleMap("C");
+        case "C#":
+          return generateLocrianScaleMap("C#");
+        case "D":
+          return generateLocrianScaleMap("D");
+        case "D#":
+          return generateLocrianScaleMap("D#");
+        case "E":
+          return generateLocrianScaleMap("E");
+        case "F":
+          return generateLocrianScaleMap("F");
+        case "F#":
+          return generateLocrianScaleMap("F#");
+        case "G":
+          return generateLocrianScaleMap("G");
+        case "G#":
+          return generateLocrianScaleMap("G#");
+        default:
+          return generateLocrianScaleMap("C");
       }
     },
     renderScale() {
