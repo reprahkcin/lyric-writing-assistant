@@ -312,6 +312,7 @@ const store = createStore({
     },
   },
   getters: {
+    
     getAvailableProgressions(state) {
       return state.chordProgressions;
     },

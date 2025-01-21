@@ -101,6 +101,7 @@
           </div>
           <!-- Pop up Interval Chart -->
           <ChordTable />
+
           <div class="mb-3">
             <!-- Theme Field -->
             <label for="songTheme" class="form-label fw-bold">Theme</label>
@@ -167,7 +168,7 @@
           </div>
         </div>
         <!-- Add ChromeMusicLab component here -->
-        <ChromeMusicLab :song="activeSong" />
+        <ChromeMusicLab />
         <div class="mb-3">
           <!-- Lyrical Arrangement Panel -->
           <div class="card bg-card shadow-sm">
@@ -260,6 +261,7 @@
 import SongSection from "@/components/SongSection.vue";
 import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
 import ChordTable from "@/components/ChordTable.vue"; // Import ChordTable
+
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -324,8 +326,17 @@ export default {
       return this.activeSong?.key;
     },
     selectedScale() {
-      // Returns the selected scale - used to update chord progressions
-      return this.getScales.find((s) => s.name === this.activeSong?.scale);
+      const scale = this.getScales.find(
+        (s) => s.name === this.activeSong?.scale
+      );
+      if (scale && this.activeSong?.key) {
+        return {
+          ...scale,
+          key: this.activeSong.key,
+          type: this.activeSong.scale,
+        };
+      }
+      return null;
     },
     selectedScaleNotes() {
       // Returns the selected scale notes - used to display the interval chart
