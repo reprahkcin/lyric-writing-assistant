@@ -1,6 +1,6 @@
 const baseScaleMap = {
   fingers: [
-    // These values represent a G Phrygian scale.
+    // These values represent a B Phrygian scale.
     // 6th string
 
     [6, 2, { text: "5" }],

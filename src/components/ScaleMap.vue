@@ -9,6 +9,7 @@ import { generateMajorScaleMap } from "@/data/completeScales/major";
 import { generateMinorScaleMap } from "@/data/completeScales/minor";
 import { generateDorianScaleMap } from "@/data/completeScales/dorian";
 import { generatePhrygianScaleMap } from "@/data/completeScales/phrygian";
+import { generateLydianScaleMap } from "@/data/completeScales/lydian";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -30,6 +31,8 @@ export default {
         return this.selectDorianScale();
       } else if (this.song.scale === "Phrygian") {
         return this.selectPhrygianScale();
+      } else if (this.song.scale === "Lydian") {
+        return this.selectLydianScale();
       } else {
         return ChromaticScaleMap;
       }
@@ -152,6 +155,36 @@ export default {
           return generatePhrygianScaleMap("G#");
         default:
           return generatePhrygianScaleMap("C");
+      }
+    },
+    selectLydianScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateLydianScaleMap("A");
+        case "A#":
+          return generateLydianScaleMap("A#");
+        case "B":
+          return generateLydianScaleMap("B");
+        case "C":
+          return generateLydianScaleMap("C");
+        case "C#":
+          return generateLydianScaleMap("C#");
+        case "D":
+          return generateLydianScaleMap("D");
+        case "D#":
+          return generateLydianScaleMap("D#");
+        case "E":
+          return generateLydianScaleMap("E");
+        case "F":
+          return generateLydianScaleMap("F");
+        case "F#":
+          return generateLydianScaleMap("F#");
+        case "G":
+          return generateLydianScaleMap("G");
+        case "G#":
+          return generateLydianScaleMap("G#");
+        default:
+          return generateLydianScaleMap("C");
       }
     },
     renderScale() {

@@ -1,6 +1,6 @@
 const baseScaleMap = {
   fingers: [
-    // These values represent a G Major scale.
+    // These values represent a A Dorian scale.
     // 6th string
 
     [6, 2, { text: "6" }],
