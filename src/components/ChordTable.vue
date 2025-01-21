@@ -173,10 +173,7 @@ export default {
     this.renderGuitarChords();
   },
   watch: {
-    selectedScaleChords() {
-      this.renderGuitarChords();
-    },
-    selectedKey() {
+    getActiveSong() {
       this.renderGuitarChords();
     },
   },
