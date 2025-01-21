@@ -61,18 +61,18 @@ const baseScaleMap = {
 };
 
 const keyOffsets = {
-  A: -10,
-  "A#": -9,
-  B: 0,
-  C: 1,
-  "C#": 2,
-  D: 3,
-  "D#": 4,
-  E: 5,
-  F: 6,
-  "F#": 7,
-  G: 8,
-  "G#": 9,
+  A: -11,
+  "A#": -10,
+  B: -9,
+  C: -8,
+  "C#": -7,
+  D: -6,
+  "D#": -5,
+  E: -4,
+  F: -3,
+  "F#": -2,
+  G: -1,
+  "G#": 0,
 };
 
 function generateDorianScaleMap(key) {
