@@ -1,6 +1,6 @@
 const baseScaleMap = {
   fingers: [
-    // These values represent a G Major scale.
+    // These values represent a G Phrygian scale.
     // 6th string
 
     [6, 2, { text: "5" }],
@@ -61,18 +61,18 @@ const baseScaleMap = {
 };
 
 const keyOffsets = {
-  A: -14,
-  "A#": -13,
-  B: -12,
-  C: -11,
-  "C#": -10,
-  D: -9,
-  "D#": -8,
-  E: -7,
-  F: -6,
-  "F#": -5,
-  G: -4,
-  "G#": 3,
+  A: 9,
+  "A#": 10,
+  B: 11,
+  C: 0,
+  "C#": 1,
+  D: 2,
+  "D#": 3,
+  E: 4,
+  F: 5,
+  "F#": 6,
+  G: 7,
+  "G#": 8,
 };
 
 function generatePhrygianScaleMap(key) {
