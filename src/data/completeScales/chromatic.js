@@ -1,6 +1,6 @@
 const ChromaticScaleMap = {
   fingers: [
-    // These values represent a G Major scale.
+    // These values represent a Chromatic scale with sharps colored black to resemble a piano keyboard
     // 6th string
     [6, 1, { text: "F" }],
     [6, 2, { text: "F#", textColor: "#FFF", color: "#000" }],
