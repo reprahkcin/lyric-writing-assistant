@@ -2,6 +2,7 @@ const baseScaleMap = {
   fingers: [
     // These values represent an E minor scale.
     // 6th string
+    [6, 0, { text: "E" }],
     [6, 2, { text: "2" }],
     [6, 3, { text: "♭3", color: "pink" }],
     [6, 5, { text: "4" }],
@@ -10,6 +11,7 @@ const baseScaleMap = {
     [6, 10, { text: "7" }],
     [6, 12, { text: "R", color: "red" }],
     // 5th string
+    [5, 0, { text: "A" }],
     [5, 2, { text: "5", color: "pink" }],
     [5, 3, { text: "♭6" }],
     [5, 5, { text: "7" }],
@@ -18,6 +20,7 @@ const baseScaleMap = {
     [5, 10, { text: "♭3", color: "pink" }],
     [5, 12, { text: "4" }],
     // 4th string
+    [4, 0, { text: "D" }],
     [4, 2, { text: "R", color: "red" }],
     [4, 4, { text: "♭3", color: "pink" }],
     [4, 5, { text: "4" }],
@@ -26,6 +29,7 @@ const baseScaleMap = {
     [4, 10, { text: "7" }],
     [4, 12, { text: "R", color: "red" }],
     // 3rd string
+    [3, 0, { text: "G" }],
     [3, 2, { text: "4" }],
     [3, 4, { text: "5", color: "pink" }],
     [3, 5, { text: "♭6" }],
@@ -34,6 +38,7 @@ const baseScaleMap = {
     [3, 11, { text: "2" }],
     [3, 12, { text: "♭3", color: "pink" }],
     // 2nd string
+    [2, 0, { text: "B" }],
     [2, 1, { text: "♭6" }],
     [2, 3, { text: "7" }],
     [2, 5, { text: "R", color: "red" }],
@@ -42,6 +47,7 @@ const baseScaleMap = {
     [2, 10, { text: "4" }],
     [2, 12, { text: "5", color: "pink" }],
     // 1st string
+    [1, 0, { text: "e" }],
     [1, 2, { text: "2" }],
     [1, 3, { text: "♭3", color: "pink" }],
     [1, 5, { text: "4" }],
@@ -77,7 +83,7 @@ function generateMinorScaleMap(key) {
   const newScaleMap = JSON.parse(JSON.stringify(baseScaleMap));
   newScaleMap.fingers = newScaleMap.fingers.map(([string, fret, note]) => [
     string,
-    ((fret + offset + 12 - 3) % 12) + 1,
+    fret === 0 ? 0 : ((fret + offset + 12 - 2) % 12) + 1,
     note,
   ]);
 
