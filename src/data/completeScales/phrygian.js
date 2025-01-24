@@ -2,7 +2,7 @@ const baseScaleMap = {
   fingers: [
     // These values represent a B Phrygian scale.
     // 6th string
-
+    [6, 0, { text: "E" }],
     [6, 2, { text: "5", color: "pink" }],
     [6, 3, { text: "6" }],
     [6, 5, { text: "♭7" }],
@@ -11,7 +11,7 @@ const baseScaleMap = {
     [6, 10, { text: "3", color: "pink" }],
     [6, 12, { text: "4" }],
     // 5th string
-
+    [5, 0, { text: "A" }],
     [5, 2, { text: "R", color: "red" }],
     [5, 3, { text: "♭2" }],
     [5, 5, { text: "3", color: "pink" }],
@@ -21,7 +21,7 @@ const baseScaleMap = {
     [5, 12, { text: "♭7" }],
 
     // 4th string
-
+    [4, 0, { text: "D" }],
     [4, 2, { text: "4" }],
     [4, 4, { text: "5", color: "pink" }],
     [4, 5, { text: "6" }],
@@ -30,7 +30,7 @@ const baseScaleMap = {
     [4, 10, { text: "♭2" }],
     [4, 12, { text: "3", color: "pink" }],
     // 3rd string
-
+    [3, 0, { text: "G" }],
     [3, 2, { text: "♭7" }],
     [3, 4, { text: "R", color: "red" }],
     [3, 5, { text: "♭2" }],
@@ -39,7 +39,7 @@ const baseScaleMap = {
     [3, 11, { text: "5", color: "pink" }],
     [3, 12, { text: "6" }],
     // 2nd string
-
+    [2, 0, { text: "B" }],
     [2, 1, { text: "♭2" }],
     [2, 3, { text: "3", color: "pink" }],
     [2, 5, { text: "4" }],
@@ -48,7 +48,7 @@ const baseScaleMap = {
     [2, 10, { text: "♭7" }],
     [2, 12, { text: "R", color: "red" }],
     // 1st string
-
+    [1, 0, { text: "e" }],
     [1, 2, { text: "5", color: "pink" }],
     [1, 3, { text: "6" }],
     [1, 5, { text: "♭7" }],
@@ -84,7 +84,7 @@ function generatePhrygianScaleMap(key) {
   const newScaleMap = JSON.parse(JSON.stringify(baseScaleMap));
   newScaleMap.fingers = newScaleMap.fingers.map(([string, fret, note]) => [
     string,
-    ((fret + offset + 12 - 2) % 12) + 1,
+    fret === 0 ? 0 : ((fret + offset + 12 - 2) % 12) + 1,
     note,
   ]);
 
