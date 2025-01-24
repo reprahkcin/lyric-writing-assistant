@@ -60,18 +60,18 @@ const baseScaleMap = {
 };
 
 const keyOffsets = {
-  A: -5,
-  "A#": -4,
-  B: -3,
-  C: -2,
-  "C#": -1,
-  D: 0,
-  "D#": 1,
-  E: 2,
-  F: 3,
-  "F#": 4,
-  G: 5,
-  "G#": 6,
+  A: -6,
+  "A#": -5,
+  B: -4,
+  C: -3,
+  "C#": -2,
+  D: -1,
+  "D#": 0,
+  E: 1,
+  F: 2,
+  "F#": 3,
+  G: 4,
+  "G#": 5,
 };
 
 function generateMinorScaleMap(key) {
