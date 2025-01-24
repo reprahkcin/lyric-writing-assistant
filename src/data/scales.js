@@ -1,6 +1,7 @@
 const scales = [
   {
     name: "Major",
+    id: "major",
     emotionalQuality: "Happy",
     intervals: ["W", "W", "H", "W", "W", "W", "H"],
     notes: (key) => generateScale(key, ["W", "W", "H", "W", "W", "W", "H"]),
@@ -9,6 +10,7 @@ const scales = [
   },
   {
     name: "Minor",
+    id: "minor",
     emotionalQuality: "Sad",
     intervals: ["W", "H", "W", "W", "H", "W", "W"],
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "H", "W", "W"]),
@@ -17,6 +19,7 @@ const scales = [
   },
   {
     name: "Dorian",
+    id: "dorian",
     emotionalQuality: "Jazz-like",
     intervals: ["W", "H", "W", "W", "W", "H", "W"],
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "W", "H", "W"]),
@@ -25,6 +28,7 @@ const scales = [
   },
   {
     name: "Phrygian",
+    id: "phrygian",
     emotionalQuality: "Exotic",
     intervals: ["H", "W", "W", "W", "H", "W", "W"],
     notes: (key) => generateScale(key, ["H", "W", "W", "W", "H", "W", "W"]),
@@ -33,6 +37,7 @@ const scales = [
   },
   {
     name: "Lydian",
+    id: "lydian",
     emotionalQuality: "Dreamy",
     intervals: ["W", "W", "W", "H", "W", "W", "H"],
     notes: (key) => generateScale(key, ["W", "W", "W", "H", "W", "W", "H"]),
@@ -41,6 +46,7 @@ const scales = [
   },
   {
     name: "Mixolydian",
+    id: "mixolydian",
     emotionalQuality: "Bluesy",
     intervals: ["W", "W", "H", "W", "W", "H", "W"],
     notes: (key) => generateScale(key, ["W", "W", "H", "W", "W", "H", "W"]),
@@ -49,6 +55,7 @@ const scales = [
   },
   {
     name: "Locrian",
+    id: "locrian",
     emotionalQuality: "Dissonant",
     intervals: ["H", "W", "W", "H", "W", "W", "W"],
     notes: (key) => generateScale(key, ["H", "W", "W", "H", "W", "W", "W"]),
@@ -57,6 +64,7 @@ const scales = [
   },
   {
     name: "Major Pentatonic",
+    id: "majorPentatonic",
     emotionalQuality: "Versatile",
     intervals: ["W", "W", "WH", "W", "WH"],
     notes: (key) => generateScale(key, ["W", "W", "WH", "W", "WH"]),
@@ -65,6 +73,7 @@ const scales = [
   },
   {
     name: "Minor Pentatonic",
+    id: "minorPentatonic",
     emotionalQuality: "Bluesy",
     intervals: ["WH", "W", "W", "WH", "W"],
     notes: (key) => generateScale(key, ["WH", "W", "W", "WH", "W"]),
@@ -73,6 +82,7 @@ const scales = [
   },
   {
     name: "Major Blues",
+    id: "majorBlues",
     emotionalQuality: "Soulful",
     intervals: ["W", "W", "H", "W", "W", "H", "W"],
     notes: (key) => generateScale(key, ["W", "W", "H", "W", "W", "H", "W"]),
@@ -81,6 +91,7 @@ const scales = [
   },
   {
     name: "Minor Blues",
+    id: "minorBlues",
     emotionalQuality: "Soulful",
     intervals: ["W", "H", "W", "W", "H", "W", "W"],
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "H", "W", "W"]),
@@ -89,6 +100,7 @@ const scales = [
   },
   {
     name: "Harmonic Minor",
+    id: "harmonicMinor",
     emotionalQuality: "Dramatic",
     intervals: ["W", "H", "W", "W", "H", "WH", "H"],
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "H", "WH", "H"]),
@@ -97,6 +109,7 @@ const scales = [
   },
   {
     name: "Melodic Minor",
+    id: "melodicMinor",
     emotionalQuality: "Sophisticated",
     intervals: ["W", "H", "W", "W", "W", "W", "H"],
     notes: (key) => generateScale(key, ["W", "H", "W", "W", "W", "W", "H"]),
