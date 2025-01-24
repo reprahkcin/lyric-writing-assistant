@@ -2,6 +2,7 @@ const ChromaticScaleMap = {
   fingers: [
     // These values represent a Chromatic scale with sharps colored black to resemble a piano keyboard
     // 6th string
+    [6, 0, { text: "E" }],
     [6, 1, { text: "F" }],
     [6, 2, { text: "F#", textColor: "#FFF", color: "#000" }],
     [6, 3, { text: "G" }],
@@ -15,6 +16,7 @@ const ChromaticScaleMap = {
     [6, 11, { text: "D#", textColor: "#FFF", color: "#000" }],
     [6, 12, { text: "E" }],
     // 5th string
+    [5, 0, { text: "A" }],
     [5, 1, { text: "A#", textColor: "#FFF", color: "#000" }],
     [5, 2, { text: "B" }],
     [5, 3, { text: "C" }],
@@ -28,6 +30,7 @@ const ChromaticScaleMap = {
     [5, 11, { text: "G#", textColor: "#FFF", color: "#000" }],
     [5, 12, { text: "A" }],
     // 4th string
+    [4, 0, { text: "D" }],
     [4, 1, { text: "D#", textColor: "#FFF", color: "#000" }],
     [4, 2, { text: "E" }],
     [4, 3, { text: "F" }],
@@ -41,6 +44,7 @@ const ChromaticScaleMap = {
     [4, 11, { text: "C#", textColor: "#FFF", color: "#000" }],
     [4, 12, { text: "D" }],
     // 3rd string
+    [3, 0, { text: "G" }],
     [3, 1, { text: "G#", textColor: "#FFF", color: "#000" }],
     [3, 2, { text: "A" }],
     [3, 3, { text: "A#", textColor: "#FFF", color: "#000" }],
@@ -54,6 +58,7 @@ const ChromaticScaleMap = {
     [3, 11, { text: "F#", textColor: "#FFF", color: "#000" }],
     [3, 12, { text: "G" }],
     // 2nd string
+    [2, 0, { text: "B" }],
     [2, 1, { text: "C" }],
     [2, 2, { text: "C#", textColor: "#FFF", color: "#000" }],
     [2, 3, { text: "D" }],
@@ -67,6 +72,7 @@ const ChromaticScaleMap = {
     [2, 11, { text: "A#", textColor: "#FFF", color: "#000" }],
     [2, 12, { text: "B" }],
     // 1st string
+    [1, 0, { text: "E" }],
     [1, 1, { text: "F" }],
     [1, 2, { text: "F#", textColor: "#FFF", color: "#000" }],
     [1, 3, { text: "G" }],
