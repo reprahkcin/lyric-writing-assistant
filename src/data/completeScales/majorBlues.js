@@ -1,62 +1,53 @@
 const baseScaleMap = {
   fingers: [
-    // These values represent a G Major (Ionian) scale.
+    // These values represent a G Blues Major scale.
     // 6th string
     [6, 0, { text: "E" }],
-
-    [6, 2, { text: "7" }],
     [6, 3, { text: "R", color: "red", textColor: "white" }],
     [6, 5, { text: "2" }],
-    [6, 7, { text: "3", color: "pink" }],
-    [6, 8, { text: "4" }],
-    [6, 10, { text: "5", color: "pink" }],
+    [6, 6, { text: "♭3", color: "#ADD8E6" }],
+    [6, 7, { text: "3" }],
+    [6, 10, { text: "5" }],
     [6, 12, { text: "6" }],
     // 5th string
-
     [5, 0, { text: "A" }],
-    [5, 2, { text: "3", color: "pink" }],
-    [5, 3, { text: "4" }],
-    [5, 5, { text: "5", color: "pink" }],
+    [5, 1, { text: "♭3", color: "#ADD8E6" }], // light blue
+    [5, 2, { text: "3" }],
+    [5, 5, { text: "5" }],
     [5, 7, { text: "6" }],
-    [5, 9, { text: "7" }],
     [5, 10, { text: "R", color: "red", textColor: "white" }],
     [5, 12, { text: "2" }],
-
     // 4th string
     [4, 0, { text: "D" }],
     [4, 2, { text: "6" }],
-    [4, 4, { text: "7" }],
     [4, 5, { text: "R", color: "red", textColor: "white" }],
     [4, 7, { text: "2" }],
-    [4, 9, { text: "3", color: "pink" }],
-    [4, 10, { text: "4" }],
-    [4, 12, { text: "5", color: "pink" }],
+    [4, 8, { text: "♭3", color: "#ADD8E6" }],
+    [4, 9, { text: "3" }],
+    [4, 12, { text: "5" }],
     // 3rd string
     [3, 0, { text: "G" }],
     [3, 2, { text: "2" }],
-    [3, 4, { text: "3", color: "pink" }],
-    [3, 5, { text: "4" }],
-    [3, 7, { text: "5", color: "pink" }],
+    [3, 3, { text: "♭3", color: "#ADD8E6" }],
+    [3, 4, { text: "3" }],
+    [3, 7, { text: "5" }],
     [3, 9, { text: "6" }],
-    [3, 11, { text: "7" }],
     [3, 12, { text: "R", color: "red", textColor: "white" }],
     // 2nd string
     [2, 0, { text: "B" }],
-    [2, 1, { text: "4" }],
-    [2, 3, { text: "5", color: "pink" }],
+    [2, 3, { text: "5" }],
     [2, 5, { text: "6" }],
-    [2, 7, { text: "7" }],
     [2, 8, { text: "R", color: "red", textColor: "white" }],
     [2, 10, { text: "2" }],
-    [2, 12, { text: "3", color: "pink" }],
+    [2, 11, { text: "♭3", color: "#ADD8E6" }],
+    [2, 12, { text: "3" }],
     // 1st string
     [1, 0, { text: "e" }],
-    [1, 2, { text: "7" }],
     [1, 3, { text: "R", color: "red", textColor: "white" }],
     [1, 5, { text: "2" }],
+    [1, 6, { text: "♭3", color: "#ADD8E6" }],
     [1, 7, { text: "3" }],
-    [1, 8, { text: "4" }],
-    [1, 10, { text: "5", color: "pink" }],
+    [1, 10, { text: "5" }],
     [1, 12, { text: "6" }],
   ],
   barres: [],
@@ -77,7 +68,7 @@ const keyOffsets = {
   "G#": 2,
 };
 
-function generateMajorScaleMap(key) {
+function generateMajorBluesScaleMap(key) {
   const offset = keyOffsets[key];
   if (offset === undefined) {
     throw new Error("Invalid key");
@@ -93,4 +84,4 @@ function generateMajorScaleMap(key) {
   return newScaleMap;
 }
 
-export { generateMajorScaleMap };
+export { generateMajorBluesScaleMap };
