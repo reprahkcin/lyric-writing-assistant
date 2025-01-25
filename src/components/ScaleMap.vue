@@ -15,6 +15,8 @@ import { generateMixolydianScaleMap } from "@/data/completeScales/mixolydian";
 import { generateLocrianScaleMap } from "@/data/completeScales/locrian";
 import { generateMajorPentatonicScaleMap } from "@/data/completeScales/majorPentatonic";
 import { generateMinorPentatonicScaleMap } from "@/data/completeScales/minorPentatonic";
+import { generateMinorBluesScaleMap } from "@/data/completeScales/minorBlues";
+import { generateMajorBluesScaleMap } from "@/data/completeScales/majorBlues";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -55,6 +57,8 @@ export default {
         Locrian: generateLocrianScaleMap,
         "Major Pentatonic": generateMajorPentatonicScaleMap,
         "Minor Pentatonic": generateMinorPentatonicScaleMap,
+        "Minor Blues": generateMinorBluesScaleMap,
+        "Major Blues": generateMajorBluesScaleMap,
       };
       const generator = scaleGenerators[this.song.scale];
       return generator
