@@ -13,6 +13,7 @@ import { generatePhrygianScaleMap } from "@/data/completeScales/phrygian";
 import { generateLydianScaleMap } from "@/data/completeScales/lydian";
 import { generateMixolydianScaleMap } from "@/data/completeScales/mixolydian";
 import { generateLocrianScaleMap } from "@/data/completeScales/locrian";
+import { generateMajorPentatonicScaleMap } from "@/data/completeScales/majorPentatonic";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -40,6 +41,8 @@ export default {
         return this.selectMixolydianScale();
       } else if (this.song.scale === "Locrian") {
         return this.selectLocrianScale();
+      } else if (this.song.scale === "Major Pentatonic") {
+        return this.selectMajorPentatonicScale();
       } else {
         return ChromaticScaleMap;
       }
@@ -253,6 +256,36 @@ export default {
           return generateLocrianScaleMap("G#");
         default:
           return generateLocrianScaleMap("C");
+      }
+    },
+    selectMajorPentatonicScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateMajorPentatonicScaleMap("A");
+        case "A#":
+          return generateMajorPentatonicScaleMap("A#");
+        case "B":
+          return generateMajorPentatonicScaleMap("B");
+        case "C":
+          return generateMajorPentatonicScaleMap("C");
+        case "C#":
+          return generateMajorPentatonicScaleMap("C#");
+        case "D":
+          return generateMajorPentatonicScaleMap("D");
+        case "D#":
+          return generateMajorPentatonicScaleMap("D#");
+        case "E":
+          return generateMajorPentatonicScaleMap("E");
+        case "F":
+          return generateMajorPentatonicScaleMap("F");
+        case "F#":
+          return generateMajorPentatonicScaleMap("F#");
+        case "G":
+          return generateMajorPentatonicScaleMap("G");
+        case "G#":
+          return generateMajorPentatonicScaleMap("G#");
+        default:
+          return generateMajorPentatonicScaleMap("C");
       }
     },
     renderScale() {
