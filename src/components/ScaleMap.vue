@@ -14,6 +14,7 @@ import { generateLydianScaleMap } from "@/data/completeScales/lydian";
 import { generateMixolydianScaleMap } from "@/data/completeScales/mixolydian";
 import { generateLocrianScaleMap } from "@/data/completeScales/locrian";
 import { generateMajorPentatonicScaleMap } from "@/data/completeScales/majorPentatonic";
+import { generateMinorPentatonicScaleMap } from "@/data/completeScales/minorPentatonic";
 import { ChromaticScaleMap } from "@/data/completeScales/chromatic";
 
 import { SVGuitarChord } from "svguitar";
@@ -43,6 +44,8 @@ export default {
         return this.selectLocrianScale();
       } else if (this.song.scale === "Major Pentatonic") {
         return this.selectMajorPentatonicScale();
+      } else if (this.song.scale === "Minor Pentatonic") {
+        return this.selectMinorPentatonicScale();
       } else {
         return ChromaticScaleMap;
       }
@@ -286,6 +289,36 @@ export default {
           return generateMajorPentatonicScaleMap("G#");
         default:
           return generateMajorPentatonicScaleMap("C");
+      }
+    },
+    selectMinorPentatonicScale() {
+      switch (this.song.key) {
+        case "A":
+          return generateMinorPentatonicScaleMap("A");
+        case "A#":
+          return generateMinorPentatonicScaleMap("A#");
+        case "B":
+          return generateMinorPentatonicScaleMap("B");
+        case "C":
+          return generateMinorPentatonicScaleMap("C");
+        case "C#":
+          return generateMinorPentatonicScaleMap("C#");
+        case "D":
+          return generateMinorPentatonicScaleMap("D");
+        case "D#":
+          return generateMinorPentatonicScaleMap("D#");
+        case "E":
+          return generateMinorPentatonicScaleMap("E");
+        case "F":
+          return generateMinorPentatonicScaleMap("F");
+        case "F#":
+          return generateMinorPentatonicScaleMap("F#");
+        case "G":
+          return generateMinorPentatonicScaleMap("G");
+        case "G#":
+          return generateMinorPentatonicScaleMap("G#");
+        default:
+          return generateMinorPentatonicScaleMap("C");
       }
     },
     renderScale() {
