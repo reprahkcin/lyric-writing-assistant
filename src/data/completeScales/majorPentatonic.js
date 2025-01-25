@@ -10,13 +10,14 @@ const baseScaleMap = {
     [6, 12, { text: "6" }],
     // 5th string
     [5, 0, { text: "A" }],
-    [5, 3, { text: "4" }],
+    [5, 2, { text: "3" }],
     [5, 5, { text: "5", color: "pink" }],
     [5, 7, { text: "6" }],
     [5, 10, { text: "R", color: "red" }],
     [5, 12, { text: "2" }],
     // 4th string
     [4, 0, { text: "D" }],
+    [4, 2, { text: "6" }],
     [4, 5, { text: "R", color: "red" }],
     [4, 7, { text: "2" }],
     [4, 9, { text: "3", color: "pink" }],
