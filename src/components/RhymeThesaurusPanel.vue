@@ -170,6 +170,13 @@ export default {
         this.rawDictionaryResults = null;
         return;
       }
+
+      // Check if API keys are available
+      if (!process.env.VUE_APP_DICTIONARY_API_KEY || !process.env.VUE_APP_THESAURUS_API_KEY) {
+        console.error('API keys not configured. Please check your .env file.');
+        return;
+      }
+
       this.loading = true;
       try {
         const dictionaryResponse = await fetch(

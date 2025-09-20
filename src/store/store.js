@@ -146,6 +146,13 @@ const store = createStore({
         state.songs[index] = { ...state.activeSong };
       }
     },
+    RESET_STORE(state) {
+      // Reset the store to initial state
+      state.songs = [];
+      state.activeSong = null;
+      state.unsavedChanges = false;
+      state.chordProgressions = [];
+    },
   },
   actions: {
     setUnsavedChanges({ commit }, value) {
@@ -233,16 +240,27 @@ const store = createStore({
       dispatch("saveStateToLocalStorage"); // Save state to local storage
     },
     saveStateToLocalStorage({ state }) {
-      localStorage.setItem("songs", JSON.stringify(state.songs));
-      localStorage.setItem("activeSong", JSON.stringify(state.activeSong));
-      console.log("State saved to local storage");
+      try {
+        localStorage.setItem("songs", JSON.stringify(state.songs));
+        localStorage.setItem("activeSong", JSON.stringify(state.activeSong));
+        console.log("State saved to local storage");
+      } catch (error) {
+        console.error("Error saving state to localStorage:", error);
+      }
     },
     loadStateFromLocalStorage({ commit }) {
-      const songs = JSON.parse(localStorage.getItem("songs")) || [];
-      const activeSong = JSON.parse(localStorage.getItem("activeSong")) || null;
-      commit("SET_SONGS", songs);
-      commit("SET_ACTIVE_SONG", activeSong);
-      console.log("State loaded from local storage");
+      try {
+        const songs = JSON.parse(localStorage.getItem("songs")) || [];
+        const activeSong = JSON.parse(localStorage.getItem("activeSong")) || null;
+        commit("SET_SONGS", songs);
+        commit("SET_ACTIVE_SONG", activeSong);
+        console.log("State loaded from local storage");
+      } catch (error) {
+        console.error("Error loading state from localStorage:", error);
+        // Reset to default state if localStorage is corrupted
+        commit("SET_SONGS", []);
+        commit("SET_ACTIVE_SONG", null);
+      }
     },
     updateChordProgressions({ state, commit }) {
       const selectedKey = state.activeSong?.key;

@@ -1,94 +1,98 @@
 <template>
   <div class="row">
     <div class="col">
-      <div class="d-flex justify-content-between align-items-center">
-        <label for="scale-mode-chord-table" class="form-label fw-bold"
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label
+          for="scale-mode-chord-table"
+          class="form-label fw-bold small mb-0"
           >Scale/Mode Information</label
         >
         <a
           href="#"
           @click.prevent="toggleMinimize"
-          class="text-decoration-none fw-bold"
+          class="text-decoration-none fw-bold small"
         >
           {{ isMinimized ? "Expand" : "Minimize" }}
         </a>
       </div>
       <div
-        :class="['card', 'px-5', 'mb-3', { 'minimized-card': isMinimized }]"
+        :class="['card', 'px-3', 'mb-2', { 'minimized-card': isMinimized }]"
         id="scale-mode-chord-table"
       >
         <ScaleMap :song="getActiveSong" v-if="!isMinimized" />
-        <div v-if="selectedKey && selectedScale && !isMinimized" class="mb-3">
-          <table
-            class="table table-bordered table-light text-muted overflow-auto"
-          >
-            <thead>
-              <tr>
-                <th>Diatonic Interval</th>
-                <th
-                  v-for="(numeral, index) in fullRomanNumerals"
-                  :key="index"
-                  class="text-center"
-                  style="width: 14.28%"
-                >
-                  {{ numeral }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Note/Chord</td>
-                <td
-                  v-for="(note, index) in fullScaleNotes"
-                  :key="index"
-                  class="text-center"
-                  style="width: 14.28%"
-                >
-                  {{ note }}{{ displayNotation(fullScaleChords[index]) }}
-                </td>
-              </tr>
-              <tr>
-                <td>Degree</td>
-                <td
-                  v-for="(degree, index) in fullScaleChords"
-                  :key="index"
-                  class="text-center"
-                  style="width: 14.28%"
-                  :class="colorCoding(fullScaleChords[index])"
-                >
-                  {{ degree }}
-                </td>
-              </tr>
+        <div v-if="selectedKey && selectedScale && !isMinimized" class="mb-2">
+          <div class="table-responsive">
+            <table
+              class="table table-bordered table-light text-muted overflow-auto small"
+            >
+              <thead>
+                <tr>
+                  <th class="small">Diatonic Interval</th>
+                  <th
+                    v-for="(numeral, index) in fullRomanNumerals"
+                    :key="index"
+                    class="text-center small"
+                    style="width: 14.28%"
+                  >
+                    {{ numeral }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="small">Note/Chord</td>
+                  <td
+                    v-for="(note, index) in fullScaleNotes"
+                    :key="index"
+                    class="text-center small"
+                    style="width: 14.28%"
+                  >
+                    {{ note }}{{ displayNotation(fullScaleChords[index]) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="small">Degree</td>
+                  <td
+                    v-for="(degree, index) in fullScaleChords"
+                    :key="index"
+                    class="text-center small"
+                    style="width: 14.28%"
+                    :class="colorCoding(fullScaleChords[index])"
+                  >
+                    {{ degree }}
+                  </td>
+                </tr>
 
-              <tr>
-                <td>
-                  Guitar Chords
-                  <br />
-                  <small>
-                    <a
-                      href="https://github.com/omnibrain/svguitar"
-                      class="btn btn-link btn-sm p-0"
-                      target="_blank"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </a>
-                  </small>
-                </td>
-                <td
-                  v-for="(chord, index) in fullScaleChords"
-                  :key="index"
-                  class="text-center align-bottom"
-                  style="width: 14.28%"
-                >
-                  <div
-                    ref="chordContainer"
-                    :id="'chord-' + index"
-                    class="d-flex align-items-end justify-content-center"
-                  ></div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                <tr>
+                  <td class="small">
+                    Guitar Chords
+                    <br />
+                    <small>
+                      <a
+                        href="https://github.com/omnibrain/svguitar"
+                        class="btn btn-link btn-sm p-0"
+                        target="_blank"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </a>
+                    </small>
+                  </td>
+                  <td
+                    v-for="(chord, index) in fullScaleChords"
+                    :key="index"
+                    class="text-center align-bottom small"
+                    style="width: 14.28%"
+                  >
+                    <div
+                      ref="chordContainer"
+                      :id="'chord-' + index"
+                      class="d-flex align-items-end justify-content-center"
+                    ></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -208,24 +212,26 @@ export default {
     },
     renderGuitarChords() {
       console.log("Rendering guitar chords...");
-      console.log("Adjusted scale chords:", this.adjustedScaleChords);
+      const scaleChords = this.adjustedScaleChords || [];
+      const scaleNotes = this.adjustedScaleNotes || [];
+      console.log("Adjusted scale chords:", scaleChords);
 
       // Clear existing chords
-      this.fullScaleChords.forEach((_, index) => {
-        const container = this.$refs.chordContainer[index];
+      (this.fullScaleChords || []).forEach((_, index) => {
+        const container =
+          this.$refs.chordContainer && this.$refs.chordContainer[index];
         if (container) {
           container.innerHTML = "";
         }
       });
 
       // Render new chords
-      this.adjustedScaleNotes.forEach((note, index) => {
-        const container = this.$refs.chordContainer[index];
+      scaleNotes.forEach((note, index) => {
+        const container =
+          this.$refs.chordContainer && this.$refs.chordContainer[index];
         if (container) {
-          const chordName = this.getChordName(
-            this.adjustedScaleChords[index],
-            note
-          );
+          const chord = scaleChords[index] || "";
+          const chordName = this.getChordName(chord, note);
           const chordData = this.getChordData(chordName);
           console.log(`Chord data for ${chordName}:`, chordData);
           if (chordData && chordData.fingers) {

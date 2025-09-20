@@ -1,254 +1,279 @@
 <template>
   <div class="card bg-card text-dark-muted mb-3 shadow-sm">
     <div class="card-body">
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="fs-4 my-auto fw-bold text-start">Song</h1>
-        <button
-          class="btn btn-sm fw-bold mx-1"
-          :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
-          @click="saveActiveSongToStore"
-        >
-          Save All
-        </button>
-      </div>
-      <hr />
-      <div v-if="activeSong && activeSong.id">
-        <div class="text-start">
-          <div class="row">
-            <div class="col">
-              <!-- Title Field -->
-              <div class="mb-3">
-                <label for="songTitle" class="form-label fw-bold">Title</label>
-                <input
-                  type="text"
-                  class="form-control input-off-white"
-                  id="songTitle"
-                  v-model="activeSong.title"
-                  @blur="manualSaveState"
-                />
-              </div>
-            </div>
-            <div class="col">
-              <!-- Mood Field -->
-              <div class="mb-3">
-                <label for="songMood" class="form-label fw-bold">Mood</label>
-                <select
-                  class="form-select input-off-white"
-                  id="songMood"
-                  v-model="activeSong.mood"
-                  @change="manualSaveState"
-                >
-                  <option value="" disabled>Select a mood</option>
-                  <option
-                    v-for="mood in getMoods"
-                    :key="mood.mood"
-                    :value="mood.mood"
-                  >
-                    {{ mood.mood }}
-                  </option>
-                </select>
-                <!-- The little caption -->
-                <small
-                  v-if="selectedMoodImplication"
-                  class="text-muted ms-2 mb-0"
-                >
-                  Musical Implication: {{ selectedMoodImplication }}
-                </small>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="mb-3">
-                <!-- Key Field -->
-                <label for="songKey" class="form-label fw-bold">Key</label>
-                <select
-                  class="form-select input-off-white"
-                  id="songKey"
-                  v-model="activeSong.key"
-                  @change="manualSaveState"
-                >
-                  <option value="" disabled>Select a key</option>
-                  <option v-for="key in getKeys" :key="key" :value="key">
-                    {{ key }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="col">
-              <div class="mb-3">
-                <!-- Scale Field -->
-                <label for="songScale" class="form-label fw-bold"
-                  >Scale/Mode</label
-                >
-                <select
-                  class="form-select input-off-white"
-                  id="songScale"
-                  v-model="activeSong.scale"
-                  @change="manualSaveState"
-                >
-                  <option value="" disabled>Select a scale or mode</option>
-                  <option
-                    v-for="scale in getScales"
-                    :key="scale.name"
-                    :value="scale.name"
-                  >
-                    {{ scale.name }} - {{ scale.emotionalQuality }}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <!-- Pop up Interval Chart -->
-          <ChordTable />
-
-          <div class="mb-3">
-            <!-- Theme Field -->
-            <label for="songTheme" class="form-label fw-bold">Theme</label>
-            <input
-              type="text"
-              class="form-control input-off-white mb-2"
-              v-model="activeSong.theme"
-              @blur="manualSaveState"
-            />
-            <div class="d-flex align-items-center">
-              <select
-                class="form-select input-off-white me-2"
-                id="songTheme"
-                v-model="selectedTheme"
-                @blur="manualSaveState"
-                @change="handleThemeChange"
-              >
-                <option value="" disabled>
-                  Write Your Own or Select a Prompt
-                </option>
-                <option
-                  v-for="prompt in getPrompts"
-                  :key="prompt"
-                  :value="prompt"
-                >
-                  {{ prompt }}
-                </option>
-              </select>
-              <button
-                class="btn btn-outline-custom btn-sm fw-bold w-50"
-                @click="selectRandomPrompt"
-              >
-                Select Random Prompt
-              </button>
-            </div>
-          </div>
-          <div class="mb-3">
-            <!-- Hook Field -->
-            <label for="songHook" class="form-label fw-bold">Hook</label>
-            <input
-              type="text"
-              class="form-control input-off-white"
-              id="songHook"
-              v-model="activeSong.hook"
-              placeholder="Catchy phrase or refrain"
-              @blur="manualSaveState"
-            />
-          </div>
-          <div class="mb-3">
-            <!-- Narrative Outline Field -->
-            <label for="songNarrative" class="form-label fw-bold"
-              >Narrative Outline</label
-            >
-            <textarea
-              class="form-control input-off-white"
-              id="songNarrative"
-              rows="3"
-              v-model="activeSong.narrativeOutline"
-              placeholder="Narrative plot points for each section"
-              @input="autoResize"
-              @blur="manualSaveState"
-              ref="narrativeTextarea"
-            ></textarea>
-          </div>
+        <div class="d-flex gap-2">
+          <button
+            class="btn btn-sm fw-bold"
+            :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
+            @click="saveActiveSongToStore"
+          >
+            Save All
+          </button>
+          <button
+            class="btn btn-outline-custom btn-sm fw-bold"
+            @click="toggleSongMetadata"
+            :title="
+              showSongMetadata ? 'Hide Song Details' : 'Show Song Details'
+            "
+          >
+            <span
+              :class="
+                showSongMetadata ? 'bi bi-chevron-up' : 'bi bi-chevron-down'
+              "
+            ></span>
+            Song Details
+          </button>
         </div>
-        <!-- Add ChromeMusicLab component here -->
-        <ChromeMusicLab />
-        <div class="mb-3">
-          <!-- Lyrical Arrangement Panel -->
-          <div class="card bg-card shadow-sm">
-            <div class="card-body">
-              <div class="text-start text-dark-muted">
-                <label for="templateDropdown" class="form-label fw-bold"
-                  >Lyrical Arrangement Template</label
-                >
-              </div>
-              <div v-if="selectedTemplate" class="mb-3 text-start">
-                <span
-                  v-html="arrangementVisualized(selectedTemplateArrangement)"
-                ></span>
-              </div>
+      </div>
+
+      <div v-if="activeSong && activeSong.id">
+        <!-- Collapsible Song Metadata Section -->
+        <div v-if="showSongMetadata" class="mb-3">
+          <div class="row g-3">
+            <!-- Title and Mood Row -->
+            <div class="col-md-6">
+              <label for="songTitle" class="form-label fw-bold small"
+                >Title</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-sm input-off-white"
+                id="songTitle"
+                v-model="activeSong.title"
+                @blur="manualSaveState"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="songMood" class="form-label fw-bold small"
+                >Mood</label
+              >
               <select
-                class="form-select"
-                id="templateDropdown"
-                v-model="selectedTemplate"
+                class="form-select form-select-sm input-off-white"
+                id="songMood"
+                v-model="activeSong.mood"
                 @change="manualSaveState"
               >
-                <option value="" disabled>Select a template</option>
+                <option value="" disabled>Select a mood</option>
                 <option
-                  v-for="template in getSectionTemplates"
-                  :key="template.name"
-                  :value="template.name"
+                  v-for="mood in getMoods"
+                  :key="mood.mood"
+                  :value="mood.mood"
                 >
-                  {{ template.name }} -
-                  {{ arrangementText(template.arrangement) }}
+                  {{ mood.mood }}
                 </option>
               </select>
-              <button
-                class="btn btn-outline-custom btn-sm fw-bold mt-2"
-                @click="confirmApplyTemplate"
+              <small v-if="selectedMoodImplication" class="text-muted">
+                {{ selectedMoodImplication }}
+              </small>
+            </div>
+
+            <!-- Key and Scale Row -->
+            <div class="col-md-6">
+              <label for="songKey" class="form-label fw-bold small">Key</label>
+              <select
+                class="form-select form-select-sm input-off-white"
+                id="songKey"
+                v-model="activeSong.key"
+                @change="manualSaveState"
               >
-                Apply Template
-              </button>
+                <option value="" disabled>Select a key</option>
+                <option v-for="key in getKeys" :key="key" :value="key">
+                  {{ key }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="songScale" class="form-label fw-bold small"
+                >Scale/Mode</label
+              >
+              <select
+                class="form-select form-select-sm input-off-white"
+                id="songScale"
+                v-model="activeSong.scale"
+                @change="manualSaveState"
+              >
+                <option value="" disabled>Select a scale or mode</option>
+                <option
+                  v-for="scale in getScales"
+                  :key="scale.name"
+                  :value="scale.name"
+                >
+                  {{ scale.name }} - {{ scale.emotionalQuality }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Theme Row -->
+            <div class="col-12">
+              <label for="songTheme" class="form-label fw-bold small"
+                >Theme</label
+              >
+              <div class="d-flex gap-2">
+                <input
+                  type="text"
+                  class="form-control form-control-sm input-off-white"
+                  v-model="activeSong.theme"
+                  @blur="manualSaveState"
+                  placeholder="Write your theme..."
+                />
+                <select
+                  class="form-select form-select-sm input-off-white"
+                  style="max-width: 200px"
+                  v-model="selectedTheme"
+                  @change="handleThemeChange"
+                >
+                  <option value="" disabled>Or select prompt</option>
+                  <option
+                    v-for="prompt in getPrompts"
+                    :key="prompt"
+                    :value="prompt"
+                  >
+                    {{ prompt }}
+                  </option>
+                </select>
+                <button
+                  class="btn btn-outline-custom btn-sm fw-bold"
+                  @click="selectRandomPrompt"
+                  title="Select Random Prompt"
+                >
+                  <span class="bi bi-shuffle"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hook and Narrative Row -->
+            <div class="col-md-6">
+              <label for="songHook" class="form-label fw-bold small"
+                >Hook</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-sm input-off-white"
+                id="songHook"
+                v-model="activeSong.hook"
+                placeholder="Catchy phrase or refrain"
+                @blur="manualSaveState"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="songNarrative" class="form-label fw-bold small"
+                >Narrative Outline</label
+              >
+              <textarea
+                class="form-control form-control-sm input-off-white"
+                id="songNarrative"
+                rows="2"
+                v-model="activeSong.narrativeOutline"
+                placeholder="Narrative plot points"
+                @input="autoResize"
+                @blur="manualSaveState"
+                ref="narrativeTextarea"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Chord Table -->
+          <div class="mt-3">
+            <ChordTable />
+          </div>
+        </div>
+
+        <!-- Template Selection -->
+        <div class="mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <label for="templateDropdown" class="form-label fw-bold small mb-0"
+              >Template:</label
+            >
+            <select
+              class="form-select form-select-sm"
+              style="max-width: 300px"
+              id="templateDropdown"
+              v-model="selectedTemplate"
+              @change="manualSaveState"
+            >
+              <option value="" disabled>Select a template</option>
+              <option
+                v-for="template in getSectionTemplates"
+                :key="template.name"
+                :value="template.name"
+              >
+                {{ template.name }} -
+                {{ arrangementText(template.arrangement) }}
+              </option>
+            </select>
+            <button
+              class="btn btn-outline-custom btn-sm fw-bold"
+              @click="confirmApplyTemplate"
+            >
+              Apply
+            </button>
+            <div v-if="selectedTemplate" class="ms-2">
+              <span
+                v-html="arrangementVisualized(selectedTemplateArrangement)"
+              ></span>
             </div>
           </div>
         </div>
-        <!-- Song Section Section :) -->
-        <div v-for="(section, index) in orderedSections" :key="section.id">
-          <SongSection
-            :sectionId="section.id"
-            :isFirst="index === 0"
-            :isLast="index === orderedSections.length - 1"
-          />
-        </div>
-        <!-- Bottom Button Group -->
-        <button
-          class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="createSection('verse')"
-        >
-          Add Verse
-        </button>
-        <button
-          class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="createSection('chorus')"
-        >
-          Add Chorus
-        </button>
-        <button
-          class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="createSection('bridge')"
-        >
-          Add Bridge
-        </button>
-        <button
-          class="btn btn-outline-custom btn-sm fw-bold mx-1"
-          @click="activatePlainTextView"
-        >
-          {{ plainTextActive ? "Hide Plain Text" : "Show Plain Text" }}
-        </button>
 
-        <button
-          class="btn btn-sm fw-bold mx-1"
-          :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
-          @click="saveActiveSongToStore"
-        >
-          Save All
-        </button>
+        <!-- Chrome Music Lab -->
+        <ChromeMusicLab />
+
+        <!-- Song Sections -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0">
+              Sections ({{ orderedSections.length }})
+            </h6>
+            <div class="btn-group btn-group-sm">
+              <button
+                class="btn btn-outline-custom btn-sm fw-bold"
+                @click="createSection('verse')"
+              >
+                + Verse
+              </button>
+              <button
+                class="btn btn-outline-custom btn-sm fw-bold"
+                @click="createSection('chorus')"
+              >
+                + Chorus
+              </button>
+              <button
+                class="btn btn-outline-custom btn-sm fw-bold"
+                @click="createSection('bridge')"
+              >
+                + Bridge
+              </button>
+            </div>
+          </div>
+
+          <div v-for="(section, index) in orderedSections" :key="section.id">
+            <SongSection
+              :sectionId="section.id"
+              :isFirst="index === 0"
+              :isLast="index === orderedSections.length - 1"
+            />
+          </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="d-flex justify-content-between align-items-center">
+          <button
+            class="btn btn-outline-custom btn-sm fw-bold"
+            @click="activatePlainTextView"
+          >
+            {{ plainTextActive ? "Hide Plain Text" : "Show Plain Text" }}
+          </button>
+
+          <button
+            class="btn btn-sm fw-bold"
+            :class="getUnsavedChanges ? 'btn-primary' : 'btn-outline-primary'"
+            @click="saveActiveSongToStore"
+          >
+            Save All
+          </button>
+        </div>
       </div>
       <div v-else>
         <p class="text-center text-muted">No song selected.</p>
@@ -259,8 +284,8 @@
 
 <script>
 import SongSection from "@/components/SongSection.vue";
-import ChromeMusicLab from "@/components/ChromeMusicLab.vue"; // Import ChromeMusicLab
-import ChordTable from "@/components/ChordTable.vue"; // Import ChordTable
+import ChromeMusicLab from "@/components/ChromeMusicLab.vue";
+import ChordTable from "@/components/ChordTable.vue";
 
 import { mapGetters, mapActions } from "vuex";
 
@@ -279,10 +304,11 @@ export default {
   },
   data() {
     return {
-      selectedTemplate: "", // Add selectedTemplate to data
-      romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"], // Roman numerals for chords
-      selectedTheme: "", // Add selectedTheme to data
-      customString: "Write your own custom theme", // Custom string for theme
+      selectedTemplate: "",
+      romanNumerals: ["I", "ii", "iii", "IV", "V", "vi", "vii°"],
+      selectedTheme: "",
+      customString: "Write your own custom theme",
+      showSongMetadata: false, // New: controls visibility of song metadata
     };
   },
   computed: {
@@ -354,7 +380,7 @@ export default {
         if (newSong) {
           this.selectedTheme = newSong.theme || "";
           this.$nextTick(() => {
-            this.autoResize({ target: this.$refs.narrativeTextarea });
+            this.autoResize();
           });
         }
       },
@@ -546,9 +572,21 @@ export default {
     },
     autoResize(event) {
       // This function automatically resizes the textarea based on the content in the Narrative Outline field
+      if (!event || !event.target) {
+        // If no event or target, try to use the ref
+        const textarea = this.$refs.narrativeTextarea;
+        if (textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+        return;
+      }
+
       const textarea = event.target;
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`;
+      if (textarea && textarea.style) {
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
     },
     handleThemeChange() {
       // This function handles the theme change so the user can hit the random selection button indefinitely.
@@ -571,6 +609,9 @@ export default {
       this.saveActiveSong();
       this.saveStateToLocalStorage();
       this.setUnsavedChanges(false);
+    },
+    toggleSongMetadata() {
+      this.showSongMetadata = !this.showSongMetadata;
     },
   },
 };

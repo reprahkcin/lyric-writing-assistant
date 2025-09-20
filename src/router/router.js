@@ -1,13 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from "@/store/store";
 
-import ActivityView from "@/views/ActivityView.vue";
+import SongLibraryView from "@/views/SongLibraryView.vue";
+import SongView from "@/views/SongView.vue";
 
 const routes = [
   {
-    path: store.getters.useLandingPage ? "/activity" : "/",
-    name: "ActivityView", // Ensure the name matches
-    component: ActivityView,
+    path: "/",
+    name: "SongLibrary",
+    component: SongLibraryView,
+  },
+  {
+    path: "/song/:id",
+    name: "SongView",
+    component: SongView,
+    props: true,
   },
 ];
 

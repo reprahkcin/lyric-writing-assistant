@@ -141,8 +141,10 @@ export default {
       if (this.getSongs.length === 0) {
         this.resetStore();
       } else {
-        this.setSongs(this.getSongs);
-        this.setActiveSong(null);
+        // Clear the active song if it was the one that was deleted
+        if (this.selectedSong === null) {
+          this.setActiveSong(null);
+        }
       }
     },
     formatDate(dateString) {

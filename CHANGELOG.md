@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 07-06-2025
+
+### Added
+
+- **Multi-View Architecture**: Completely restructured the app into separate views for better organization and user experience.
+  - **SongLibraryView**: Dedicated view for managing the song library with improved song management UI.
+  - **SongView**: Individual song view with tabbed interface for different aspects of song creation.
+  - **Tabbed Interface**: Each song now has tabs for Details, Sections, Musical Resources, and Export.
+- **New Tab Components**:
+  - **SongDetailsTab**: Comprehensive song metadata management with floating labels for compact design.
+  - **SongSectionsTab**: Dedicated interface for managing song sections with improved layout.
+  - **SongResourcesTab**: Musical tools and resources including Chrome Music Lab integration.
+  - **SongExportTab**: Plain text export and print functionality.
+- **Enhanced Router**: Updated Vue Router configuration to support the new multi-view architecture.
+- **Floating Labels**: Implemented Bootstrap floating labels throughout the song details form for space-efficient design.
+
+### Changed
+
+- **Major UI Redesign**: Completely overhauled the user interface for better organization and efficiency.
+- **Compact Layout**: Redesigned all components to be more space-efficient as songs develop and grow longer.
+- **Form Organization**: Reorganized song details form into logical sections (Basic Information, Musical Information, Content Information, Song Structure).
+- **Bootstrap-First Approach**: Reduced custom CSS in favor of Bootstrap classes for better maintainability.
+- **Component Architecture**: Split monolithic components into smaller, focused components for better maintainability.
+- **Navigation**: Updated App.vue to use router-view instead of single-page layout.
+
+### Fixed
+
+- **Vuex Store**: Added missing `RESET_STORE` mutation to handle song library management properly.
+- **Vue Feature Flags**: Fixed Vue 3 feature flag warnings by properly configuring webpack DefinePlugin.
+- **Auto-Resize Method**: Fixed runtime errors in SongComplete.vue by adding null checks and fallback to refs.
+- **Prop Mutation**: Fixed lint errors in SongDetailsTab by replacing direct prop mutations with computed properties using getters/setters.
+- **Router Import**: Removed unused store import from router.js to eliminate lint errors.
+- **Package Management**: Removed conflicting package-lock.json to ensure consistent yarn usage.
+
+### Technical Improvements
+
+- **Code Organization**: Better separation of concerns with dedicated views and tab components.
+- **State Management**: Improved Vuex store usage with proper mutations and getters.
+- **Responsive Design**: Enhanced mobile responsiveness with Bootstrap grid system.
+- **Performance**: Optimized component rendering and state updates.
+- **Maintainability**: Reduced custom CSS and improved code structure for easier maintenance.
+
 ## [1.0.6] - 01-11-2025
 
 ### Fixed

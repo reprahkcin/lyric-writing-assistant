@@ -1,7 +1,7 @@
 <template>
-  <div class="card mb-3 shadow-sm bg-card">
+  <div class="card mb-2 shadow-sm bg-card">
     <div
-      class="card-body bg-section-card rounded"
+      class="card-body bg-section-card rounded py-2"
       :class="{ 'pt-1': !isMinimized }"
     >
       <div class="row">
@@ -10,7 +10,7 @@
           <div
             class="d-flex justify-content-between align-items-center text-dark-muted"
           >
-            <div class="ms-2 fs-5 fw-bold text-capitalize">
+            <div class="ms-2 fs-6 fw-bold text-capitalize">
               <button
                 class="btn btn-outline-custom btn-sm py-0 me-2"
                 @click="isMinimized = !isMinimized"
@@ -59,14 +59,14 @@
           </div>
         </div>
       </div>
-      <hr class="mt-1 mb-3" v-if="!isMinimized" />
+      <hr class="mt-1 mb-2" v-if="!isMinimized" />
       <div class="row" v-if="!isMinimized">
         <!-- Right Column -->
         <div class="col-12 col-md-4 order-1 order-md-2 mb-2 mb-md-0">
           <RhymeThesaurusPanel />
           <textarea
-            class="form-control input-off-white"
-            rows="10"
+            class="form-control form-control-sm input-off-white"
+            rows="8"
             placeholder="Brainstorming area..."
             v-model="brainstormingText"
             @blur="saveModifiedSectionToActiveSongInVuex"
@@ -79,24 +79,24 @@
           <!-- Section Narrative Field -->
           <input
             type="text"
-            class="form-control mb-2 input-off-white"
+            class="form-control form-control-sm mb-2 input-off-white"
             v-model="sectionNarrative"
             placeholder="This section is about..."
             @blur="saveModifiedSectionToActiveSongInVuex"
             @input="setUnsavedChanges(true)"
           />
           <!-- Chord Progression section -->
-          <div class="input-group mb-2">
+          <div class="input-group input-group-sm mb-2">
             <input
               type="text"
-              class="form-control input-off-white"
+              class="form-control form-control-sm input-off-white"
               v-model="chordProgression"
               placeholder="Chord progression (e.g., C G Am F)"
               @blur="saveModifiedSectionToActiveSongInVuex"
               @input="setUnsavedChanges(true)"
             />
             <select
-              class="form-select input-off-white"
+              class="form-select form-select-sm input-off-white"
               v-if="availableProgressions.length"
               v-model="selectedProgression"
               @change="applyChordProgression"
@@ -113,23 +113,23 @@
               </option>
             </select>
           </div>
-          <hr />
+          <hr class="my-2" />
           <!-- All the lines -->
           <div
             v-for="(line, index) in section.lines"
             :key="index"
-            class="mb-2 d-flex align-items-center"
+            class="mb-1 d-flex align-items-center"
           >
             <input
               type="text"
-              class="form-control input-off-white"
+              class="form-control form-control-sm input-off-white"
               v-model="localLines[index]"
               @blur="updateLine(index, localLines[index])"
               @input="setUnsavedChanges(true)"
               :placeholder="`Line ${index + 1}`"
             />
             <!-- Line Movement Controls -->
-            <div class="btn-group ms-2 gap-1">
+            <div class="btn-group ms-1 gap-1">
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
                 @click="
@@ -153,25 +153,26 @@
             </div>
           </div>
           <!-- Add/Remove Line Buttons -->
-          <button
-            class="btn btn-outline-round mx-1"
-            @click="removeLine"
-            :disabled="localLines.length <= 1"
-          >
-            <span class="fw-bold bi bi-dash-lg"></span>
-          </button>
-          <button class="btn btn-outline-round mx-1" @click="addLine">
-            <span class="bi bi-plus-lg"></span>
-          </button>
+          <div class="mt-2">
+            <button
+              class="btn btn-outline-round mx-1"
+              @click="removeLine"
+              :disabled="localLines.length <= 1"
+            >
+              <span class="fw-bold bi bi-dash-lg"></span>
+            </button>
+            <button class="btn btn-outline-round mx-1" @click="addLine">
+              <span class="bi bi-plus-lg"></span>
+            </button>
+          </div>
         </div>
       </div>
-      <div v-if="!isMinimized">
+      <div v-if="!isMinimized" class="mt-2">
         <a
           class="btn btn-outline-custom btn-sm py-0 me-2"
           href="https://hookpad.hooktheory.com/"
           target="_blank"
-          title="Open
-          Hookpad by Hooktheory in a new tab"
+          title="Open Hookpad by Hooktheory in a new tab"
         >
           <span class="bi bi-box-arrow-up-right">
             <span class="ms-2">Hookpad</span></span
