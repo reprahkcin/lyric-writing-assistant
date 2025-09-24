@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 09-24-2025
+
+### Security
+
+- **API Key Security**: Moved hardcoded Merriam-Webster API keys to environment variables for better security.
+- **Environment Configuration**: Added `.env` support for sensitive configuration data.
+- **Git History Cleanup**: Removed exposed API keys from git history to prevent unauthorized usage.
+
+### Added
+
+- **Content Security Policy**: Added basic CSP headers to improve security posture.
+- **Environment Variables**: Added support for `VUE_APP_DICTIONARY_API_KEY` and `VUE_APP_THESAURUS_API_KEY`.
+
 ## [1.1.0] - 07-06-2025
 
 ### Added
@@ -46,7 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Responsive Design**: Enhanced mobile responsiveness with Bootstrap grid system.
 - **Performance**: Optimized component rendering and state updates.
 - **Maintainability**: Reduced custom CSS and improved code structure for easier maintenance.
-
 ## [1.0.6] - 01-11-2025
 
 ### Fixed
