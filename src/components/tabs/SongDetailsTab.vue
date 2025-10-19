@@ -183,55 +183,6 @@
           </div>
         </div>
 
-        <!-- Template Section -->
-        <div class="col-12 mt-3">
-          <h6 class="fw-bold text-dark-muted mb-2 border-bottom pb-1">
-            Song Structure
-          </h6>
-        </div>
-
-        <div class="col-12">
-          <div class="row g-2 align-items-end">
-            <div class="col-md-6">
-              <div class="form-floating">
-                <select
-                  class="form-select form-select-sm"
-                  id="templateDropdown"
-                  v-model="selectedTemplate"
-                  @change="manualSaveState"
-                >
-                  <option value="" disabled>Select a template</option>
-                  <option
-                    v-for="template in getSectionTemplates"
-                    :key="template.name"
-                    :value="template.name"
-                  >
-                    {{ template.name }} -
-                    {{ arrangementText(template.arrangement) }}
-                  </option>
-                </select>
-                <label for="templateDropdown" class="small">Template</label>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <button
-                class="btn btn-outline-custom btn-sm fw-bold w-100"
-                @click="confirmApplyTemplate"
-              >
-                Apply
-              </button>
-            </div>
-            <div class="col-md-4">
-              <div v-if="selectedTemplate" class="d-flex align-items-center">
-                <span class="small text-muted me-2">Preview:</span>
-                <span
-                  v-html="arrangementVisualized(selectedTemplateArrangement)"
-                ></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Chord Table Section -->
         <div class="col-12 mt-3">
           <h6 class="fw-bold text-dark-muted mb-2 border-bottom pb-1">
@@ -266,18 +217,11 @@ export default {
   },
   data() {
     return {
-      selectedTemplate: "",
       selectedTheme: "",
     };
   },
   computed: {
-    ...mapGetters([
-      "getMoods",
-      "getKeys",
-      "getScales",
-      "getPrompts",
-      "getSectionTemplates",
-    ]),
+    ...mapGetters(["getMoods", "getKeys", "getScales", "getPrompts"]),
     songTitle: {
       get() {
         return this.song?.title || "";
@@ -338,12 +282,6 @@ export default {
       const mood = this.getMoods.find((m) => m.mood === this.song?.mood);
       return mood ? mood.implications : "";
     },
-    selectedTemplateArrangement() {
-      const template = this.getSectionTemplates.find(
-        (t) => t.name === this.selectedTemplate
-      );
-      return template ? template.arrangement : [];
-    },
   },
   methods: {
     ...mapActions([
@@ -383,82 +321,6 @@ export default {
     manualSaveState() {
       this.saveStateToLocalStorage();
       this.setUnsavedChanges(false);
-    },
-    arrangementVisualized(arrangement) {
-      return arrangement
-        .map((section) => {
-          switch (section) {
-            case "v":
-              return '<span class="badge bg-primary me-1">Verse</span>';
-            case "c":
-              return '<span class="badge bg-success me-1">Chorus</span>';
-            case "b":
-              return '<span class="badge bg-danger me-1">Bridge</span>';
-            default:
-              return "";
-          }
-        })
-        .join("");
-    },
-    arrangementText(arrangement) {
-      return arrangement
-        .map((section) => {
-          switch (section) {
-            case "v":
-              return "Verse";
-            case "c":
-              return "Chorus";
-            case "b":
-              return "Bridge";
-            default:
-              return "";
-          }
-        })
-        .join(" - ");
-    },
-    confirmApplyTemplate() {
-      if (
-        confirm(
-          "Are you sure you want to apply this template? This will clear all existing sections."
-        )
-      ) {
-        this.applyTemplate();
-      }
-    },
-    applyTemplate() {
-      const template = this.getSectionTemplates.find(
-        (t) => t.name === this.selectedTemplate
-      );
-      if (!template) {
-        console.error("Template not found");
-        return;
-      }
-      const sections = template.arrangement.map((type, index) => {
-        let sectionType;
-        if (type === "v") {
-          sectionType = "Verse";
-        } else if (type === "c") {
-          sectionType = "Chorus";
-        } else {
-          sectionType = "Bridge";
-        }
-        return {
-          id: new Date().getTime() + index,
-          order: [index],
-          type: sectionType,
-          lines: ["", "", "", ""],
-          sectionNarrative: "",
-          chordProgression: "",
-          selectedChordProgression: "",
-          brainstormingText: "",
-          isMinimized: true,
-        };
-      });
-      this.setActiveSong({
-        ...this.song,
-        sections,
-      });
-      this.saveStateToLocalStorage();
     },
     handleThemeChange() {
       if (this.selectedTheme !== "Write your own custom theme") {

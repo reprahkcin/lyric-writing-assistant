@@ -132,20 +132,14 @@
             <div class="btn-group ms-1 gap-1">
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
-                @click="
-                  moveLine(index, 'up');
-                  setUnsavedChanges(true);
-                "
+                @click="moveLine(index, 'up')"
                 :disabled="index === 0"
               >
                 ↑
               </button>
               <button
                 class="btn btn-outline-custom btn-sm h-100 my-0"
-                @click="
-                  moveLine(index, 'down');
-                  setUnsavedChanges(true);
-                "
+                @click="moveLine(index, 'down')"
                 :disabled="index === localLines.length - 1"
               >
                 ↓
@@ -262,6 +256,8 @@ export default {
           this.localLines[index + 1],
         ];
       }
+      // CRITICAL: Save changes immediately to prevent data loss
+      this.saveModifiedSectionToActiveSongInVuex();
     },
     confirmRemoveSelf() {
       // Destrcutive action, confirm before removing
@@ -280,6 +276,8 @@ export default {
         sectionId: this.section.id,
         newLine: "",
       });
+      // Update local state to stay in sync
+      this.localLines.push("");
     },
     removeLine() {
       // Remove the last line from the section if there is more than one line
@@ -288,6 +286,8 @@ export default {
           sectionId: this.section.id,
           lineIndex: this.localLines.length - 1,
         });
+        // Update local state to stay in sync
+        this.localLines.pop();
       }
     },
     moveSelf(direction) {
@@ -349,6 +349,8 @@ export default {
       } else {
         this.chordProgression = this.selectedProgression;
       }
+      // Save immediately after applying chord progression
+      this.saveModifiedSectionToActiveSongInVuex();
     },
     updateLine(index, newLine) {
       // Update a line in the section
