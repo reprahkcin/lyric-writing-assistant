@@ -185,7 +185,56 @@ this.$store.state.activeSong.title = newTitle;
 
 ## Deployment
 
-- Builds to `dist/` directory
-- Deployed to GitHub Pages via `gh-pages` package
-- Base URL is `/lyric-writing-assistant/` in production
-- Pure client-side app (no backend server needed)
+### GitHub Pages Deployment Process
+
+**Prerequisites:**
+
+- Commit and push all changes to the repository
+- Ensure `dist/` directory is in `.gitignore` (build artifacts shouldn't be in main branch)
+
+**Deployment Steps:**
+
+1. **Build production version:**
+
+   ```bash
+   yarn build
+   ```
+
+   - Creates optimized bundle in `dist/` directory
+   - Applies production base URL: `/lyric-writing-assistant/`
+   - Minifies and optimizes all assets
+   - Expect warnings about bundle size (Bootstrap/Vue) - these are normal
+
+2. **Deploy to GitHub Pages:**
+
+   ```bash
+   npx gh-pages --dist dist --repo https://github.com/reprahkcin/lyric-writing-assistant.git
+   ```
+
+   - Uses `gh-pages` package to push `dist/` contents to `gh-pages` branch
+   - May prompt for GitHub authentication in browser
+   - Use HTTPS URL format (not SSH) to avoid remote.origin.url errors
+   - On success, shows "Published" message
+
+3. **Verify deployment:**
+   - Live URL: https://reprahkcin.github.io/lyric-writing-assistant/
+   - Changes appear within 1-2 minutes
+   - Check GitHub repository → Settings → Pages to confirm source is `gh-pages` branch
+
+**Alternative (if configured in package.json):**
+
+```bash
+yarn deploy  # Only works if package.json script updated with --repo flag
+```
+
+**Configuration Details:**
+
+- Base URL set in `vue.config.js`: `publicPath: "/lyric-writing-assistant/"`
+- Homepage in `package.json`: `"homepage": "https://reprahkcin.github.io/lyric-writing-assistant/"`
+- No backend server needed - pure client-side application
+
+**Troubleshooting:**
+
+- If `yarn deploy` fails with "Failed to get remote.origin.url", use the full `npx` command with explicit `--repo` flag
+- Ensure GitHub Pages is enabled in repository settings
+- Verify `gh-pages` branch exists (created automatically on first deploy)
